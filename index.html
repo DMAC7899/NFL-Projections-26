@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dmacs NFL Projections 1.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#10161B; --bg-panel:#161D24; --bg-card:#1B242C; --line:#2A353F;
+    --amber:#E7A33E; --amber-dim:#8C6A32; --red:#C2483C; --green:#4C9A6A;
+    --text:#EDE8DC; --text-dim:#9AA5AC; --text-faint:#667079;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:repeating-linear-gradient(180deg, transparent 0 79px, rgba(255,255,255,0.025) 79px 80px), var(--bg);color:var(--text);font-family:'IBM Plex Sans', sans-serif;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1260px;margin:0 auto;padding:26px 18px 60px;}
+  header{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:2px solid var(--line);padding-bottom:14px;margin-bottom:16px;flex-wrap:wrap;gap:12px;}
+  .brand{display:flex;align-items:baseline;gap:12px;}
+  .brand h1{font-family:'Teko', sans-serif;font-weight:600;font-size:42px;letter-spacing:0.5px;margin:0;color:var(--text);line-height:1;}
+  .brand h1 span{color:var(--amber);}
+  .brand small{color:var(--text-faint);font-size:11px;letter-spacing:1.4px;text-transform:uppercase;}
+  .season-tag{font-family:'IBM Plex Mono', monospace;font-size:10.5px;color:var(--bg);background:var(--amber);padding:4px 9px;border-radius:2px;letter-spacing:0.8px;white-space:nowrap;}
+
+  .modebar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px;}
+  .modetabs{display:flex;gap:7px;}
+  .modetab{font-family:'Teko', sans-serif;font-size:21px;letter-spacing:1px;background:var(--bg-panel);border:1px solid var(--line);color:var(--text-dim);padding:6px 20px;border-radius:3px;cursor:pointer;}
+  .modetab.active{background:var(--amber);color:#1a1305;border-color:var(--amber);}
+  .globalweek{display:flex;align-items:center;gap:8px;margin-left:auto;}
+  .globalweek label{font-size:11px;color:var(--text-faint);text-transform:uppercase;letter-spacing:0.6px;}
+  .globalweek select{background:var(--bg-card);color:var(--amber);border:1px solid var(--amber-dim);border-radius:3px;padding:6px 10px;font-family:'IBM Plex Mono';font-size:12.5px;font-weight:600;}
+
+  .toprow{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:center;}
+  .tabs{display:flex;gap:7px;flex-wrap:wrap;}
+  .tab{font-family:'Teko', sans-serif;font-size:20px;letter-spacing:1px;background:var(--bg-panel);border:1px solid var(--line);color:var(--text-dim);padding:5px 18px;border-radius:3px;cursor:pointer;transition:all .15s ease;}
+  .tab:hover{color:var(--text);border-color:var(--amber-dim);}
+  .tab.active{background:var(--amber);color:#1a1305;border-color:var(--amber);}
+  .teamfilter{margin-left:auto;display:flex;align-items:center;gap:8px;}
+  .teamfilter select{background:var(--bg-card);color:var(--text);border:1px solid var(--line);border-radius:3px;padding:6px 8px;font-family:'IBM Plex Sans';font-size:12.5px;}
+  .searchbox{background:var(--bg-card);color:var(--text);border:1px solid var(--line);border-radius:3px;padding:6px 10px;font-family:'IBM Plex Sans';font-size:12.5px;width:170px;}
+  .scoretoggle{display:flex;gap:4px;background:var(--bg-panel);border:1px solid var(--line);border-radius:3px;padding:2px;}
+  .scoretoggle button{background:transparent;border:none;color:var(--text-dim);font-family:'IBM Plex Mono';font-size:11px;padding:5px 10px;border-radius:2px;cursor:pointer;}
+  .scoretoggle button.active{background:var(--amber);color:#1a1305;}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:9px;margin-bottom:26px;}
+  .pcard{background:var(--bg-card);border:1px solid var(--line);border-radius:4px;padding:11px 13px;cursor:pointer;transition:border-color .15s ease;position:relative;}
+  .pcard:hover{border-color:var(--amber-dim);}
+  .pcard.selected{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber) inset;}
+  .pcard .nm{font-weight:600;font-size:14.5px;}
+  .pcard .tm{color:var(--text-faint);font-size:11.5px;font-family:'IBM Plex Mono',monospace;margin-top:2px;}
+  .pcard .headline{color:var(--amber);font-size:11.5px;margin-top:7px;font-family:'IBM Plex Mono',monospace;}
+  .pcard .flagchip{display:inline-block;margin-top:6px;font-size:9.5px;color:var(--red);border:1px solid #5a2c26;background:rgba(194,72,60,0.08);padding:1px 6px;border-radius:10px;font-family:'IBM Plex Mono',monospace;}
+  .pcard .cmpbox{position:absolute;top:9px;right:9px;width:16px;height:16px;border:1px solid var(--line);border-radius:3px;}
+  .pcard .cmpbox.on{background:var(--amber);border-color:var(--amber);}
+  .empty-note{color:var(--text-faint);font-size:12.5px;padding:20px 4px;}
+
+  .panel{display:none;gap:20px;grid-template-columns:310px 1fr;}
+  .panel.show{display:grid;}
+  @media (max-width:840px){ .panel.show{grid-template-columns:1fr;} }
+  .controls{background:var(--bg-panel);border:1px solid var(--line);border-radius:6px;padding:0;align-self:start;position:sticky;top:16px;overflow:hidden;}
+  @media (max-width:840px){ .controls{position:static;} }
+  .controls-toggle{width:100%;display:flex;justify-content:space-between;align-items:center;background:transparent;border:none;color:var(--amber);font-family:'Teko',sans-serif;font-size:19px;letter-spacing:1px;padding:16px 18px;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+  .controls-toggle .chev{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-faint);letter-spacing:0;text-transform:none;}
+  .controls-body{padding:0 18px 18px;border-top:1px solid var(--line);}
+  .controls-body.collapsed{display:none;}
+  .field{margin-bottom:15px;}
+  .field label{display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-dim);margin-bottom:6px;}
+  .field label b{color:var(--text);font-weight:600;}
+  select,input[type=range]{width:100%;}
+  select{background:var(--bg-card);color:var(--text);border:1px solid var(--line);border-radius:3px;padding:7px 8px;font-family:'IBM Plex Sans';font-size:12.5px;}
+  input[type=range]{accent-color:var(--amber);height:4px;}
+  .autonote{font-size:10.5px;color:var(--text-faint);margin-top:5px;font-family:'IBM Plex Mono',monospace;}
+  .segrow{display:flex;gap:5px;flex-wrap:wrap;margin-top:2px;}
+  .segbtn{flex:1;min-width:44px;min-height:38px;background:var(--bg-card);border:1px solid var(--line);color:var(--text-dim);border-radius:5px;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+  .segbtn:active{transform:scale(0.96);}
+  .segbtn.active{background:var(--amber);color:#1a1305;border-color:var(--amber);}
+  .reset-btn{width:100%;margin-top:4px;background:transparent;border:1px solid var(--line);color:var(--text-dim);padding:8px;border-radius:3px;font-family:'IBM Plex Sans';font-size:12px;cursor:pointer;letter-spacing:0.5px;}
+  .reset-btn:hover{border-color:var(--red);color:var(--red);}
+  .main-right{display:flex;flex-direction:column;gap:14px;}
+  .player-head{background:var(--bg-card);border:1px solid var(--line);border-radius:6px;padding:16px 18px;}
+  .player-head h2{font-family:'Teko',sans-serif;font-size:32px;margin:0;letter-spacing:0.5px;}
+  .player-head .sub{color:var(--text-faint);font-family:'IBM Plex Mono',monospace;font-size:11.5px;margin-top:2px;}
+  .coach-note{font-size:12px;color:var(--text-dim);line-height:1.55;margin-top:9px;}
+  .coach-note b{color:var(--amber);font-weight:600;}
+  .flagline{font-size:12px;color:var(--red);margin-top:6px;font-family:'IBM Plex Mono',monospace;}
+  .byebanner{background:rgba(194,72,60,0.12);border:1px solid #5a2c26;border-radius:5px;padding:10px 14px;font-size:13px;color:var(--red);margin-bottom:2px;font-family:'IBM Plex Mono',monospace;}
+  .stat-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:9px;}
+  .stat-box{background:var(--bg-panel);border:1px solid var(--line);border-radius:5px;padding:13px 15px;}
+  .stat-box .lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:0.7px;color:var(--text-faint);margin-bottom:6px;}
+  .stat-box .val{font-family:'Teko',sans-serif;font-size:34px;color:var(--amber);line-height:1;}
+  .stat-box .val small{font-size:15px;color:var(--text-dim);font-family:'IBM Plex Mono',monospace;}
+  .stat-box .delta{font-size:10.5px;margin-top:6px;font-family:'IBM Plex Mono',monospace;}
+  .delta.up{color:var(--green);} .delta.down{color:var(--red);} .delta.flat{color:var(--text-faint);}
+  .fpts-row{display:flex;gap:9px;}
+  .fpts-box{flex:1;background:linear-gradient(180deg, rgba(231,163,62,0.12), transparent), var(--bg-card);border:1px solid var(--amber-dim);border-radius:5px;padding:13px 15px;text-align:center;}
+  .fpts-box .lbl{font-size:10.5px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.7px;}
+  .fpts-box .val{font-family:'Teko',sans-serif;font-size:40px;color:var(--amber);}
+  .methodology{background:var(--bg-panel);border:1px solid var(--line);border-radius:6px;padding:15px 17px;font-size:11.5px;color:var(--text-faint);line-height:1.6;}
+  .methodology b{color:var(--text-dim);}
+  footer{margin-top:30px;border-top:1px solid var(--line);padding-top:15px;font-size:11px;color:var(--text-faint);line-height:1.6;}
+  ::-webkit-scrollbar{width:10px;} ::-webkit-scrollbar-thumb{background:var(--line);border-radius:5px;}
+
+  /* schedule heatmap */
+  .heatwrap{background:var(--bg-card);border:1px solid var(--line);border-radius:6px;padding:14px 16px;}
+  .heatwrap h4{font-family:'Teko',sans-serif;font-size:17px;letter-spacing:1px;margin:0 0 10px;color:var(--text-dim);}
+  .heatrow{display:flex;gap:3px;flex-wrap:wrap;}
+  .heatcell{flex:1;min-width:26px;text-align:center;border-radius:3px;padding:6px 2px 4px;font-family:'IBM Plex Mono',monospace;cursor:default;border:1px solid transparent;}
+  .heatcell .wk{font-size:8.5px;color:rgba(0,0,0,0.55);display:block;}
+  .heatcell .op{font-size:9px;font-weight:600;display:block;margin-top:1px;}
+  .heatcell.t0{background:#7a2c24;color:#f3d9d5;} /* elite D = toughest matchup */
+  .heatcell.t1{background:#a85338;color:#f6e2d5;}
+  .heatcell.t2{background:#6b6357;color:#eee7da;}
+  .heatcell.t3{background:#4f7d5a;color:#e2f2e5;}
+  .heatcell.t4{background:#3f9457;color:#e2f7e7;} /* poor D = best matchup */
+  .heatcell.bye{background:var(--bg-panel);color:var(--text-faint);}
+  .heatcell.current{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber);}
+  .heatlegend{display:flex;gap:12px;margin-top:9px;font-size:10px;color:var(--text-faint);flex-wrap:wrap;}
+  .heatlegend span{display:inline-flex;align-items:center;gap:4px;}
+  .heatlegend i{width:9px;height:9px;border-radius:2px;display:inline-block;}
+
+  /* rankings table */
+  .rank-table{width:100%;border-collapse:collapse;font-size:12.5px;}
+  .rank-table th{text-align:left;color:var(--text-faint);font-size:10.5px;text-transform:uppercase;letter-spacing:0.6px;padding:8px 10px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);}
+  .rank-table td{padding:9px 10px;border-bottom:1px solid var(--line);}
+  .rank-table tr:hover td{background:var(--bg-card);}
+  .rank-table .rk{color:var(--text-faint);font-family:'IBM Plex Mono';width:34px;}
+  .rank-table .nm{font-weight:600;}
+  .rank-table .tm{color:var(--text-faint);font-family:'IBM Plex Mono';font-size:11px;}
+  .rank-table .pts{color:var(--amber);font-family:'Teko',sans-serif;font-size:20px;text-align:right;}
+  .rank-table .oppcell{font-family:'IBM Plex Mono';font-size:11px;}
+  .rank-table .byerow td{color:var(--text-faint);font-style:italic;}
+  .addbtn{background:var(--bg-panel);border:1px solid var(--line);color:var(--text-dim);border-radius:3px;padding:4px 9px;font-size:11px;cursor:pointer;font-family:'IBM Plex Mono';}
+  .addbtn.on{background:var(--amber);color:#1a1305;border-color:var(--amber);}
+
+  /* compare */
+  .cmp-tray{display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap;}
+  .cmp-chip{background:var(--bg-card);border:1px solid var(--amber-dim);border-radius:20px;padding:5px 12px;font-size:12px;display:flex;align-items:center;gap:8px;}
+  .cmp-chip button{background:transparent;border:none;color:var(--red);cursor:pointer;font-size:13px;}
+  .cmp-table{width:100%;border-collapse:collapse;font-size:12.5px;overflow-x:auto;display:block;}
+  .cmp-table th,.cmp-table td{padding:10px 14px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap;}
+  .cmp-table th{color:var(--text-faint);font-size:10.5px;text-transform:uppercase;letter-spacing:0.6px;}
+  .cmp-table td.best{color:var(--green);font-weight:600;}
+  .cmp-table .rowlbl{color:var(--text-dim);font-family:'IBM Plex Mono';font-size:11px;}
+  .cmp-namehead{font-family:'Teko',sans-serif;font-size:22px;color:var(--amber);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand"><h1>DMACS<span>NFL</span></h1><small>Projections 1.0 &middot; Weekly Projection Engine &mdash; All 32 Teams</small></div>
+    <div class="season-tag">2025 STAT BASELINE · 2026 SCHEDULE + COACHING</div>
+  </header>
+
+  <div class="modebar">
+    <div class="modetabs" id="modeTabs">
+      <div class="modetab active" data-mode="browse">Browse</div>
+      <div class="modetab" data-mode="rankings">Rankings</div>
+      <div class="modetab" data-mode="compare">Compare</div>
+    </div>
+    <div class="globalweek">
+      <label>2026 Week</label>
+      <select id="globalWeek"><option value="">Manual / season baseline</option></select>
+    </div>
+  </div>
+
+  <!-- ===================== BROWSE VIEW ===================== -->
+  <div id="browseView">
+    <div class="toprow">
+      <div class="tabs" id="tabs"></div>
+      <div class="teamfilter">
+        <select id="teamFilter"><option value="">All teams</option></select>
+        <input class="searchbox" id="searchBox" placeholder="Search player…">
+      </div>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="empty-note" id="emptyNote" style="display:none;">No players match that search/filter.</div>
+
+    <div class="panel" id="panel">
+      <div class="controls">
+        <button type="button" class="controls-toggle" id="controlsToggle">
+          <span>\u2699 MATCHUP INPUTS</span>
+          <span class="chev" id="controlsChev">\u25b8 Tap to adjust</span>
+        </button>
+        <div class="controls-body collapsed" id="controlsBody">
+        <div class="field">
+          <label>2026 Week <b id="lbl-panelweek">Manual</b></label>
+          <select id="panelWeekSel"><option value="">Manual / season baseline</option></select>
+        </div>
+        <div class="field">
+          <label>Opponent D vs. Position <b id="lbl-oppd">Average</b></label>
+          <input type="range" id="oppd" min="0" max="4" step="1" value="2">
+          <div class="autonote" id="autoNote">Pick a Week above to auto-fill from the real 2026 schedule.</div>
+        </div>
+        <div class="field">
+          <label>Game Script <b id="lbl-script">Neutral</b></label>
+          <input type="range" id="script" min="0" max="4" step="1" value="2">
+        </div>
+        <div class="field">
+          <label>Coverage Shell <b id="lbl-cov">Balanced</b></label>
+          <input type="range" id="cov" min="0" max="2" step="1" value="1">
+          <div class="autonote" id="covNote">Select a Week to auto-fill from the opponent's real 2025 man/zone rates (FTN charting via nflverse).</div>
+        </div>
+        <div class="field" id="cbField" style="display:none;">
+          <label>Elite CB Shadow <b id="lbl-cb">Off</b></label>
+          <input type="range" id="cbShadow" min="0" max="1" step="1" value="0">
+          <div class="autonote" id="cbNote">Select a Week to see the opponent's top corner.</div>
+        </div>
+        <div class="field">
+          <label>Team Pace <b id="lbl-pace">Average</b></label>
+          <input type="range" id="pace" min="0" max="2" step="1" value="1">
+        </div>
+        <div class="field">
+          <label>Site <b id="lbl-site">Home</b></label>
+          <input type="range" id="site" min="0" max="1" step="1" value="0">
+        </div>
+        <div class="field">
+          <label>Weather <b id="lbl-wx">Dome / Clear</b></label>
+          <input type="range" id="wx" min="0" max="1" step="1" value="0">
+        </div>
+        <div class="field">
+          <label>Snap Share / Role Adj. <b id="lbl-role">0%</b></label>
+          <input type="range" id="role" min="-30" max="20" step="5" value="0">
+        </div>
+        <div class="field" id="splitField" style="display:none;">
+          <label>Backfield Split <b id="lbl-split">Even</b></label>
+          <input type="range" id="splitSlider" min="-30" max="30" step="5" value="0">
+          <div class="autonote" id="splitNote"></div>
+        </div>
+        <button class="reset-btn" id="resetBtn">RESET TO BASELINE</button>
+        </div>
+      </div>
+
+      <div class="main-right">
+        <div class="player-head">
+          <h2 id="p-name">—</h2>
+          <div class="sub" id="p-sub">—</div>
+          <div class="coach-note" id="p-note">—</div>
+          <div class="flagline" id="p-flag"></div>
+          <div class="flagline" id="realCovBadge" style="color:var(--green);"></div>
+        </div>
+
+        <div id="byeArea"></div>
+        <div class="stat-strip" id="stat-strip"></div>
+
+        <div class="fpts-row">
+          <div class="fpts-box"><div class="lbl">PPR</div><div class="val" id="fpts-ppr">—</div></div>
+          <div class="fpts-box"><div class="lbl">Half-PPR</div><div class="val" id="fpts-half">—</div></div>
+          <div class="fpts-box"><div class="lbl">Standard</div><div class="val" id="fpts-std">—</div></div>
+        </div>
+
+        <div class="heatwrap">
+          <h4>2026 SCHEDULE STRENGTH</h4>
+          <div class="heatrow" id="heatRow"></div>
+          <div class="heatlegend">
+            <span><i style="background:#3f9457"></i>Best matchups (weak D)</span>
+            <span><i style="background:#6b6357"></i>Average</span>
+            <span><i style="background:#7a2c24"></i>Toughest matchups (elite D)</span>
+            <span><i style="background:#161D24;border:1px solid #2A353F"></i>Bye</span>
+          </div>
+        </div>
+
+        <div class="methodology">
+          <b>How this projection is built:</b> each player's baseline is their actual 2025 regular-season
+          per-game line (Pro Football Reference). Picking a <b>2026 Week</b> up top pulls that team's real
+          opponent and home/away status from the official 2026 schedule, and auto-sets the defense-strength
+          slider from that opponent's actual 2025 defensive performance (pass yards allowed for QB/WR/TE,
+          rush yards allowed for RB) — you can still nudge it manually. The <b>Coverage Shell</b> slider is
+          now driven by real per-play charting data — each defense's actual 2025 man vs. zone rate and
+          dominant coverage shell (Cover 1/2/3/etc.), sourced from FTN Data via nflverse — compared against
+          the league average to decide man-heavy / balanced / zone-heavy, not a guess. QB projections also
+          get a small real-data adjustment for the opponent's actual pressure rate (more pressure → fewer
+          clean throws, more INT risk). Game script, pace, weather and role share stay as manual situational
+          levers layered on top. For WRs, the opponent's current top corner shows up once a week is picked,
+          with an optional "Elite CB Shadow" toggle — real defenses don't announce shadow assignments in
+          advance, so treat that as an illustrative what-if, unlike the coverage-shell data above it. For
+          committee backfields, "Backfield Split" shifts share between the two backs. <b>Player-level
+          coverage splits:</b> 143 of 189 players (a green checkmark line appears on their card) have enough
+          of their own 2023-25 sample (30+ targets or 60+ pass attempts against both man and zone) that the
+          Coverage Shell slider uses their actual real man-vs-zone performance instead of a generic
+          man-beater/zone-beater tag — normalized to their own 3-year average and capped to stop small-sample
+          outliers from swinging things too far. Players without that badge still use the general tag. This
+          models directional situational impact, not a play-by-play simulation.
+        </div>
+        <div class="methodology" style="margin-top:-4px;">
+          <b>Coverage data credit:</b> team-level man/zone rates, player-level performance splits, and
+          pressure rates are charted play-by-play by
+          <a href="https://ftndata.com" style="color:var(--amber);" target="_blank">FTN Data</a>, distributed via
+          <a href="https://nflverse.com" style="color:var(--amber);" target="_blank">nflverse</a> under
+          CC-BY-SA 4.0. Team rates: 2025 season. Player splits: 2023-2025 combined, min. 30 targets / 60
+          attempts per coverage type.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== RANKINGS VIEW ===================== -->
+  <div id="rankingsView" style="display:none;">
+    <div class="toprow">
+      <div class="tabs" id="rankTabs"></div>
+      <div class="scoretoggle" id="scoreToggle">
+        <button data-fmt="ppr" class="active">PPR</button>
+        <button data-fmt="half">Half</button>
+        <button data-fmt="std">Std</button>
+      </div>
+      <div class="teamfilter">
+        <select id="rankTeamFilter"><option value="">All teams</option></select>
+      </div>
+    </div>
+    <div class="autonote" id="rankAutoNote" style="margin-bottom:10px;">No week selected — ranking by season-baseline per-game average (neutral matchup).</div>
+    <div style="overflow-x:auto;">
+      <table class="rank-table" id="rankTable">
+        <thead><tr><th>#</th><th>Player</th><th>Team</th><th>Opp</th><th>Key Stat</th><th style="text-align:right;">Pts</th><th></th></tr></thead>
+        <tbody id="rankBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===================== COMPARE VIEW ===================== -->
+  <div id="compareView" style="display:none;">
+    <div class="toprow">
+      <div class="tabs" id="cmpTabs"></div>
+      <div class="teamfilter">
+        <select id="cmpTeamFilter"><option value="">All teams</option></select>
+        <input class="searchbox" id="cmpSearchBox" placeholder="Search player…">
+      </div>
+    </div>
+    <div class="cmp-tray" id="cmpTray"></div>
+    <div class="grid" id="cmpGrid"></div>
+    <div class="empty-note" id="cmpEmptyNote" style="display:none;">No players match that search/filter.</div>
+    <div id="cmpResult" style="margin-top:20px;"></div>
+  </div>
+
+  <footer>
+    <b>Scope:</b> 189 players across QB/RB/WR/TE for all 32 teams, including 2026 draft rookies with a clear
+    Year-1 role — one lead player per role plus real committee backfields/WR depth, not literal full rosters.
+    <b>Rosters:</b> reflect confirmed 2026 trades, free-agency moves and coaching hires as of early August
+    2026. <b>Schedule:</b> official 2026 NFL regular-season grid. <b>Defense tiers:</b> derived from each
+    team's actual 2025 passing/rushing yards allowed — a proxy, since 2026 defensive performance doesn't
+    exist yet. <b>Coverage shell &amp; pressure rate:</b> real 2025 per-play charting data from FTN Data via
+    nflverse (CC-BY-SA 4.0) — actual man/zone rates and pressure rates per defense, not estimates.
+    <b>Rankings/Compare</b> auto-apply the real schedule-driven opponent, defense tier, coverage shell and
+    pressure rate for a selected week (game script and pace stay neutral) — open a player in Browse mode to
+    fine-tune further. New coordinators can shift a defense's scheme from what's shown here; the coaching
+    notes on each player flag where that risk is highest.
+  </footer>
+</div>
+
+<script>
+/* ====================================================================
+   DATA MODULE — TEAMS, PLAYERS, MULTIPLIER TABLES
+==================================================================== */
+/* ============== TEAM METADATA (2026) ============== */
+const TEAMS = {
+ARI:{name:'Cardinals',hc:'Mike LaFleur',note:"New HC (ex-Rams OC) after Jonathan Gannon's firing. Offense being rebuilt from scratch after trading Kyler Murray to Minnesota — QB competition ongoing.",newHC:true,passD:3,rushD:3,cb:'Will Johnson',
+ sch:['@LAC','vs SEA','@SF','@NYG','vs DET','@LAR','vs DEN','@DAL','@SEA','vs LAR','@KC','vs WAS','vs PHI','BYE','vs NYJ','@NO','vs LV','vs SF']},
+ATL:{name:'Falcons',hc:'Kevin Stefanski',note:"New HC (ex-Browns) after Raheem Morris's firing. Zone-heavy run scheme historically fed a lead back hard — good scheme fit for a run-first offense, but new play-caller relationship.",newHC:true,passD:1,rushD:3,cb:'A.J. Terrell',
+ sch:['@PIT','vs CAR','@GB','@NO','vs BAL','vs CHI','vs SF','@TB','vs CIN','vs KC','BYE','@MIN','vs DET','@CLE','@WAS','vs TB','vs NO','@CAR']},
+BAL:{name:'Ravens',hc:'Jesse Minter',note:"John Harbaugh fired after 18 seasons; Jesse Minter (ex-Chargers DC) hired as new HC, with Declan Doyle (who called plays for Caleb Williams's breakout in Chicago) brought in as OC. Entirely new offensive system for 2026 — the largest scheme-continuity risk in this dataset.",newHC:true,passD:4,rushD:1,cb:'Marlon Humphrey',
+ sch:['@IND','vs NO','@DAL','vs TEN','@ATL','@CLE','vs CIN','@BUF','vs JAX','vs LAC','@CAR','@HOU','BYE','vs TB','@PIT','vs CLE','@CIN','vs PIT']},
+BUF:{name:'Bills',hc:'Joe Brady',note:"Joe Brady promoted to HC after Sean McDermott's firing — Brady was already Buffalo's OC/play-caller, so scheme continuity is high: shotgun spread, RPO-heavy, tempo.",newHC:true,passD:0,rushD:4,cb:'Christian Benford',
+ sch:['@HOU','vs DET','vs LAC','vs NE','@LAR','@LV','BYE','vs BAL','@MIN','@NYJ','vs MIA','vs KC','@NE','@GB','vs CHI','@DEN','@MIA','vs NYJ']},
+CAR:{name:'Panthers',hc:'Dave Canales',note:"Canales retained. Timing-based West Coast passing scheme; run game leans on zone stretch.",newHC:false,passD:2,rushD:2,cb:'Jaycee Horn',
+ sch:['vs CHI','@ATL','@CLE','vs DET','BYE','@PHI','vs TB','@GB','vs DEN','@NO','vs BAL','@TB','@MIN','vs NO','vs CIN','@PIT','vs SEA','vs ATL']},
+CHI:{name:'Bears',hc:'Ben Johnson',note:"Ben Johnson enters year two after a strong 2025 debut. Motion-heavy, explosive-play-focused scheme adapted from his Lions background.",newHC:false,passD:3,rushD:4,cb:'Jaylon Johnson',
+ sch:['@CAR','vs MIN','vs PHI','vs NYJ','@GB','@ATL','vs NE','@SEA','vs TB','BYE','vs NO','@DET','vs JAX','@MIA','@BUF','vs GB','vs DET','@MIN']},
+CIN:{name:'Bengals',hc:'Zac Taylor',note:"Taylor retained. Spread passing attack built around Burrow-to-Chase; Burrow's health (8 starts in 2025) is the swing factor.",newHC:false,passD:3,rushD:4,cb:'Cam Taylor-Britt',
+ sch:['vs TB','@HOU','@PIT','vs JAX','@MIA','BYE','@BAL','vs TEN','@ATL','vs PIT','@WAS','vs NO','@CLE','vs KC','@CAR','@IND','vs BAL','vs CLE']},
+CLE:{name:'Browns',hc:'Todd Monken',note:"New HC (ex-Ravens OC) after Kevin Stefanski's firing. Monken's system leans on play-action shots and a vertical passing tree — new fit for Cleveland's personnel.",newHC:true,passD:0,rushD:2,cb:'Denzel Ward',
+ sch:['@JAX','@TB','vs CAR','vs PIT','@NYJ','vs BAL','@TEN','@PIT','@NO','vs HOU','BYE','vs LV','vs CIN','vs ATL','@NYG','@BAL','vs IND','@CIN']},
+DAL:{name:'Cowboys',hc:'Brian Schottenheimer',note:"Schottenheimer enters year two. Balanced West Coast-branch scheme with heavy use of 12-personnel.",newHC:false,passD:4,rushD:3,cb:'Trevon Diggs',
+ sch:['@NYG','vs WAS','vs BAL','@HOU','vs TB','@GB','@PHI','vs ARI','@IND','vs SF','vs TEN','vs PHI','@SEA','BYE','@LAR','vs JAX','vs NYG','@WAS']},
+DEN:{name:'Broncos',hc:'Sean Payton',note:"Payton retained; new OC Davis Webb calls plays (promoted from QB coach). Payton's system leans on pre-snap movement, quick game, and a heavy dose of RPOs for Bo Nix.",newHC:false,passD:1,rushD:0,cb:'Patrick Surtain II',
+ sch:['@KC','vs JAX','vs LAR','@SF','@LAC','vs SEA','@ARI','vs KC','@CAR','BYE','vs LV','@PIT','vs MIA','@NYJ','@LV','vs BUF','@NE','vs LAC']},
+DET:{name:'Lions',hc:'Dan Campbell',note:"Campbell retained. Aggressive, gap/power-and-zone hybrid attack — one of the league's most efficient offenses. David Montgomery traded to Houston, opening up more early-down work.",newHC:false,passD:2,rushD:2,cb:'Terrion Arnold',
+ sch:['vs NO','@BUF','vs NYJ','@CAR','@ARI','BYE','vs GB','vs MIN','@MIA','vs NE','vs TB','vs CHI','@ATL','vs TEN','@MIN','vs NYG','@CHI','@GB']},
+GB:{name:'Packers',hc:'Matt LaFleur',note:"LaFleur retained. Outside-zone-based scheme with heavy misdirection and play-action; Romeo Doubs traded to New England thins the receiver room.",newHC:false,passD:1,rushD:2,cb:'Nate Hobbs',
+ sch:['@MIN','@NYJ','vs ATL','@TB','vs CHI','vs DAL','@DET','vs CAR','@NE','vs MIN','BYE','@LAR','@NO','vs BUF','vs MIA','@CHI','vs HOU','vs DET']},
+HOU:{name:'Texans',hc:'DeMeco Ryans',note:"Ryans retained. Defense-first identity; offense uses wide-zone run concepts. Added RB David Montgomery via trade for backfield depth.",newHC:false,passD:0,rushD:0,cb:'Derek Stingley Jr.',
+ sch:['vs BUF','vs CIN','@IND','vs DAL','@TEN','@JAX','vs NYG','BYE','@LAC','@CLE','vs IND','vs BAL','@PIT','@WAS','vs JAX','@PHI','@GB','vs TEN']},
+IND:{name:'Colts',hc:'Shane Steichen',note:"Steichen retained. Zone-run scheme with tempo and play-action shots off it.",newHC:false,passD:4,rushD:1,cb:'Kenny Moore II',
+ sch:['vs BAL','@KC','vs HOU','@WAS','@PIT','vs TEN','@MIN','@JAX','vs DAL','vs MIA','@HOU','vs NYG','BYE','@PHI','@TEN','vs CIN','@CLE','vs JAX']},
+JAX:{name:'Jaguars',hc:'Liam Coen',note:"Coen retained after a breakout 2025 debut. Motion-and-tempo scheme borrowed from the McVay/LaFleur coaching tree. Traded lead back Travis Etienne to New Orleans.",newHC:false,passD:3,rushD:0,cb:'Tyson Campbell',
+ sch:['vs CLE','@DEN','vs NE','@CIN','vs PHI','vs HOU','BYE','vs IND','@BAL','@TEN','@NYG','vs TEN','@CHI','vs PIT','@HOU','@DAL','vs WAS','@IND']},
+KC:{name:'Chiefs',hc:'Andy Reid',note:"Reid retained — the league's longest-running stable system. West Coast timing concepts with heavy motion. Added RB Kenneth Walker III via trade from Seattle.",newHC:false,passD:1,rushD:1,cb:'secondary overhauled (McDuffie + Watson both traded to LAR)',
+ sch:['vs DEN','vs IND','@MIA','@LV','BYE','vs LAC','@SEA','@DEN','vs NYJ','@ATL','vs ARI','@BUF','@LAR','@CIN','vs NE','vs SF','@LAC','vs LV']},
+LV:{name:'Raiders',hc:'Klint Kubiak',note:"New HC (ex-Seahawks OC) after Pete Carroll's firing following a 3-14 season. Signed veteran Kirk Cousins to bridge/mentor No.1 overall pick Fernando Mendoza (Indiana), who has no NFL statistical baseline yet.",newHC:true,passD:2,rushD:2,cb:'Eric Stokes',
+ sch:['vs MIA','@LAC','@NO','vs KC','@NE','vs BUF','vs LAR','@NYJ','@SF','vs SEA','@DEN','@CLE','BYE','vs LAC','vs DEN','vs TEN','@ARI','@KC']},
+LAC:{name:'Chargers',hc:'Jim Harbaugh',note:"Harbaugh retained; DC Jesse Minter left to become Ravens HC. Physical, run-heavy identity with Herbert operating an efficient play-action game. Added TE David Njoku via trade.",newHC:false,passD:0,rushD:1,cb:'Tarheeb Still',
+ sch:['vs ARI','vs LV','@BUF','@SEA','vs DEN','@KC','BYE','@LAR','vs HOU','@BAL','vs NYJ','vs NE','@TB','@LV','vs SF','@MIA','vs KC','@DEN']},
+LAR:{name:'Rams',hc:'Sean McVay',note:"McVay retained; OC Nate Scheelhaase promoted in-house but McVay keeps play-calling. Wide-zone run scheme, heavy pre-snap motion, quick-rhythm passing with play-action shots.",newHC:false,passD:2,rushD:1,cb:'Trent McDuffie (acquired via trade)',
+ sch:['vs SF','vs NYG','@DEN','@PHI','vs BUF','vs ARI','@LV','vs LAC','@WAS','@ARI','BYE','vs GB','vs KC','@SF','vs DAL','@SEA','@TB','vs SEA']},
+MIA:{name:'Dolphins',hc:'Jeff Hafley',note:"New HC (ex-Packers DC) after Mike McDaniel's firing. Traded away WR Jaylen Waddle; receiver room is thin heading into 2026 — treat as a rebuild year.",newHC:true,passD:2,rushD:3,cb:'Kader Kohou',
+ sch:['@LV','@SF','vs KC','@MIN','vs CIN','BYE','@NYJ','vs NE','vs DET','@IND','@BUF','vs NYJ','@DEN','vs CHI','@GB','vs LAC','vs BUF','@NE']},
+MIN:{name:'Vikings',hc:'Kevin O\u2019Connell',note:"O'Connell retained. Traded for QB Kyler Murray from Arizona — a major offensive-identity swing alongside Justin Jefferson. Zone-run/play-action scheme.",newHC:false,passD:0,rushD:3,cb:'Byron Murphy Jr.',
+ sch:['vs GB','@CHI','@TB','vs MIA','@NO','BYE','vs IND','@DET','vs BUF','@GB','@SF','vs ATL','vs CAR','@NE','vs DET','vs WAS','@NYJ','vs CHI']},
+NE:{name:'Patriots',hc:'Mike Vrabel',note:"Vrabel enters year two. Efficient, aggressive downfield passing game; added WR Romeo Doubs via trade to pair with Stefon Diggs.",newHC:false,passD:1,rushD:0,cb:'Christian Gonzalez',
+ sch:['@SEA','vs PIT','@JAX','@BUF','vs LV','vs NYJ','@CHI','@MIA','vs GB','@DET','BYE','@LAC','vs BUF','vs MIN','@KC','@NYJ','vs DEN','vs MIA']},
+NO:{name:'Saints',hc:'Kellen Moore',note:"Moore's system leans on quick-rhythm passing. Added lead back Travis Etienne via trade from Jacksonville — expected to take over the backfield.",newHC:false,passD:0,rushD:2,cb:'secondary in flux (Lattimore/Taylor departures)',
+ sch:['@DET','@BAL','vs LV','vs ATL','vs MIN','@NYG','vs PIT','BYE','vs CLE','vs CAR','@CHI','@CIN','vs GB','@CAR','@TB','vs ARI','@ATL','vs TB']},
+NYG:{name:'Giants',hc:'John Harbaugh',note:"John Harbaugh hired as new HC after being fired by Baltimore — a striking reunion story. New offensive system entirely for 2026.",newHC:true,passD:2,rushD:4,cb:'Deonte Banks',
+ sch:['vs DAL','@LAR','vs TEN','vs ARI','@WAS','vs NO','@HOU','BYE','@PHI','vs WAS','vs JAX','@IND','vs SF','@SEA','vs CLE','@DET','@DAL','vs PHI']},
+NYJ:{name:'Jets',hc:'Aaron Glenn',note:"Glenn retained for year two. Traded for veteran QB Geno Smith as competition/insurance behind Justin Fields.",newHC:false,passD:2,rushD:4,cb:'Sauce Gardner',
+ sch:['@TEN','vs GB','@DET','@CHI','vs CLE','@NE','vs MIA','vs LV','@KC','vs BUF','@LAC','@MIA','BYE','vs DEN','@ARI','vs NE','vs MIN','@BUF']},
+PHI:{name:'Eagles',hc:'Nick Sirianni',note:"Sirianni retained. Run-first, tush-push-centric identity that suppresses receiver target volume league-wide; added WR Marquise Brown via trade for depth.",newHC:false,passD:1,rushD:3,cb:'Quinyon Mitchell',
+ sch:['vs WAS','@TEN','@CHI','vs LAR','@JAX','vs CAR','vs DAL','@WAS','vs NYG','BYE','vs PIT','@DAL','@ARI','vs IND','vs SEA','vs HOU','@SF','@NYG']},
+PIT:{name:'Steelers',hc:'Mike McCarthy',note:"New HC after Mike Tomlin's resignation following 19 seasons. McCarthy reunites with Aaron Rodgers from their Green Bay days. Added RB Rico Dowdle via trade, creating a backfield timeshare.",newHC:true,passD:4,rushD:1,cb:'Joey Porter Jr.',
+ sch:['vs ATL','@NE','vs CIN','@CLE','vs IND','@TB','@NO','vs CLE','BYE','@CIN','@PHI','vs DEN','vs HOU','@JAX','vs BAL','vs CAR','@TEN','@BAL']},
+SF:{name:'49ers',hc:'Kyle Shanahan',note:"Shanahan retained. Wide-zone run scheme; McCaffrey's every-down role and play-action off it are the offense's engine. Added veteran WR Mike Evans via trade from Tampa Bay.",newHC:false,passD:3,rushD:1,cb:'Renardo Green',
+ sch:['@LAR','vs MIA','vs ARI','vs DEN','@SEA','vs WAS','@ATL','BYE','vs LV','@DAL','vs MIN','vs SEA','@NYG','vs LAR','@LAC','@KC','vs PHI','@ARI']},
+SEA:{name:'Seahawks',hc:'Mike Macdonald',note:"Macdonald retained after a Super Bowl-winning 2025; OC Klint Kubiak left to become Raiders HC, so Seattle has a new play-caller — the identity that made this passing game elite is the thing to watch in camp.",newHC:false,passD:1,rushD:0,cb:'Devon Witherspoon',
+ sch:['vs NE','@ARI','@WAS','vs LAC','vs SF','@DEN','vs KC','vs CHI','vs ARI','@LV','BYE','@SF','vs DAL','vs NYG','@PHI','vs LAR','@CAR','@LAR']},
+TB:{name:'Buccaneers',hc:'Todd Bowles',note:"Bowles retained. Traded away Mike Evans to San Francisco, clearing the WR1 role for Emeka Egbuka. Added RB Kenneth Gainwell via trade for pass-catching work.",newHC:false,passD:4,rushD:0,cb:'Zyon McCollum',
+ sch:['@CIN','vs CLE','vs MIN','vs GB','@DAL','vs PIT','@CAR','vs ATL','@CHI','BYE','@DET','vs CAR','vs LAC','@BAL','vs NO','@ATL','vs LAR','@NO']},
+TEN:{name:'Titans',hc:'Robert Saleh',note:"New HC after Brian Callahan's in-season firing. Added WR Wan'Dale Robinson via trade from the Giants.",newHC:true,passD:3,rushD:2,cb:'Alontae Taylor (acquired via trade)',
+ sch:['vs NYJ','vs PHI','@NYG','@BAL','vs HOU','@IND','vs CLE','@CIN','BYE','vs JAX','@DAL','@JAX','vs WAS','@DET','vs IND','@LV','vs PIT','@HOU']},
+WAS:{name:'Commanders',hc:'Dan Quinn',note:"Quinn retained. Added RB Rachaad White via trade from Tampa Bay as a receiving-down complement.",newHC:false,passD:4,rushD:4,cb:'Marshon Lattimore',
+ sch:['@PHI','@DAL','vs SEA','vs IND','vs NYG','@SF','BYE','vs PHI','vs LAR','@NYG','vs CIN','@ARI','@TEN','vs HOU','vs ATL','@MIN','@JAX','vs DAL']}
+};
+
+/* ============== PLAYERS ============== */
+const P = [
+// QB
+{n:'Kirk Cousins',p:'QB',t:'LV',b:{passYd:172.1,passTD:1.0,int:0.5,rushYd:0.5,rushTD:0},f:'Signed as veteran bridge starter over rookie Fernando Mendoza; small 10-game 2025 sample as Falcons backup-turned-starter',c:'balanced',s:'pass-neutral'},
+{n:'Jacoby Brissett',p:'QB',t:'ARI',b:{passYd:240.4,passTD:1.64,int:0.57,rushYd:12.0,rushTD:0.07},f:'QB competition in camp after Kyler Murray trade',c:'balanced',s:'pass-neutral'},
+{n:'Michael Penix Jr.',p:'QB',t:'ATL',b:{passYd:220.2,passTD:1.0,int:0.33,rushYd:7.8,rushTD:0.06},f:'Tua Tagovailoa added via trade as competition',c:'balanced',s:'pass-neutral'},
+{n:'Lamar Jackson',p:'QB',t:'BAL',b:{passYd:196.1,passTD:1.62,int:0.54,rushYd:26.8,rushTD:0.15},f:'New HC/offensive system — largest continuity risk in dataset',c:'balanced',s:'pass-neutral'},
+{n:'Josh Allen',p:'QB',t:'BUF',b:{passYd:215.8,passTD:1.47,int:0.59,rushYd:34.1,rushTD:0.82},c:'balanced',s:'rush-heavy-qb'},
+{n:'Bryce Young',p:'QB',t:'CAR',b:{passYd:188.2,passTD:1.44,int:0.69,rushYd:13.5,rushTD:0.13},c:'balanced',s:'pass-neutral'},
+{n:'Caleb Williams',p:'QB',t:'CHI',b:{passYd:231.9,passTD:1.59,int:0.41,rushYd:22.8,rushTD:0.18},c:'balanced',s:'rush-heavy-qb'},
+{n:'Joe Burrow',p:'QB',t:'CIN',b:{passYd:226.1,passTD:2.13,int:0.63,rushYd:5.1,rushTD:0},f:'Made only 8 starts in 2025 — health is the swing factor',c:'zone-beater',s:'pass-neutral'},
+{n:'Dillon Gabriel',p:'QB',t:'CLE',b:{passYd:93.7,passTD:0.7,int:0.2,rushYd:8.6,rushTD:0},f:'Small 2025 sample; QB competition under new HC Monken',c:'balanced',s:'pass-neutral'},
+{n:'Dak Prescott',p:'QB',t:'DAL',b:{passYd:267.8,passTD:1.76,int:0.59,rushYd:10.4,rushTD:0.12},c:'zone-beater',s:'pass-neutral'},
+{n:'Bo Nix',p:'QB',t:'DEN',b:{passYd:231.2,passTD:1.47,int:0.65,rushYd:20.9,rushTD:0.29},c:'balanced',s:'rush-heavy-qb'},
+{n:'Jared Goff',p:'QB',t:'DET',b:{passYd:268.5,passTD:2.0,int:0.47,rushYd:2.6,rushTD:0},c:'zone-beater',s:'pass-neutral'},
+{n:'Jordan Love',p:'QB',t:'GB',b:{passYd:225.4,passTD:1.53,int:0.4,rushYd:13.3,rushTD:0},c:'balanced',s:'pass-neutral'},
+{n:'C.J. Stroud',p:'QB',t:'HOU',b:{passYd:217.2,passTD:1.36,int:0.57,rushYd:14.9,rushTD:0.07},c:'balanced',s:'pass-neutral'},
+{n:'Daniel Jones',p:'QB',t:'IND',b:{passYd:238.5,passTD:1.46,int:0.62,rushYd:12.6,rushTD:0.38},c:'balanced',s:'rush-heavy-qb'},
+{n:'Trevor Lawrence',p:'QB',t:'JAX',b:{passYd:235.7,passTD:1.71,int:0.71,rushYd:21.1,rushTD:0.53},c:'balanced',s:'rush-heavy-qb'},
+{n:'Patrick Mahomes',p:'QB',t:'KC',b:{passYd:256.2,passTD:1.57,int:0.79,rushYd:30.1,rushTD:0.36},c:'balanced',s:'pass-neutral'},
+{n:'Justin Herbert',p:'QB',t:'LAC',b:{passYd:232.9,passTD:1.63,int:0.81,rushYd:31.1,rushTD:0.13},c:'balanced',s:'pass-neutral'},
+{n:'Matthew Stafford',p:'QB',t:'LAR',b:{passYd:276.9,passTD:2.71,int:0.47,rushYd:0.1,rushTD:0.02},c:'zone-beater',s:'pass-neutral'},
+{n:'Malik Willis',p:'QB',t:'MIA',b:{passYd:105.5,passTD:0.75,int:0,rushYd:30.8,rushTD:0.5},f:'Only 4 games of NFL sample — very low confidence baseline',c:'balanced',s:'rush-heavy-qb'},
+{n:'Kyler Murray',p:'QB',t:'MIN',b:{passYd:192.4,passTD:1.2,int:0.6,rushYd:34.6,rushTD:0.2},f:'Traded from Arizona; new pairing with Justin Jefferson',c:'balanced',s:'rush-heavy-qb'},
+{n:'Drake Maye',p:'QB',t:'NE',b:{passYd:258.5,passTD:1.82,int:0.47,rushYd:26.5,rushTD:0.24},c:'balanced',s:'pass-neutral'},
+{n:'Tyler Shough',p:'QB',t:'NO',b:{passYd:216.7,passTD:0.91,int:0.55,rushYd:16.9,rushTD:0.27},f:'Rookie-year sample (11 starts)',c:'balanced',s:'pass-neutral'},
+{n:'Jaxson Dart',p:'QB',t:'NYG',b:{passYd:162.3,passTD:1.07,int:0.36,rushYd:34.8,rushTD:0.64},f:'New HC John Harbaugh — new offensive system',c:'balanced',s:'rush-heavy-qb'},
+{n:'Justin Fields',p:'QB',t:'NYJ',b:{passYd:139.9,passTD:0.78,int:0.11,rushYd:42.6,rushTD:0.44},f:'Geno Smith added via trade as competition',c:'balanced',s:'rush-heavy-qb'},
+{n:'Jalen Hurts',p:'QB',t:'PHI',b:{passYd:201.5,passTD:1.56,int:0.38,rushYd:26.3,rushTD:0.5},c:'balanced',s:'rush-heavy-qb'},
+{n:'Aaron Rodgers',p:'QB',t:'PIT',b:{passYd:207.6,passTD:1.5,int:0.44,rushYd:3.8,rushTD:0.06},f:'Reunites with HC Mike McCarthy from Green Bay',c:'zone-beater',s:'pass-neutral'},
+{n:'Brock Purdy',p:'QB',t:'SF',b:{passYd:240.8,passTD:2.22,int:1.11,rushYd:16.3,rushTD:0.33},f:'Only 9 starts in 2025 — small sample',c:'balanced',s:'pass-neutral'},
+{n:'Sam Darnold',p:'QB',t:'SEA',b:{passYd:238.1,passTD:1.47,int:0.82,rushYd:5.6,rushTD:0},c:'balanced',s:'pass-neutral'},
+{n:'Baker Mayfield',p:'QB',t:'TB',b:{passYd:217.2,passTD:1.53,int:0.65,rushYd:22.5,rushTD:0.06},c:'balanced',s:'pass-neutral'},
+{n:'Cam Ward',p:'QB',t:'TEN',b:{passYd:186.4,passTD:0.88,int:0.41,rushYd:9.4,rushTD:0.12},f:'New HC Robert Saleh',c:'balanced',s:'pass-neutral'},
+{n:'Jayden Daniels',p:'QB',t:'WAS',b:{passYd:180.3,passTD:1.14,int:0.43,rushYd:39.7,rushTD:0.29},f:'Only 7 starts in 2025 — injury history',c:'balanced',s:'rush-heavy-qb'},
+
+// RB
+{n:'James Conner',p:'RB',t:'ARI',b:{rushAtt:10.7,rushYd:31.7,rushTD:0.33,rec:0,recYd:0,recTD:0},f:'3-game 2025 sample after injury — unreliable baseline; now in a backfield timeshare with rookie Jeremiyah Love',c:'n/a',s:'rush-volume',partner:'Jeremiyah Love'},
+{n:'Bijan Robinson',p:'RB',t:'ATL',b:{rushAtt:16.9,rushYd:86.9,rushTD:0.41,rec:4.6,recYd:48.2,recTD:0.24},c:'man-beater',s:'balanced-back',partner:'Tyler Allgeier'},
+{n:'Derrick Henry',p:'RB',t:'BAL',b:{rushAtt:18.1,rushYd:93.8,rushTD:0.94,rec:0.1,recYd:0.5,recTD:0},f:'New coaching staff adds scheme uncertainty',c:'n/a',s:'rush-volume'},
+{n:'James Cook',p:'RB',t:'BUF',b:{rushAtt:18.2,rushYd:95.4,rushTD:0.71,rec:1.9,recYd:17.1,recTD:0.12},c:'n/a',s:'rush-volume',partner:'Ray Davis'},
+{n:'Chuba Hubbard',p:'RB',t:'CAR',b:{rushAtt:8.9,rushYd:34.1,rushTD:0.07,rec:2.0,recYd:14.9,recTD:0.2},c:'man-beater',s:'balanced-back'},
+{n:"D'Andre Swift",p:'RB',t:'CHI',b:{rushAtt:13.9,rushYd:67.9,rushTD:0.56,rec:2.1,recYd:18.7,recTD:0.06},c:'man-beater',s:'balanced-back',partner:'Roschon Johnson'},
+{n:'Chase Brown',p:'RB',t:'CIN',b:{rushAtt:13.6,rushYd:59.9,rushTD:0.35,rec:4.1,recYd:25.7,recTD:0.29},c:'man-beater',s:'balanced-back'},
+{n:'Quinshon Judkins',p:'RB',t:'CLE',b:{rushAtt:16.4,rushYd:59.1,rushTD:0.5,rec:1.9,recYd:12.2,recTD:0},c:'n/a',s:'rush-volume',partner:'Jerome Ford'},
+{n:'Javonte Williams',p:'RB',t:'DAL',b:{rushAtt:15.8,rushYd:75.1,rushTD:0.69,rec:2.2,recYd:8.6,recTD:0.13},c:'n/a',s:'rush-volume'},
+{n:'RJ Harvey',p:'RB',t:'DEN',b:{rushAtt:8.6,rushYd:31.8,rushTD:0.41,rec:2.8,recYd:20.9,recTD:0.29},f:'Timeshare with J.K. Dobbins',c:'man-beater',s:'balanced-back',partner:'J.K. Dobbins'},
+{n:'Jahmyr Gibbs',p:'RB',t:'DET',b:{rushAtt:14.3,rushYd:71.9,rushTD:0.76,rec:4.5,recYd:36.2,recTD:0.29},f:'David Montgomery traded away — workload should rise',c:'man-beater',s:'balanced-back'},
+{n:'Isiah Pacheco',p:'RB',t:'DET',b:{rushAtt:9.1,rushYd:35.5,rushTD:0.15,rec:0.7,recYd:7.8,recTD:0},f:'Signed via free agency from Kansas City; clear RB2 behind Gibbs after two injury-hit seasons',c:'n/a',s:'rush-volume',partner:'Jahmyr Gibbs'},
+{n:'Jeremiyah Love',p:'RB',t:'ARI',b:{rushAtt:11.0,rushYd:52.0,rushTD:0.4,rec:2.0,recYd:16.0,recTD:0.1},f:'2026 rookie — No.3 overall pick, highest-drafted RB since Saquon Barkley; no NFL sample, projection is speculative',c:'man-beater',s:'balanced-back',partner:'James Conner'},
+{n:'Josh Jacobs',p:'RB',t:'GB',b:{rushAtt:15.6,rushYd:61.9,rushTD:0.87,rec:2.4,recYd:18.8,recTD:0.07},c:'n/a',s:'rush-volume',partner:'Emanuel Wilson'},
+{n:'Woody Marks',p:'RB',t:'HOU',b:{rushAtt:12.3,rushYd:43.9,rushTD:0.13,rec:1.5,recYd:13.0,recTD:0.19},f:'David Montgomery added via trade — timeshare risk',c:'man-beater',s:'balanced-back',partner:'David Montgomery'},
+{n:'Jonathan Taylor',p:'RB',t:'IND',b:{rushAtt:19.0,rushYd:93.2,rushTD:1.06,rec:2.7,recYd:22.2,recTD:0.12},c:'n/a',s:'rush-volume'},
+{n:'Bhayshul Tuten',p:'RB',t:'JAX',b:{rushAtt:5.5,rushYd:20.5,rushTD:0.33,rec:0,recYd:0,recTD:0},f:'Travis Etienne traded away — Tuten inherits lead role, small sample',c:'n/a',s:'rush-volume'},
+{n:'Kenneth Walker III',p:'RB',t:'KC',b:{rushAtt:13.0,rushYd:60.4,rushTD:0.29,rec:1.8,recYd:16.6,recTD:0},f:'Traded from Seattle',c:'man-beater',s:'balanced-back',partner:'Kareem Hunt'},
+{n:'Ashton Jeanty',p:'RB',t:'LV',b:{rushAtt:15.6,rushYd:57.4,rushTD:0.29,rec:3.2,recYd:20.4,recTD:0.29},f:'New HC/rookie QB situation',c:'man-beater',s:'balanced-back',partner:'Raheem Mostert'},
+{n:'Omarion Hampton',p:'RB',t:'LAC',b:{rushAtt:13.8,rushYd:60.6,rushTD:0.44,rec:3.6,recYd:21.3,recTD:0.11},f:'9-game 2025 sample',c:'man-beater',s:'balanced-back',partner:'Najee Harris'},
+{n:'Kyren Williams',p:'RB',t:'LAR',b:{rushAtt:15.2,rushYd:73.6,rushTD:0.59,rec:2.1,recYd:16.5,recTD:0.18},c:'n/a',s:'rush-volume',partner:'Blake Corum'},
+{n:"De'Von Achane",p:'RB',t:'MIA',b:{rushAtt:14.9,rushYd:84.4,rushTD:0.5,rec:4.2,recYd:30.5,recTD:0.25},f:'New coaching staff for 2026',c:'man-beater',s:'balanced-back',partner:'Jaylen Wright'},
+{n:'Aaron Jones',p:'RB',t:'MIN',b:{rushAtt:11.0,rushYd:45.7,rushTD:0.17,rec:2.3,recYd:16.6,recTD:0.08},c:'man-beater',s:'balanced-back',partner:'Jordan Mason'},
+{n:'TreVeyon Henderson',p:'RB',t:'NE',b:{rushAtt:10.6,rushYd:53.6,rushTD:0.53,rec:2.1,recYd:13.0,recTD:0.06},f:'Rookie-year sample; timeshare with Rhamondre Stevenson',c:'man-beater',s:'balanced-back',partner:'Rhamondre Stevenson'},
+{n:'Travis Etienne',p:'RB',t:'NO',b:{rushAtt:15.3,rushYd:65.1,rushTD:0.41,rec:2.1,recYd:17.2,recTD:0.35},f:'Traded from Jacksonville — expected lead back',c:'man-beater',s:'balanced-back'},
+{n:'Cam Skattebo',p:'RB',t:'NYG',b:{rushAtt:12.6,rushYd:51.3,rushTD:0.63,rec:3.0,recYd:25.9,recTD:0.25},f:'8-game rookie sample; new HC John Harbaugh',c:'man-beater',s:'balanced-back',partner:'Tyrone Tracy Jr.'},
+{n:'Breece Hall',p:'RB',t:'NYJ',b:{rushAtt:15.2,rushYd:66.6,rushTD:0.25,rec:2.3,recYd:21.9,recTD:0.06},c:'man-beater',s:'balanced-back'},
+{n:'Saquon Barkley',p:'RB',t:'PHI',b:{rushAtt:17.5,rushYd:71.3,rushTD:0.44,rec:2.3,recYd:17.1,recTD:0.13},c:'n/a',s:'rush-volume'},
+{n:'Jaylen Warren',p:'RB',t:'PIT',b:{rushAtt:13.2,rushYd:59.9,rushTD:0.38,rec:2.5,recYd:20.8,recTD:0.13},f:'Rico Dowdle added via trade — timeshare risk',c:'man-beater',s:'balanced-back',partner:'Rico Dowdle'},
+{n:'Christian McCaffrey',p:'RB',t:'SF',b:{rushAtt:18.3,rushYd:70.7,rushTD:0.59,rec:6.0,recYd:54.4,recTD:0.41},c:'man-beater',s:'balanced-back'},
+{n:'Zach Charbonnet',p:'RB',t:'SEA',b:{rushAtt:11.5,rushYd:45.6,rushTD:0.75,rec:0,recYd:0,recTD:0},f:'Kenneth Walker III traded away — Charbonnet inherits lead role',c:'n/a',s:'rush-volume'},
+{n:'Bucky Irving',p:'RB',t:'TB',b:{rushAtt:17.3,rushYd:58.8,rushTD:0.1,rec:3.0,recYd:27.7,recTD:0.3},f:'Missed time in 2025 — injury history; Kenneth Gainwell added via trade',c:'man-beater',s:'balanced-back',partner:'Kenneth Gainwell'},
+{n:'Tony Pollard',p:'RB',t:'TEN',b:{rushAtt:14.2,rushYd:63.6,rushTD:0.29,rec:1.9,recYd:12.1,recTD:0},c:'n/a',s:'rush-volume'},
+{n:'Jacory Croskey-Merritt',p:'RB',t:'WAS',b:{rushAtt:10.3,rushYd:47.4,rushTD:0.47,rec:0,recYd:0,recTD:0},f:'Rachaad White added via trade as receiving-down complement',c:'n/a',s:'rush-volume',partner:'Rachaad White'},
+
+// RB2 — committee / timeshare backs (approximate shares; lower confidence than RB1 lines)
+{n:'Tyler Allgeier',p:'RB',t:'ATL',b:{rushAtt:6.8,rushYd:26.9,rushTD:0.29,rec:0.6,recYd:4.1,recTD:0},f:'Committee backup — approximate share',c:'n/a',s:'rush-volume',partner:'Bijan Robinson'},
+{n:'Ray Davis',p:'RB',t:'BUF',b:{rushAtt:4.9,rushYd:19.6,rushTD:0.24,rec:0.7,recYd:5.1,recTD:0},f:'Committee backup — approximate share',c:'n/a',s:'rush-volume',partner:'James Cook'},
+{n:'Roschon Johnson',p:'RB',t:'CHI',b:{rushAtt:6.5,rushYd:28.1,rushTD:0.13,rec:1.2,recYd:9.4,recTD:0},f:'Committee backup — approximate share',c:'n/a',s:'rush-volume',partner:"D'Andre Swift"},
+{n:'Jerome Ford',p:'RB',t:'CLE',b:{rushAtt:6.6,rushYd:25.9,rushTD:0.18,rec:1.8,recYd:11.9,recTD:0.06},f:'Committee backup — approximate share',c:'man-beater',s:'balanced-back',partner:'Quinshon Judkins'},
+{n:'J.K. Dobbins',p:'RB',t:'DEN',b:{rushAtt:15.3,rushYd:77.2,rushTD:0.4,rec:1.0,recYd:7.6,recTD:0.1},f:'Real 10-game 2025 line — genuine committee, not a clear backup',c:'n/a',s:'rush-volume',partner:'RJ Harvey'},
+{n:'Emanuel Wilson',p:'RB',t:'GB',b:{rushAtt:5.8,rushYd:22.6,rushTD:0.13,rec:1.0,recYd:7.2,recTD:0},f:'Committee backup — approximate share',c:'n/a',s:'rush-volume',partner:'Josh Jacobs'},
+{n:'David Montgomery',p:'RB',t:'HOU',b:{rushAtt:9.3,rushYd:42.1,rushTD:0.47,rec:1.4,recYd:11.3,recTD:0},f:'Real 2025 line (with Detroit); traded to Houston — timeshare with Woody Marks',c:'man-beater',s:'balanced-back',partner:'Woody Marks'},
+{n:'Kareem Hunt',p:'RB',t:'KC',b:{rushAtt:9.6,rushYd:35.9,rushTD:0.47,rec:1.6,recYd:11.2,recTD:0.06},f:'Real 2025 line; timeshare with newly-added Kenneth Walker III',c:'man-beater',s:'balanced-back',partner:'Kenneth Walker III'},
+{n:'Raheem Mostert',p:'RB',t:'LV',b:{rushAtt:4.5,rushYd:16.8,rushTD:0.13,rec:0.6,recYd:4.2,recTD:0},f:'Committee backup — approximate share',c:'n/a',s:'rush-volume',partner:'Ashton Jeanty'},
+{n:'Najee Harris',p:'RB',t:'LAC',b:{rushAtt:10.2,rushYd:39.5,rushTD:0.35,rec:1.3,recYd:8.9,recTD:0.06},f:'Committee backup — approximate share',c:'man-beater',s:'balanced-back',partner:'Omarion Hampton'},
+{n:'Blake Corum',p:'RB',t:'LAR',b:{rushAtt:5.5,rushYd:22.4,rushTD:0.35,rec:0.4,recYd:2.8,recTD:0},f:'Committee backup — approximate share',c:'n/a',s:'rush-volume',partner:'Kyren Williams'},
+{n:'Jaylen Wright',p:'RB',t:'MIA',b:{rushAtt:5.6,rushYd:23.8,rushTD:0.13,rec:0.8,recYd:5.9,recTD:0},f:'Committee backup — approximate share',c:'n/a',s:'rush-volume',partner:"De'Von Achane"},
+{n:'Jordan Mason',p:'RB',t:'MIN',b:{rushAtt:9.9,rushYd:47.4,rushTD:0.38,rec:0.6,recYd:3.9,recTD:0},f:'Real 2025 line — genuine committee, not a clear backup',c:'n/a',s:'rush-volume',partner:'Aaron Jones'},
+{n:'Rhamondre Stevenson',p:'RB',t:'NE',b:{rushAtt:7.6,rushYd:35.5,rushTD:0.41,rec:1.4,recYd:10.2,recTD:0.06},f:'Real 2025 line — genuine committee, not a clear backup',c:'man-beater',s:'balanced-back',partner:'TreVeyon Henderson'},
+{n:'Tyrone Tracy Jr.',p:'RB',t:'NYG',b:{rushAtt:9.8,rushYd:39.2,rushTD:0.2,rec:1.8,recYd:13.1,recTD:0.07},f:'Committee backup — approximate share',c:'man-beater',s:'balanced-back',partner:'Cam Skattebo'},
+{n:'Rico Dowdle',p:'RB',t:'PIT',b:{rushAtt:13.9,rushYd:63.3,rushTD:0.35,rec:1.1,recYd:7.8,recTD:0},f:'Real 2025 line (with Carolina); traded to Pittsburgh — real timeshare risk, not a clear backup',c:'man-beater',s:'balanced-back',partner:'Jaylen Warren'},
+{n:'Kenneth Gainwell',p:'RB',t:'TB',b:{rushAtt:6.7,rushYd:31.6,rushTD:0.29,rec:4.3,recYd:28.6,recTD:0.18},f:'Real 2025 line (with Pittsburgh); traded to Tampa Bay as receiving-down back',c:'man-beater',s:'balanced-back',partner:'Bucky Irving'},
+{n:'Rachaad White',p:'RB',t:'WAS',b:{rushAtt:7.8,rushYd:33.6,rushTD:0.24,rec:2.6,recYd:12.8,recTD:0},f:'Real 2025 line (with Tampa Bay); traded to Washington as receiving-down complement',c:'man-beater',s:'balanced-back',partner:'Jacory Croskey-Merritt'},
+
+// WR
+{n:'Michael Wilson',p:'WR',t:'ARI',b:{tgt:7.4,rec:4.6,recYd:59.2,recTD:0.41},c:'man-beater',s:'target-stable'},
+{n:'Marvin Harrison Jr.',p:'WR',t:'ARI',b:{tgt:6.1,rec:3.4,recYd:50.7,recTD:0.33},f:'12-game 2025 sample; QB situation in flux',c:'zone-beater',s:'target-volatile'},
+{n:'Drake London',p:'WR',t:'ATL',b:{tgt:9.3,rec:5.7,recYd:76.6,recTD:0.58},f:'12-game 2025 sample',c:'zone-beater',s:'target-stable'},
+{n:'Ray-Ray McCloud III',p:'WR',t:'ATL',b:{tgt:3.0,rec:2.1,recYd:22.4,recTD:0.1},f:'WR2 role — approximate, lower confidence',c:'man-beater',s:'target-volatile'},
+{n:'Zay Flowers',p:'WR',t:'BAL',b:{tgt:6.9,rec:5.1,recYd:71.2,recTD:0.29},f:'New offensive system under HC Minter',c:'man-beater',s:'target-stable'},
+{n:'Rashod Bateman',p:'WR',t:'BAL',b:{tgt:5.8,rec:3.6,recYd:48.0,recTD:0.35},f:'WR2 role — approximate, lower confidence',c:'zone-beater',s:'target-volatile'},
+{n:'Khalil Shakir',p:'WR',t:'BUF',b:{tgt:5.9,rec:4.5,recYd:44.9,recTD:0.25},c:'man-beater',s:'target-stable'},
+{n:'D.J. Moore',p:'WR',t:'BUF',b:{tgt:5.0,rec:2.9,recYd:40.1,recTD:0.35},f:'Traded from Chicago — likely elevates to WR1 role',c:'zone-beater',s:'target-stable'},
+{n:'Tetairoa McMillan',p:'WR',t:'CAR',b:{tgt:8.0,rec:5.0,recYd:70.5,recTD:0.38},f:'AP Offensive Rookie of the Year — clear WR1',c:'zone-beater',s:'target-stable'},
+{n:'Xavier Legette',p:'WR',t:'CAR',b:{tgt:4.3,rec:2.3,recYd:24.2,recTD:0.2},c:'zone-beater',s:'target-volatile'},
+{n:'Jalen Coker',p:'WR',t:'CAR',b:{tgt:3.9,rec:3.0,recYd:35.8,recTD:0.27},f:'11-game sample',c:'man-beater',s:'target-volatile'},
+{n:'Rome Odunze',p:'WR',t:'CHI',b:{tgt:7.5,rec:3.7,recYd:55.1,recTD:0.5},f:'12-game sample; DJ Moore traded away, clears WR1 target share',c:'zone-beater',s:'target-stable'},
+{n:'Luther Burden III',p:'WR',t:'CHI',b:{tgt:4.0,rec:3.1,recYd:43.5,recTD:0.13},f:'Rookie-year sample',c:'man-beater',s:'target-volatile'},
+{n:"Ja'Marr Chase",p:'WR',t:'CIN',b:{tgt:11.6,rec:7.8,recYd:88.3,recTD:0.5},f:'Led NFL in targets; Burrow health matters',c:'man-beater',s:'target-stable'},
+{n:'Tee Higgins',p:'WR',t:'CIN',b:{tgt:6.5,rec:3.9,recYd:56.4,recTD:0.73},f:'15-game sample',c:'zone-beater',s:'target-stable'},
+{n:'Jerry Jeudy',p:'WR',t:'CLE',b:{tgt:6.2,rec:2.9,recYd:35.4,recTD:0.12},f:'New offense under HC Monken',c:'man-beater',s:'target-volatile'},
+{n:'Cedric Tillman',p:'WR',t:'CLE',b:{tgt:5.5,rec:3.1,recYd:38.2,recTD:0.24},f:'WR2 role — approximate, lower confidence',c:'zone-beater',s:'target-volatile'},
+{n:'CeeDee Lamb',p:'WR',t:'DAL',b:{tgt:8.4,rec:5.4,recYd:76.9,recTD:0.21},f:'14-game 2025 sample',c:'balanced',s:'target-stable'},
+{n:'George Pickens',p:'WR',t:'DAL',b:{tgt:8.1,rec:5.5,recYd:84.1,recTD:0.53},c:'zone-beater',s:'target-stable'},
+{n:'Courtland Sutton',p:'WR',t:'DEN',b:{tgt:7.3,rec:4.4,recYd:59.8,recTD:0.41},c:'zone-beater',s:'target-stable'},
+{n:'Jaylen Waddle',p:'WR',t:'DEN',b:{tgt:6.25,rec:4.0,recYd:56.9,recTD:0.375},f:'Traded from Miami — new pairing with Bo Nix',c:'man-beater',s:'target-stable'},
+{n:'Troy Franklin',p:'WR',t:'DEN',b:{tgt:6.1,rec:3.8,recYd:41.7,recTD:0.35},f:'WR3 role now behind Sutton/Waddle — approximate',c:'zone-beater',s:'target-volatile'},
+{n:'Amon-Ra St. Brown',p:'WR',t:'DET',b:{tgt:10.1,rec:6.9,recYd:82.4,recTD:0.65},c:'man-beater',s:'target-stable'},
+{n:'Jameson Williams',p:'WR',t:'DET',b:{tgt:6.0,rec:3.8,recYd:65.7,recTD:0.41},c:'zone-beater',s:'target-volatile'},
+{n:'Christian Watson',p:'WR',t:'GB',b:{tgt:5.5,rec:3.5,recYd:61.1,recTD:0.6},f:'10-game sample; injury history',c:'zone-beater',s:'target-volatile'},
+{n:'Matthew Golden',p:'WR',t:'GB',b:{tgt:3.1,rec:2.1,recYd:25.8,recTD:0},f:'Rookie-year sample',c:'man-beater',s:'target-volatile'},
+{n:'Dontayvion Wicks',p:'WR',t:'GB',b:{tgt:2.7,rec:1.8,recYd:19.5,recTD:0.12},f:'WR3/depth role — approximate, lower confidence',c:'man-beater',s:'target-volatile'},
+{n:'Nico Collins',p:'WR',t:'HOU',b:{tgt:8.0,rec:4.7,recYd:74.5,recTD:0.4},f:'15-game sample',c:'zone-beater',s:'target-stable'},
+{n:'Jayden Higgins',p:'WR',t:'HOU',b:{tgt:4.0,rec:2.4,recYd:30.9,recTD:0.35},f:'Rookie-year sample',c:'zone-beater',s:'target-volatile'},
+{n:'Michael Pittman Jr.',p:'WR',t:'IND',b:{tgt:6.5,rec:4.7,recYd:46.1,recTD:0.41},c:'man-beater',s:'target-stable'},
+{n:'Josh Downs',p:'WR',t:'IND',b:{tgt:5.5,rec:3.6,recYd:35.4,recTD:0.25},c:'man-beater',s:'target-stable'},
+{n:'Alec Pierce',p:'WR',t:'IND',b:{tgt:4.2,rec:2.5,recYd:41.9,recTD:0.24},f:'Deep-threat WR3 — approximate, lower confidence',c:'zone-beater',s:'target-volatile'},
+{n:'Parker Washington',p:'WR',t:'JAX',b:{tgt:5.9,rec:3.6,recYd:52.9,recTD:0.31},c:'man-beater',s:'target-volatile'},
+{n:'Brian Thomas Jr.',p:'WR',t:'JAX',b:{tgt:6.5,rec:3.4,recYd:50.5,recTD:0.14},f:'14-game sample',c:'zone-beater',s:'target-volatile'},
+{n:'Rashee Rice',p:'WR',t:'KC',b:{tgt:9.75,rec:6.6,recYd:71.4,recTD:0.63},f:'8-game 2025 sample — suspension-shortened',c:'man-beater',s:'target-stable'},
+{n:'Xavier Worthy',p:'WR',t:'KC',b:{tgt:5.2,rec:3.0,recYd:38.0,recTD:0.07},f:'14-game sample',c:'zone-beater',s:'target-volatile'},
+{n:'JuJu Smith-Schuster',p:'WR',t:'KC',b:{tgt:3.6,rec:2.4,recYd:24.8,recTD:0.12},f:'Slot WR3 — approximate, lower confidence',c:'man-beater',s:'target-volatile'},
+{n:'Tre Tucker',p:'WR',t:'LV',b:{tgt:5.4,rec:3.4,recYd:40.9,recTD:0.29},f:'New HC/rookie QB situation',c:'zone-beater',s:'target-volatile'},
+{n:'Ladd McConkey',p:'WR',t:'LAC',b:{tgt:6.6,rec:4.1,recYd:49.3,recTD:0.38},f:'16-game sample',c:'man-beater',s:'target-stable'},
+{n:'Quentin Johnston',p:'WR',t:'LAC',b:{tgt:6.0,rec:3.6,recYd:52.5,recTD:0.57},f:'14-game sample',c:'zone-beater',s:'target-volatile'},
+{n:'Puka Nacua',p:'WR',t:'LAR',b:{tgt:10.4,rec:8.1,recYd:107.2,recTD:0.63},c:'zone-beater',s:'target-stable'},
+{n:'Davante Adams',p:'WR',t:'LAR',b:{tgt:8.1,rec:4.3,recYd:56.4,recTD:1.0},f:'14-game sample',c:'man-beater',s:'target-stable'},
+{n:'Tutu Atwell',p:'WR',t:'LAR',b:{tgt:3.3,rec:2.2,recYd:28.9,recTD:0.06},f:'Slot WR3 — approximate, lower confidence',c:'man-beater',s:'target-volatile'},
+{n:'Malik Washington',p:'WR',t:'MIA',b:{tgt:3.8,rec:2.7,recYd:18.6,recTD:0.18},f:'Waddle traded away — default WR1 on a rebuilding offense',c:'man-beater',s:'target-volatile'},
+{n:'Justin Jefferson',p:'WR',t:'MIN',b:{tgt:8.3,rec:4.9,recYd:61.6,recTD:0.12},f:'New pairing with Kyler Murray; TD regression candidate',c:'zone-beater',s:'target-stable'},
+{n:'Jauan Jennings',p:'WR',t:'MIN',b:{tgt:6.0,rec:3.7,recYd:42.9,recTD:0.6},f:'Traded from San Francisco',c:'man-beater',s:'target-stable'},
+{n:'Jordan Addison',p:'WR',t:'MIN',b:{tgt:5.1,rec:3.2,recYd:39.9,recTD:0.35},f:'WR3 role — approximate, lower confidence',c:'zone-beater',s:'target-volatile'},
+{n:'Darnell Mooney',p:'WR',t:'NYG',b:{tgt:5.0,rec:2.9,recYd:36.8,recTD:0.15},f:'Traded from Atlanta — approximate, lower confidence',c:'zone-beater',s:'target-volatile'},
+{n:'Stefon Diggs',p:'WR',t:'NE',b:{tgt:6.0,rec:5.0,recYd:59.6,recTD:0.24},c:'man-beater',s:'target-stable'},
+{n:'Romeo Doubs',p:'WR',t:'NE',b:{tgt:5.3,rec:3.4,recYd:45.3,recTD:0.38},f:'Traded from Green Bay',c:'zone-beater',s:'target-stable'},
+{n:'Chris Olave',p:'WR',t:'NO',b:{tgt:9.75,rec:6.25,recYd:72.7,recTD:0.56},c:'zone-beater',s:'target-stable'},
+{n:'Jordyn Tyson',p:'WR',t:'NO',b:{tgt:5.5,rec:3.2,recYd:44.0,recTD:0.24},f:'2026 rookie — first-round pick (No.8 overall); no NFL sample, projection is speculative',c:'zone-beater',s:'target-volatile'},
+{n:'Rashid Shaheed',p:'WR',t:'NO',b:{tgt:5.1,rec:3.3,recYd:38.2,recTD:0.11},f:'Multi-team 2025 sample',c:'zone-beater',s:'target-volatile'},
+{n:'Garrett Wilson',p:'WR',t:'NYJ',b:{tgt:8.4,rec:5.1,recYd:56.4,recTD:0.57},f:'7-game 2025 sample — injury-shortened',c:'man-beater',s:'target-stable'},
+{n:'A.J. Brown',p:'WR',t:'PHI',b:{tgt:8.1,rec:5.2,recYd:66.9,recTD:0.47},f:'Low-volume run-first offense caps target ceiling',c:'man-beater',s:'target-volatile'},
+{n:'DeVonta Smith',p:'WR',t:'PHI',b:{tgt:6.6,rec:4.5,recYd:59.3,recTD:0.24},c:'man-beater',s:'target-volatile'},
+{n:'Marquise Brown',p:'WR',t:'PHI',b:{tgt:4.6,rec:3.1,recYd:36.7,recTD:0.31},f:'Traded from Kansas City — WR3/depth role',c:'zone-beater',s:'target-volatile'},
+{n:'DK Metcalf',p:'WR',t:'PIT',b:{tgt:6.6,rec:3.9,recYd:56.7,recTD:0.4},f:'15-game sample; reunites in system with new HC McCarthy/Rodgers',c:'zone-beater',s:'target-stable'},
+{n:'Calvin Austin III',p:'WR',t:'PIT',b:{tgt:3.9,rec:2.2,recYd:26.6,recTD:0.21},f:'14-game sample',c:'zone-beater',s:'target-volatile'},
+{n:'Mike Evans',p:'WR',t:'SF',b:{tgt:7.75,rec:3.75,recYd:46.0,recTD:0.38},f:'Traded from Tampa Bay; 8-game injury-limited 2025 sample',c:'zone-beater',s:'target-stable'},
+{n:'Ricky Pearsall',p:'WR',t:'SF',b:{tgt:5.9,rec:4.0,recYd:58.7,recTD:0},f:'9-game sample',c:'man-beater',s:'target-stable'},
+{n:'Jaxon Smith-Njigba',p:'WR',t:'SEA',b:{tgt:9.6,rec:7.0,recYd:105.5,recTD:0.59},f:'New OC after Klint Kubiak departed for LV HC job',c:'zone-beater',s:'target-stable'},
+{n:'Cooper Kupp',p:'WR',t:'SEA',b:{tgt:4.4,rec:2.9,recYd:37.1,recTD:0.13},f:'16-game sample',c:'man-beater',s:'target-volatile'},
+{n:'Emeka Egbuka',p:'WR',t:'TB',b:{tgt:7.5,rec:3.7,recYd:55.2,recTD:0.35},f:'Rookie year; inherits WR1 role after Evans traded away',c:'man-beater',s:'target-stable'},
+{n:'Chris Godwin',p:'WR',t:'TB',b:{tgt:5.7,rec:3.7,recYd:40.0,recTD:0.22},f:'9-game injury-limited sample',c:'man-beater',s:'target-volatile'},
+{n:"Wan'Dale Robinson",p:'WR',t:'TEN',b:{tgt:8.75,rec:5.75,recYd:63.4,recTD:0.25},f:'Traded from NY Giants; new HC Robert Saleh',c:'man-beater',s:'target-stable'},
+{n:'Carnell Tate',p:'WR',t:'TEN',b:{tgt:6.0,rec:3.6,recYd:48.0,recTD:0.24},f:'2026 rookie — first-round pick (No.4 overall); no NFL sample, projection is speculative',c:'zone-beater',s:'target-volatile'},
+{n:'Elic Ayomanor',p:'WR',t:'TEN',b:{tgt:5.6,rec:2.6,recYd:32.2,recTD:0.25},f:'Rookie-year sample',c:'zone-beater',s:'target-volatile'},
+{n:'Deebo Samuel',p:'WR',t:'WAS',b:{tgt:6.2,rec:4.5,recYd:45.4,recTD:0.31},c:'man-beater',s:'target-stable'},
+{n:'Terry McLaurin',p:'WR',t:'WAS',b:{tgt:6.0,rec:3.8,recYd:58.2,recTD:0.3},f:'10-game injury-limited sample',c:'zone-beater',s:'target-volatile'},
+
+// TE
+{n:'Trey McBride',p:'TE',t:'ARI',b:{tgt:9.9,rec:7.4,recYd:72.9,recTD:0.65},f:'TE1 overall in 2025; new HC & QB situation is a real wildcard',c:'zone-beater',s:'target-stable'},
+{n:'Kyle Pitts',p:'TE',t:'ATL',b:{tgt:6.9,rec:5.2,recYd:54.6,recTD:0.29},c:'zone-beater',s:'target-stable'},
+{n:'Mark Andrews',p:'TE',t:'BAL',b:{tgt:4.1,rec:2.8,recYd:24.8,recTD:0.29},f:'New offensive system',c:'man-beater',s:'target-stable'},
+{n:'Dalton Kincaid',p:'TE',t:'BUF',b:{tgt:4.1,rec:3.25,recYd:47.6,recTD:0.42},f:'12-game sample',c:'zone-beater',s:'target-stable'},
+{n:"Ja'Tavion Sanders",p:'TE',t:'CAR',b:{tgt:2.6,rec:2.2,recYd:14.6,recTD:0.08},f:'13-game sample',c:'man-beater',s:'target-volatile'},
+{n:'Colston Loveland',p:'TE',t:'CHI',b:{tgt:5.1,rec:3.6,recYd:44.6,recTD:0.38},f:'Rookie-year sample',c:'zone-beater',s:'target-stable'},
+{n:'Mike Gesicki',p:'TE',t:'CIN',b:{tgt:3.2,rec:2.2,recYd:23.6,recTD:0.15},f:'13-game sample',c:'zone-beater',s:'target-volatile'},
+{n:'Harold Fannin Jr.',p:'TE',t:'CLE',b:{tgt:6.7,rec:4.5,recYd:45.7,recTD:0.38},f:'Rookie year; new offense under HC Monken',c:'zone-beater',s:'target-stable'},
+{n:'Jake Ferguson',p:'TE',t:'DAL',b:{tgt:6.0,rec:4.8,recYd:35.3,recTD:0.47},c:'man-beater',s:'target-stable'},
+{n:'Evan Engram',p:'TE',t:'DEN',b:{tgt:4.75,rec:3.1,recYd:28.8,recTD:0.06},f:'16-game sample',c:'zone-beater',s:'target-volatile'},
+{n:'Sam LaPorta',p:'TE',t:'DET',b:{tgt:5.4,rec:4.4,recYd:54.3,recTD:0.33},f:'9-game injury-limited sample',c:'zone-beater',s:'target-stable'},
+{n:'Tucker Kraft',p:'TE',t:'GB',b:{tgt:5.5,rec:4.0,recYd:61.1,recTD:0.75},f:'8-game injury-limited sample',c:'zone-beater',s:'target-stable'},
+{n:'Dalton Schultz',p:'TE',t:'HOU',b:{tgt:6.2,rec:4.8,recYd:45.7,recTD:0.18},f:'Foster Moreau added via trade for depth',c:'man-beater',s:'target-stable'},
+{n:'Foster Moreau',p:'TE',t:'HOU',b:{tgt:2.0,rec:1.5,recYd:14.0,recTD:0.12},f:'Traded from New Orleans — depth/TE2 role, approximate lower-confidence estimate',c:'man-beater',s:'target-volatile'},
+{n:'Tyler Warren',p:'TE',t:'IND',b:{tgt:6.6,rec:4.5,recYd:48.1,recTD:0.24},f:'Pro Bowl rookie season',c:'balanced',s:'target-stable'},
+{n:'Brenton Strange',p:'TE',t:'JAX',b:{tgt:5.0,rec:3.8,recYd:45.0,recTD:0.25},f:'12-game sample',c:'man-beater',s:'target-stable'},
+{n:'Travis Kelce',p:'TE',t:'KC',b:{tgt:6.4,rec:4.5,recYd:50.1,recTD:0.29},f:'Age 36; volume cooling from peak',c:'man-beater',s:'target-stable'},
+{n:'Brock Bowers',p:'TE',t:'LV',b:{tgt:7.2,rec:5.3,recYd:56.7,recTD:0.58},f:'12-game sample; new HC/rookie QB situation',c:'man-beater',s:'target-stable'},
+{n:'David Njoku',p:'TE',t:'LAC',b:{tgt:4.0,rec:2.75,recYd:24.4,recTD:0.33},f:'Traded from Cleveland',c:'zone-beater',s:'target-stable'},
+{n:'Colby Parkinson',p:'TE',t:'LAR',b:{tgt:3.7,rec:2.9,recYd:27.2,recTD:0.53},f:'15-game sample',c:'zone-beater',s:'target-stable'},
+{n:'Darren Waller',p:'TE',t:'MIA',b:{tgt:3.8,rec:2.7,recYd:31.4,recTD:0.67},f:'9-game sample; injury/opt-out history',c:'zone-beater',s:'target-volatile'},
+{n:'T.J. Hockenson',p:'TE',t:'MIN',b:{tgt:4.4,rec:3.4,recYd:29.2,recTD:0.2},f:'15-game sample',c:'zone-beater',s:'target-stable'},
+{n:'Hunter Henry',p:'TE',t:'NE',b:{tgt:5.1,rec:3.5,recYd:45.2,recTD:0.41},c:'man-beater',s:'target-stable'},
+{n:'Juwan Johnson',p:'TE',t:'NO',b:{tgt:6.0,rec:4.5,recYd:52.3,recTD:0.18},f:'Noah Fant added via trade for depth',c:'zone-beater',s:'target-stable'},
+{n:'Noah Fant',p:'TE',t:'NO',b:{tgt:2.4,rec:2.0,recYd:16.9,recTD:0.18},f:'Traded from Cincinnati — depth/TE2 role',c:'zone-beater',s:'target-volatile'},
+{n:'Theo Johnson',p:'TE',t:'NYG',b:{tgt:4.9,rec:3.0,recYd:35.2,recTD:0.33},f:'15-game sample; new HC John Harbaugh',c:'zone-beater',s:'target-stable'},
+{n:'Isaiah Likely',p:'TE',t:'NYG',b:{tgt:2.8,rec:2.1,recYd:23.6,recTD:0.08},f:'Traded from Baltimore; real 2025 line, injury-limited sample',c:'zone-beater',s:'target-volatile'},
+{n:'Mason Taylor',p:'TE',t:'NYJ',b:{tgt:5.0,rec:3.4,recYd:28.4,recTD:0.08},f:'Rookie-year sample',c:'man-beater',s:'target-stable'},
+{n:'Dallas Goedert',p:'TE',t:'PHI',b:{tgt:5.5,rec:4.0,recYd:39.4,recTD:0.73},f:'15-game sample',c:'man-beater',s:'target-stable'},
+{n:'Pat Freiermuth',p:'TE',t:'PIT',b:{tgt:3.2,rec:2.4,recYd:28.6,recTD:0.24},c:'man-beater',s:'target-stable'},
+{n:'George Kittle',p:'TE',t:'SF',b:{tgt:6.3,rec:5.2,recYd:57.1,recTD:0.64},f:'11-game injury-limited sample',c:'zone-beater',s:'target-stable'},
+{n:'AJ Barner',p:'TE',t:'SEA',b:{tgt:4.0,rec:3.1,recYd:30.5,recTD:0.35},c:'man-beater',s:'target-stable'},
+{n:'Cade Otton',p:'TE',t:'TB',b:{tgt:5.1,rec:3.7,recYd:35.8,recTD:0.06},c:'man-beater',s:'target-stable'},
+{n:'Gunnar Helm',p:'TE',t:'TEN',b:{tgt:3.4,rec:2.75,recYd:22.3,recTD:0.13},f:'Rookie-year sample; new HC Robert Saleh',c:'zone-beater',s:'target-volatile'},
+{n:'Zach Ertz',p:'TE',t:'WAS',b:{tgt:5.5,rec:3.8,recYd:38.8,recTD:0.31},f:'13-game sample, age 35',c:'man-beater',s:'target-stable'},
+];
+
+/* ============== multiplier tables (same engine as before) ============== */
+const oppdLabels = ['Elite (Top-6)','Above Avg','Average','Below Avg','Poor (Bottom-6)'];
+const oppdMult   = [0.80, 0.90, 1.00, 1.12, 1.25];
+const scriptLabels = ['Trailing Big','Trailing','Neutral','Leading','Leading Big'];
+const scriptTable = {
+  'rush-volume':     [[0.70,0.75],[0.85,0.90],[1.00,1.00],[1.15,1.05],[1.30,0.85]],
+  'balanced-back':   [[0.75,1.15],[0.88,1.08],[1.00,1.00],[1.12,0.92],[1.22,0.78]],
+  'rush-heavy-qb':   [[1.10,0.90],[1.05,0.95],[1.00,1.00],[0.95,1.05],[0.85,1.15]],
+  'pass-neutral':    [[0.90,1.15],[0.95,1.08],[1.00,1.00],[1.02,0.95],[1.05,0.85]],
+  'target-stable':   [[1.18,1],[1.08,1],[1.00,1],[0.94,1],[0.85,1]],
+  'target-volatile': [[1.30,1],[1.12,1],[1.00,1],[0.88,1],[0.72,1]],
+  'balanced':        [[1.10,1],[1.05,1],[1.00,1],[0.96,1],[0.88,1]],
+};
+const covLabels = ['Man-Heavy','Balanced','Zone-Heavy'];
+const covMultByProfile = {
+  'man-beater':  [1.14, 1.00, 0.90],
+  'zone-beater': [0.90, 1.00, 1.14],
+  'balanced':    [1.00, 1.00, 1.00],
+  'n/a':         [1.00, 1.00, 1.00],
+};
+const paceLabels = ['Slow','Average','Fast'];
+const paceMult   = [0.93, 1.00, 1.08];
+const siteLabels = ['Home','Away'];
+const siteMult   = [1.03, 0.97];
+const wxLabels = ['Dome / Clear','Wind / Rain / Snow'];
+const wxPassMult = [1.00, 0.90];
+const wxRushMult = [1.00, 1.07];
+
+/* Real defense coverage-scheme data: FTN Data via nflverse (load_participation()), 2025 season. */
+const COVERAGE_2025 = {
+ARI:{man:0.291,zone:0.709,pressure:0.256,ttt:2.72,dom:'Cover 3',domPct:0.261,c0:0.036,c1:0.183,c2:0.202,c3:0.261,c4:0.129},
+ATL:{man:0.334,zone:0.666,pressure:0.313,ttt:2.68,dom:'Cover 1',domPct:0.287,c0:0.023,c1:0.287,c2:0.158,c3:0.248,c4:0.156},
+BAL:{man:0.328,zone:0.669,pressure:0.282,ttt:2.66,dom:'Cover 3',domPct:0.314,c0:0.063,c1:0.249,c2:0.183,c3:0.314,c4:0.076},
+BUF:{man:0.313,zone:0.687,pressure:0.342,ttt:2.76,dom:'Cover 2',domPct:0.266,c0:0.031,c1:0.185,c2:0.266,c3:0.221,c4:0.106},
+CAR:{man:0.214,zone:0.784,pressure:0.213,ttt:2.72,dom:'Cover 3',domPct:0.323,c0:0.024,c1:0.178,c2:0.224,c3:0.323,c4:0.144},
+CHI:{man:0.437,zone:0.563,pressure:0.287,ttt:2.70,dom:'Cover 1',domPct:0.328,c0:0.048,c1:0.328,c2:0.250,c3:0.214,c4:0.050},
+CIN:{man:0.365,zone:0.632,pressure:0.293,ttt:2.84,dom:'Cover 3',domPct:0.317,c0:0.064,c1:0.256,c2:0.201,c3:0.317,c4:0.033},
+CLE:{man:0.412,zone:0.588,pressure:0.350,ttt:2.60,dom:'Cover 1',domPct:0.348,c0:0.044,c1:0.348,c2:0.199,c3:0.269,c4:0.064},
+DAL:{man:0.261,zone:0.739,pressure:0.318,ttt:2.75,dom:'Cover 3',domPct:0.283,c0:0.032,c1:0.222,c2:0.239,c3:0.283,c4:0.133},
+DEN:{man:0.444,zone:0.556,pressure:0.337,ttt:2.70,dom:'Cover 1',domPct:0.307,c0:0.066,c1:0.307,c2:0.152,c3:0.249,c4:0.083},
+DET:{man:0.426,zone:0.574,pressure:0.318,ttt:2.83,dom:'Cover 1',domPct:0.286,c0:0.028,c1:0.286,c2:0.165,c3:0.270,c4:0.074},
+GB:{man:0.209,zone:0.778,pressure:0.307,ttt:2.81,dom:'Cover 3',domPct:0.319,c0:0.019,c1:0.185,c2:0.288,c3:0.319,c4:0.093},
+HOU:{man:0.315,zone:0.685,pressure:0.306,ttt:2.65,dom:'Cover 1',domPct:0.285,c0:0.018,c1:0.285,c2:0.223,c3:0.231,c4:0.122},
+IND:{man:0.373,zone:0.625,pressure:0.296,ttt:2.79,dom:'Cover 3',domPct:0.258,c0:0.057,c1:0.251,c2:0.236,c3:0.258,c4:0.074},
+JAX:{man:0.254,zone:0.746,pressure:0.279,ttt:2.62,dom:'Cover 3',domPct:0.291,c0:0.043,c1:0.178,c2:0.262,c3:0.291,c4:0.095},
+KC:{man:0.370,zone:0.629,pressure:0.335,ttt:2.67,dom:'Cover 2',domPct:0.247,c0:0.073,c1:0.219,c2:0.247,c3:0.203,c4:0.122},
+LAC:{man:0.236,zone:0.764,pressure:0.304,ttt:2.68,dom:'Cover 3',domPct:0.299,c0:0.042,c1:0.138,c2:0.253,c3:0.299,c4:0.119},
+LAR:{man:0.270,zone:0.729,pressure:0.320,ttt:2.72,dom:'Cover 3',domPct:0.267,c0:0.029,c1:0.185,c2:0.239,c3:0.267,c4:0.105},
+LV:{man:0.219,zone:0.781,pressure:0.278,ttt:2.73,dom:'Cover 3',domPct:0.374,c0:0.048,c1:0.148,c2:0.215,c3:0.374,c4:0.111},
+MIA:{man:0.284,zone:0.716,pressure:0.271,ttt:2.70,dom:'Cover 2',domPct:0.346,c0:0.024,c1:0.209,c2:0.346,c3:0.233,c4:0.072},
+MIN:{man:0.190,zone:0.810,pressure:0.340,ttt:2.66,dom:'Cover 2',domPct:0.365,c0:0.051,c1:0.080,c2:0.365,c3:0.241,c4:0.116},
+NE:{man:0.323,zone:0.672,pressure:0.297,ttt:2.74,dom:'Cover 3',domPct:0.276,c0:0.040,c1:0.261,c2:0.257,c3:0.276,c4:0.098},
+NO:{man:0.221,zone:0.779,pressure:0.282,ttt:2.80,dom:'Cover 3',domPct:0.403,c0:0.030,c1:0.169,c2:0.153,c3:0.403,c4:0.094},
+NYG:{man:0.403,zone:0.597,pressure:0.301,ttt:2.67,dom:'Cover 1',domPct:0.313,c0:0.034,c1:0.313,c2:0.146,c3:0.258,c4:0.148},
+NYJ:{man:0.405,zone:0.595,pressure:0.247,ttt:2.63,dom:'Cover 1',domPct:0.283,c0:0.052,c1:0.283,c2:0.260,c3:0.224,c4:0.068},
+PHI:{man:0.435,zone:0.565,pressure:0.327,ttt:2.72,dom:'Cover 1',domPct:0.351,c0:0.030,c1:0.351,c2:0.171,c3:0.218,c4:0.079},
+PIT:{man:0.369,zone:0.631,pressure:0.295,ttt:2.63,dom:'Cover 3',domPct:0.281,c0:0.042,c1:0.259,c2:0.202,c3:0.281,c4:0.088},
+SEA:{man:0.291,zone:0.709,pressure:0.331,ttt:2.76,dom:'Cover 2',domPct:0.310,c0:0.031,c1:0.188,c2:0.310,c3:0.215,c4:0.072},
+SF:{man:0.266,zone:0.734,pressure:0.232,ttt:2.75,dom:'Cover 3',domPct:0.310,c0:0.028,c1:0.218,c2:0.170,c3:0.310,c4:0.142},
+TB:{man:0.303,zone:0.696,pressure:0.341,ttt:2.64,dom:'Cover 3',domPct:0.306,c0:0.049,c1:0.180,c2:0.215,c3:0.306,c4:0.108},
+TEN:{man:0.270,zone:0.729,pressure:0.295,ttt:2.73,dom:'Cover 2',domPct:0.288,c0:0.033,c1:0.199,c2:0.288,c3:0.258,c4:0.096},
+WAS:{man:0.320,zone:0.680,pressure:0.313,ttt:2.81,dom:'Cover 1',domPct:0.252,c0:0.030,c1:0.252,c2:0.193,c3:0.235,c4:0.147},
+};
+const LEAGUE_AVG_MAN = 0.317, LEAGUE_AVG_PRESSURE = 0.300;
+
+/* Real per-player performance vs man/zone coverage: FTN Data via nflverse
+   (load_participation() joined to play-by-play), 2023-2025, min 30 targets /
+   60 attempts per side. Multipliers are each player's man/zone rate relative
+   to their OWN 3-year average, bounded to 0.78-1.30 (0.55-1.85 for INT rate)
+   to avoid small-sample outliers dominating. Players not in this table fall
+   back to the general man-beater/zone-beater tag. */
+const REAL_COVERAGE = {
+'Kirk Cousins':{manYd:1.002,zoneYd:1.0,manInt:0.759,zoneInt:1.157,n:'287m/472z att'},
+'Jacoby Brissett':{manYd:0.972,zoneYd:1.011,manInt:0.55,zoneInt:1.192,n:'145m/385z att'},
+'Michael Penix Jr.':{manYd:0.951,zoneYd:1.03,manInt:1.33,zoneInt:0.798,n:'153m/246z att'},
+'Lamar Jackson':{manYd:0.977,zoneYd:1.021,manInt:1.298,zoneInt:0.721,n:'679m/763z att'},
+'Josh Allen':{manYd:0.971,zoneYd:1.026,manInt:1.128,zoneInt:0.872,n:'874m/972z att'},
+'Bryce Young':{manYd:0.908,zoneYd:1.063,manInt:0.951,zoneInt:1.051,n:'626m/925z att'},
+'Caleb Williams':{manYd:0.892,zoneYd:1.061,manInt:0.955,zoneInt:1.028,n:'476m/846z att'},
+'Joe Burrow':{manYd:0.929,zoneYd:1.061,manInt:0.957,zoneInt:1.025,n:'630m/737z att'},
+'Dillon Gabriel':{manYd:0.927,zoneYd:1.049,manInt:0.55,zoneInt:1.632,n:'82m/122z att'},
+'Dak Prescott':{manYd:1.021,zoneYd:0.984,manInt:1.183,zoneInt:0.845,n:'720m/913z att'},
+'Bo Nix':{manYd:1.005,zoneYd:0.997,manInt:1.082,zoneInt:0.974,n:'447m/852z att'},
+'Jared Goff':{manYd:0.988,zoneYd:1.006,manInt:0.55,zoneInt:1.298,n:'731m/1244z att'},
+'Jordan Love':{manYd:0.921,zoneYd:1.054,manInt:0.75,zoneInt:1.15,n:'665m/985z att'},
+'C.J. Stroud':{manYd:0.948,zoneYd:1.036,manInt:0.859,zoneInt:1.088,n:'737m/1038z att'},
+'Daniel Jones':{manYd:0.829,zoneYd:1.068,manInt:0.55,zoneInt:1.227,n:'117m/292z att'},
+'Trevor Lawrence':{manYd:0.946,zoneYd:1.03,manInt:0.967,zoneInt:1.011,n:'558m/980z att'},
+'Patrick Mahomes':{manYd:0.948,zoneYd:1.037,manInt:1.196,zoneInt:0.884,n:'831m/1197z att'},
+'Justin Herbert':{manYd:0.911,zoneYd:1.071,manInt:0.68,zoneInt:1.299,n:'744m/926z att'},
+'Matthew Stafford':{manYd:0.924,zoneYd:1.055,manInt:1.396,zoneInt:0.698,n:'810m/1144z att'},
+'Kyler Murray':{manYd:0.872,zoneYd:1.088,manInt:1.255,zoneInt:0.819,n:'427m/610z att'},
+'Drake Maye':{manYd:0.886,zoneYd:1.078,manInt:1.008,zoneInt:1.008,n:'429m/627z att'},
+'Tyler Shough':{manYd:0.848,zoneYd:1.035,manInt:0.89,zoneInt:1.009,n:'66m/290z att'},
+'Jaxson Dart':{manYd:1.017,zoneYd:0.992,manInt:0.6,zoneInt:1.2,n:'127m/248z att'},
+'Justin Fields':{manYd:0.807,zoneYd:1.094,manInt:0.55,zoneInt:1.398,n:'76m/157z att'},
+'Jalen Hurts':{manYd:1.03,zoneYd:0.977,manInt:0.971,zoneInt:1.031,n:'695m/943z att'},
+'Aaron Rodgers':{manYd:0.903,zoneYd:1.041,manInt:0.846,zoneInt:1.057,n:'168m/396z att'},
+'Brock Purdy':{manYd:0.959,zoneYd:1.029,manInt:1.037,zoneInt:0.96,n:'585m/836z att'},
+'Sam Darnold':{manYd:1.048,zoneYd:0.982,manInt:1.583,zoneInt:0.77,n:'164m/435z att'},
+'Baker Mayfield':{manYd:0.918,zoneYd:1.052,manInt:1.078,zoneInt:0.98,n:'738m/1173z att'},
+'Cam Ward':{manYd:0.885,zoneYd:1.046,manInt:0.55,zoneInt:1.184,n:'171m/421z att'},
+'Jayden Daniels':{manYd:0.85,zoneYd:1.141,manInt:0.55,zoneInt:1.509,n:'414m/439z att'},
+'James Conner':{man:0.99,zone:1.006,n:'35m/64z tgt'},
+'Bijan Robinson':{man:1.275,zone:0.901,n:'69m/192z tgt'},
+'James Cook':{man:1.3,zone:0.78,n:'61m/92z tgt'},
+'Chuba Hubbard':{man:0.78,zone:1.124,n:'47m/94z tgt'},
+'Chase Brown':{man:1.172,zone:0.934,n:'47m/122z tgt'},
+'Javonte Williams':{man:1.058,zone:0.96,n:'85m/123z tgt'},
+'Jahmyr Gibbs':{man:1.046,zone:0.981,n:'74m/180z tgt'},
+'Isiah Pacheco':{man:1.186,zone:0.929,n:'30m/78z tgt'},
+'Kenneth Walker III':{man:1.029,zone:0.99,n:'35m/102z tgt'},
+'Kyren Williams':{man:0.933,zone:1.025,n:'42m/111z tgt'},
+'De\'Von Achane':{man:0.849,zone:1.061,n:'62m/153z tgt'},
+'Aaron Jones':{man:1.048,zone:0.974,n:'39m/70z tgt'},
+'Travis Etienne':{man:1.023,zone:0.991,n:'55m/127z tgt'},
+'Breece Hall':{man:0.916,zone:1.053,n:'37m/58z tgt'},
+'Saquon Barkley':{man:1.3,zone:0.78,n:'40m/75z tgt'},
+'Jaylen Warren':{man:1.108,zone:0.956,n:'50m/124z tgt'},
+'Christian McCaffrey':{man:1.065,zone:0.973,n:'78m/192z tgt'},
+'Zach Charbonnet':{man:0.926,zone:1.031,n:'34m/82z tgt'},
+'Jerome Ford':{man:0.989,zone:1.004,n:'38m/104z tgt'},
+'Rhamondre Stevenson':{man:1.076,zone:0.956,n:'54m/93z tgt'},
+'Tyrone Tracy Jr.':{man:0.911,zone:1.049,n:'36m/66z tgt'},
+'Rachaad White':{man:1.2,zone:0.924,n:'50m/132z tgt'},
+'Marvin Harrison Jr.':{man:0.78,zone:1.264,n:'102m/88z tgt'},
+'Drake London':{man:0.85,zone:1.108,n:'161m/223z tgt'},
+'Ray-Ray McCloud III':{man:0.959,zone:1.029,n:'42m/59z tgt'},
+'Zay Flowers':{man:0.898,zone:1.093,n:'171m/187z tgt'},
+'Rashod Bateman':{man:0.915,zone:1.085,n:'90m/90z tgt'},
+'Khalil Shakir':{man:0.865,zone:1.122,n:'141m/155z tgt'},
+'D.J. Moore':{man:0.992,zone:1.006,n:'167m/213z tgt'},
+'Tetairoa McMillan':{man:1.067,zone:0.968,n:'42m/87z tgt'},
+'Xavier Legette':{man:0.932,zone:1.07,n:'78m/75z tgt'},
+'Jalen Coker':{man:1.149,zone:0.86,n:'50m/53z tgt'},
+'Rome Odunze':{man:0.993,zone:1.004,n:'85m/119z tgt'},
+'Ja\'Marr Chase':{man:0.861,zone:1.108,n:'220m/285z tgt'},
+'Tee Higgins':{man:0.829,zone:1.165,n:'140m/145z tgt'},
+'Jerry Jeudy':{man:1.02,zone:0.985,n:'111m/143z tgt'},
+'Cedric Tillman':{man:0.959,zone:1.042,n:'68m/66z tgt'},
+'CeeDee Lamb':{man:1.099,zone:0.893,n:'244m/226z tgt'},
+'George Pickens':{man:1.106,zone:0.934,n:'53m/85z tgt'},
+'Courtland Sutton':{man:1.048,zone:0.961,n:'166m/208z tgt'},
+'Jaylen Waddle':{man:0.899,zone:1.04,n:'84m/210z tgt'},
+'Troy Franklin':{man:0.78,zone:1.209,n:'61m/102z tgt'},
+'Amon-Ra St. Brown':{man:0.921,zone:1.052,n:'207m/315z tgt'},
+'Jameson Williams':{man:1.058,zone:0.96,n:'85m/123z tgt'},
+'Christian Watson':{man:0.965,zone:1.036,n:'87m/85z tgt'},
+'Dontayvion Wicks':{man:0.78,zone:1.286,n:'93m/97z tgt'},
+'Nico Collins':{man:1.036,zone:0.972,n:'166m/204z tgt'},
+'Jayden Higgins':{man:0.78,zone:1.24,n:'34m/49z tgt'},
+'Michael Pittman Jr.':{man:0.869,zone:1.101,n:'166m/218z tgt'},
+'Josh Downs':{man:0.99,zone:1.008,n:'131m/162z tgt'},
+'Alec Pierce':{man:0.944,zone:1.04,n:'91m/127z tgt'},
+'Parker Washington':{man:0.789,zone:1.141,n:'73m/110z tgt'},
+'Brian Thomas Jr.':{man:0.981,zone:1.013,n:'93m/135z tgt'},
+'Rashee Rice':{man:0.787,zone:1.132,n:'93m/150z tgt'},
+'Xavier Worthy':{man:0.983,zone:1.017,n:'97m/96z tgt'},
+'JuJu Smith-Schuster':{man:0.78,zone:1.166,n:'31m/46z tgt'},
+'Tre Tucker':{man:1.143,zone:0.888,n:'91m/116z tgt'},
+'Ladd McConkey':{man:1.051,zone:0.951,n:'115m/122z tgt'},
+'Quentin Johnston':{man:0.78,zone:1.244,n:'122m/131z tgt'},
+'Puka Nacua':{man:1.0,zone:1.0,n:'212m/296z tgt'},
+'Davante Adams':{man:0.78,zone:1.213,n:'65m/74z tgt'},
+'Tutu Atwell':{man:0.935,zone:1.053,n:'65m/82z tgt'},
+'Justin Jefferson':{man:0.956,zone:1.03,n:'162m/243z tgt'},
+'Jauan Jennings':{man:0.908,zone:1.068,n:'110m/150z tgt'},
+'Jordan Addison':{man:0.808,zone:1.131,n:'120m/175z tgt'},
+'Darnell Mooney':{man:1.032,zone:0.976,n:'76m/102z tgt'},
+'Stefon Diggs':{man:0.858,zone:1.071,n:'41m/81z tgt'},
+'Romeo Doubs':{man:0.995,zone:1.004,n:'123m/157z tgt'},
+'Chris Olave':{man:1.121,zone:0.934,n:'120m/219z tgt'},
+'Rashid Shaheed':{man:0.841,zone:1.114,n:'76m/106z tgt'},
+'Garrett Wilson':{man:1.003,zone:0.997,n:'202m/180z tgt'},
+'A.J. Brown':{man:1.045,zone:0.948,n:'218m/188z tgt'},
+'DeVonta Smith':{man:0.826,zone:1.135,n:'156m/201z tgt'},
+'Marquise Brown':{man:1.078,zone:0.948,n:'42m/62z tgt'},
+'Calvin Austin III':{man:0.879,zone:1.139,n:'82m/71z tgt'},
+'Mike Evans':{man:0.934,zone:1.068,n:'170m/166z tgt'},
+'Ricky Pearsall':{man:1.104,zone:0.918,n:'45m/57z tgt'},
+'Jaxon Smith-Njigba':{man:1.029,zone:0.984,n:'149m/271z tgt'},
+'Emeka Egbuka':{man:0.858,zone:1.07,n:'42m/86z tgt'},
+'Chris Godwin':{man:0.879,zone:1.077,n:'101m/157z tgt'},
+'Wan\'Dale Robinson':{man:0.892,zone:1.072,n:'142m/217z tgt'},
+'Deebo Samuel':{man:1.19,zone:0.889,n:'37m/63z tgt'},
+'Terry McLaurin':{man:0.863,zone:1.125,n:'158m/175z tgt'},
+'Trey McBride':{man:0.867,zone:1.066,n:'140m/283z tgt'},
+'Kyle Pitts':{man:0.947,zone:1.029,n:'101m/182z tgt'},
+'Mark Andrews':{man:0.982,zone:1.02,n:'110m/103z tgt'},
+'Dalton Kincaid':{man:0.835,zone:1.141,n:'114m/133z tgt'},
+'Mike Gesicki':{man:0.856,zone:1.169,n:'68m/58z tgt'},
+'Harold Fannin Jr.':{man:1.027,zone:0.985,n:'39m/69z tgt'},
+'Jake Ferguson':{man:0.826,zone:1.121,n:'124m/179z tgt'},
+'Sam LaPorta':{man:0.913,zone:1.06,n:'118m/170z tgt'},
+'Tucker Kraft':{man:1.043,zone:0.963,n:'78m/91z tgt'},
+'Dalton Schultz':{man:0.866,zone:1.081,n:'115m/189z tgt'},
+'Tyler Warren':{man:0.896,zone:1.04,n:'31m/83z tgt'},
+'Brenton Strange':{man:0.929,zone:1.036,n:'43m/84z tgt'},
+'Travis Kelce':{man:1.001,zone:0.999,n:'161m/259z tgt'},
+'Brock Bowers':{man:1.039,zone:0.962,n:'120m/120z tgt'},
+'David Njoku':{man:0.891,zone:1.063,n:'103m/178z tgt'},
+'Colby Parkinson':{man:0.862,zone:1.057,n:'36m/87z tgt'},
+'Darren Waller':{man:0.78,zone:1.268,n:'39m/35z tgt'},
+'T.J. Hockenson':{man:1.059,zone:0.964,n:'98m/162z tgt'},
+'Hunter Henry':{man:0.844,zone:1.183,n:'141m/120z tgt'},
+'Juwan Johnson':{man:0.823,zone:1.108,n:'87m/142z tgt'},
+'Noah Fant':{man:0.78,zone:1.131,n:'33m/74z tgt'},
+'Theo Johnson':{man:1.058,zone:0.966,n:'43m/74z tgt'},
+'Isaiah Likely':{man:1.067,zone:0.952,n:'63m/87z tgt'},
+'Dallas Goedert':{man:1.143,zone:0.906,n:'99m/151z tgt'},
+'Pat Freiermuth':{man:0.949,zone:1.034,n:'78m/117z tgt'},
+'George Kittle':{man:0.988,zone:1.009,n:'114m/154z tgt'},
+'AJ Barner':{man:1.3,zone:0.878,n:'31m/82z tgt'},
+'Cade Otton':{man:0.787,zone:1.109,n:'87m/171z tgt'},
+'Zach Ertz':{man:0.841,zone:1.139,n:'89m/102z tgt'},
+};
+
+
+
+
+/* ====================================================================
+   PURE PROJECTION ENGINE — used by Browse, Rankings, and Compare
+==================================================================== */
+function realCovMultFor(p, ci){
+  // Real per-player man/zone multiplier when we have a large enough sample (see
+  // REAL_COVERAGE above); these are normalized to the player's own 3-year average,
+  // so ci===1 (Balanced) is correctly 1.0 by construction. Falls back to the
+  // general man-beater/zone-beater tag for players without a qualifying sample.
+  const real = REAL_COVERAGE[p.n];
+  if(real && real.man !== undefined){
+    return ci===0 ? real.man : (ci===2 ? real.zone : 1.0);
+  }
+  return covMultByProfile[p.c][ci];
+}
+function realQBCovMultFor(p, ci){
+  const real = REAL_COVERAGE[p.n];
+  if(real && real.manYd !== undefined){
+    return { yd: ci===0 ? real.manYd : (ci===2 ? real.zoneYd : 1.0),
+             int: ci===0 ? real.manInt : (ci===2 ? real.zoneInt : 1.0), real:true };
+  }
+  return { yd:1.0, int:1.0, real:false };
+}
+
+function computeProjection(p, opts){
+  // opts: {oppTier, script, cov, pace, site, wx, role, cbShadow, split}
+  const oi = opts.oppTier, si = opts.script, ci = opts.cov, pai = opts.pace, hi = opts.site, wi = opts.wx;
+  const roleMult = 1 + (opts.role/100);
+  const cbMult = (p.p==='WR' && opts.cbShadow) ? 0.85 : 1.0;
+  const splitMult = (p.p==='RB' && p.partner) ? 1 + ((opts.split||0)/100) : 1.0;
+
+  const oppM = oppdMult[oi];
+  const paceM = paceMult[pai];
+  const siteM = siteMult[hi];
+  const covM = realCovMultFor(p, ci);
+  const qbCov = realQBCovMultFor(p, ci);
+  const [scriptVolMult, scriptSecMult] = scriptTable[p.s][si];
+  // Real pressure-rate effect (QB only): more pressure -> fewer clean throws, more INT risk.
+  // Defaults to league average (no effect) when no real opponent pressure rate is known.
+  const pressure = (opts.pressure !== undefined && opts.pressure !== null) ? opts.pressure : LEAGUE_AVG_PRESSURE;
+  const pressureVsAvg = pressure - LEAGUE_AVG_PRESSURE;
+  const pressurePassMult = 1 - pressureVsAvg * 0.6;
+  const pressureIntMult = 1 + pressureVsAvg * 1.5;
+
+  const lines = [];
+  let ppr=0, half=0, std=0;
+
+  if(p.p==='QB'){
+    const passYd = p.b.passYd * oppM * paceM * siteM * (wxPassMult[wi]) * scriptVolMult * roleMult * pressurePassMult * qbCov.yd;
+    const passTD = p.b.passTD * oppM * paceM * siteM * (wxPassMult[wi]) * scriptVolMult * roleMult * pressurePassMult * qbCov.yd;
+    const rushYd = p.b.rushYd * paceM * siteM * (wxRushMult[wi]) * scriptSecMult * roleMult;
+    const rushTD = p.b.rushTD * paceM * siteM * (wxRushMult[wi]) * scriptSecMult * roleMult;
+    const ints = p.b.int * (oi<=1 ? 1.15 : oi>=3 ? 0.85 : 1.0) * pressureIntMult * qbCov.int;
+    lines.push({label:'Pass Yards', base:p.b.passYd, val:passYd});
+    lines.push({label:'Pass TD', base:p.b.passTD, val:passTD});
+    lines.push({label:'Rush Yards', base:p.b.rushYd, val:rushYd});
+    lines.push({label:'Interceptions', base:p.b.int, val:ints});
+    std = passYd/25 + passTD*4 - ints*2 + rushYd/10 + rushTD*6;
+    ppr = std; half = std;
+  } else if(p.p==='RB'){
+    const rushAtt = p.b.rushAtt * paceM * siteM * scriptVolMult * roleMult * splitMult * (wxRushMult[wi]);
+    const rushYd  = p.b.rushYd  * oppM * paceM * siteM * scriptVolMult * roleMult * splitMult * (wxRushMult[wi]);
+    const rushTD  = p.b.rushTD  * oppM * scriptVolMult * roleMult * splitMult;
+    const rec     = p.b.rec * paceM * siteM * scriptSecMult * covM * roleMult * splitMult * (wxPassMult[wi]);
+    const recYd   = p.b.recYd * oppM * paceM * siteM * scriptSecMult * covM * roleMult * splitMult * (wxPassMult[wi]);
+    const recTD   = p.b.recTD * oppM * scriptSecMult * covM * roleMult * splitMult;
+    lines.push({label:'Rush Attempts', base:p.b.rushAtt, val:rushAtt});
+    lines.push({label:'Rush Yards', base:p.b.rushYd, val:rushYd});
+    lines.push({label:'Rush TD', base:p.b.rushTD, val:rushTD});
+    lines.push({label:'Receptions', base:p.b.rec, val:rec});
+    lines.push({label:'Rec Yards', base:p.b.recYd, val:recYd});
+    lines.push({label:'Rec TD', base:p.b.recTD, val:recTD});
+    std = rushYd/10 + rushTD*6 + recYd/10 + recTD*6;
+    half = std + rec*0.5;
+    ppr = std + rec*1;
+  } else {
+    const tgt   = p.b.tgt * paceM * siteM * scriptVolMult * covM * roleMult * (wxPassMult[wi]);
+    const rec   = p.b.rec * paceM * siteM * scriptVolMult * covM * roleMult * cbMult * (wxPassMult[wi]);
+    const recYd = p.b.recYd * oppM * paceM * siteM * scriptVolMult * covM * roleMult * cbMult * (wxPassMult[wi]);
+    const recTD = p.b.recTD * oppM * scriptVolMult * covM * roleMult * cbMult;
+    lines.push({label:'Targets', base:p.b.tgt, val:tgt});
+    lines.push({label:'Receptions', base:p.b.rec, val:rec});
+    lines.push({label:'Rec Yards', base:p.b.recYd, val:recYd});
+    lines.push({label:'Rec TD', base:p.b.recTD, val:recTD});
+    std = recYd/10 + recTD*6;
+    half = std + rec*0.5;
+    ppr = std + rec*1;
+  }
+  return {lines, ppr, half, std};
+}
+
+// Neutral opts used by Rankings/Compare — everything average except the real schedule-driven opponent/site
+function neutralOptsFor(p, wk){
+  const team = TEAMS[p.t];
+  let oppTier = 2, site = 0, isBye = false, oppAb = null, pressure = null, cov = 1;
+  if(wk){
+    const g = team.sch[wk-1];
+    if(g === 'BYE'){ isBye = true; }
+    else{
+      const away = g.startsWith('@');
+      oppAb = g.replace('@','').replace('vs ','').trim();
+      const opp = TEAMS[oppAb];
+      site = away ? 1 : 0;
+      oppTier = (p.p==='RB') ? opp.rushD : opp.passD;
+      const covData = COVERAGE_2025[oppAb];
+      if(covData){
+        pressure = covData.pressure;
+        const vsAvg = covData.man - LEAGUE_AVG_MAN;
+        cov = vsAvg > 0.07 ? 0 : (vsAvg < -0.07 ? 2 : 1);
+      }
+    }
+  }
+  return { opts:{oppTier, script:2, cov, pace:1, site, wx:0, role:0, cbShadow:0, split:0, pressure}, isBye, oppAb };
+}
+
+function fmtN(n, d=1){ return n.toFixed(d); }
+
+/* ====================================================================
+   MODE SWITCHING
+==================================================================== */
+let appMode = 'browse';
+const modeTabsEl = document.getElementById('modeTabs');
+[...modeTabsEl.children].forEach(t=>{
+  t.onclick = ()=>{
+    appMode = t.dataset.mode;
+    [...modeTabsEl.children].forEach(x=>x.classList.toggle('active', x===t));
+    document.getElementById('browseView').style.display = appMode==='browse' ? '' : 'none';
+    document.getElementById('rankingsView').style.display = appMode==='rankings' ? '' : 'none';
+    document.getElementById('compareView').style.display = appMode==='compare' ? '' : 'none';
+    if(appMode==='rankings') renderRankings();
+    if(appMode==='compare') renderCompareGrid();
+  };
+});
+
+// global week selector — populates and drives autofill everywhere
+const globalWeekEl = document.getElementById('globalWeek');
+for(let w=1; w<=18; w++){ const o=document.createElement('option'); o.value=w; o.textContent='Week '+w; globalWeekEl.appendChild(o); }
+const panelWeekEl = document.getElementById('panelWeekSel');
+for(let w=1; w<=18; w++){ const o=document.createElement('option'); o.value=w; o.textContent='Week '+w; panelWeekEl.appendChild(o); }
+
+function setWeek(wk){
+  globalWeekEl.value = wk;
+  panelWeekEl.value = wk;
+  document.getElementById('lbl-panelweek').textContent = wk ? ('Week '+wk) : 'Manual';
+  applyWeekAutofill();
+  compute();
+  if(currentPlayer) renderScheduleStrip(currentPlayer);
+  if(appMode==='rankings') renderRankings();
+  if(appMode==='compare') renderCompareTable();
+}
+
+globalWeekEl.onchange = ()=>{ setWeek(globalWeekEl.value); };
+panelWeekEl.onchange = ()=>{ setWeek(panelWeekEl.value); };
+
+/* ====================================================================
+   BROWSE VIEW (single player detail)
+==================================================================== */
+let currentPos = 'QB';
+let currentPlayer = null;
+
+const tabsEl = document.getElementById('tabs');
+const gridEl = document.getElementById('grid');
+const panelEl = document.getElementById('panel');
+
+// Matchup Inputs are collapsed by default so the projection is the first
+// thing visible when a player is opened, especially on small screens.
+const controlsToggle = document.getElementById('controlsToggle');
+const controlsBody = document.getElementById('controlsBody');
+const controlsChev = document.getElementById('controlsChev');
+controlsToggle.onclick = ()=>{
+  const collapsed = controlsBody.classList.toggle('collapsed');
+  controlsChev.textContent = collapsed ? '\u25b8 Tap to adjust' : '\u25be Tap to collapse';
+};
+const teamFilterEl = document.getElementById('teamFilter');
+const searchEl = document.getElementById('searchBox');
+const emptyNoteEl = document.getElementById('emptyNote');
+
+const POSES = ['QB','RB','WR','TE'];
+function buildPosTabs(container, onClick, getActive){
+  container.innerHTML = '';
+  POSES.forEach(pos=>{
+    const t = document.createElement('div');
+    t.className = 'tab' + (getActive()===pos ? ' active':'');
+    t.textContent = pos;
+    t.onclick = ()=>{ onClick(pos); };
+    container.appendChild(t);
+  });
+}
+function refreshPosTabs(container, activePos){
+  [...container.children].forEach((t,i)=>{ t.classList.toggle('active', POSES[i]===activePos); });
+}
+
+buildPosTabs(tabsEl, (pos)=>{ currentPos = pos; refreshPosTabs(tabsEl,currentPos); renderGrid(); }, ()=>currentPos);
+
+Object.keys(TEAMS).sort().forEach(ab=>{
+  const o = document.createElement('option'); o.value=ab; o.textContent = ab+' — '+TEAMS[ab].name;
+  teamFilterEl.appendChild(o);
+});
+teamFilterEl.onchange = renderGrid;
+searchEl.oninput = renderGrid;
+
+function headline(p){
+  if(p.p==='QB') return `${p.b.passYd.toFixed(0)} pass yd/g \u00b7 ${p.b.passTD.toFixed(1)} TD/g`;
+  if(p.p==='RB') return `${p.b.rushYd.toFixed(0)} rush yd/g \u00b7 ${p.b.rushTD.toFixed(1)} TD/g`;
+  return `${p.b.recYd.toFixed(0)} rec yd/g \u00b7 ${p.b.rec.toFixed(1)} rec/g`;
+}
+
+function renderGrid(){
+  gridEl.innerHTML = '';
+  const teamF = teamFilterEl.value;
+  const q = searchEl.value.trim().toLowerCase();
+  const list = P.filter(p=>p.p===currentPos && (!teamF || p.t===teamF) && (!q || p.n.toLowerCase().includes(q)));
+  emptyNoteEl.style.display = list.length ? 'none' : 'block';
+  list.forEach(p=>{
+    const c = document.createElement('div');
+    c.className = 'pcard' + (currentPlayer && currentPlayer.n===p.n ? ' selected':'');
+    c.innerHTML = `<div class="nm">${p.n}</div><div class="tm">${p.t} \u00b7 ${p.p}</div><div class="headline">${headline(p)}</div>${p.f?`<div class="flagchip">FLAG</div>`:''}`;
+    c.onclick = ()=>{ selectPlayer(p); };
+    gridEl.appendChild(c);
+  });
+}
+
+function selectPlayer(p){
+  currentPlayer = p;
+  renderGrid();
+  panelEl.classList.add('show');
+  const team = TEAMS[p.t];
+  document.getElementById('p-name').textContent = p.n;
+  document.getElementById('p-sub').textContent = `${team.name} (${p.t}) \u00b7 ${p.p} \u00b7 2025 season baseline`;
+  document.getElementById('p-note').innerHTML = `<b>${team.hc}</b> \u2014 ${team.note}`;
+  document.getElementById('p-flag').textContent = p.f ? '\u26a0 '+p.f : '';
+  const realCov = REAL_COVERAGE[p.n];
+  const realCovBadge = document.getElementById('realCovBadge');
+  if(realCov){
+    realCovBadge.textContent = `\u2713 Real man/zone split on file (${realCov.n}, 2023\u201325) \u2014 Coverage Shell uses this player's actual data, not a generic tag.`;
+  } else {
+    realCovBadge.textContent = '';
+  }
+
+  const cbField = document.getElementById('cbField');
+  cbField.style.display = (p.p==='WR') ? '' : 'none';
+
+  const splitField = document.getElementById('splitField');
+  if(p.p==='RB' && p.partner){
+    splitField.style.display='';
+    document.getElementById('splitNote').textContent = `Shifts share between ${p.n} and teammate ${p.partner}.`;
+  } else { splitField.style.display='none'; }
+
+  oppdEl.value=2; scriptEl.value=2; covEl.value=1; paceEl.value=1; siteEl.value=0; wxEl.value=0; roleEl.value=0;
+  cbShadowEl.value=0; splitEl.value=0;
+
+  panelWeekEl.value = globalWeekEl.value;
+  document.getElementById('lbl-panelweek').textContent = globalWeekEl.value ? ('Week '+globalWeekEl.value) : 'Manual';
+
+  applyWeekAutofill();
+  renderScheduleStrip(p);
+  compute();
+  panelEl.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+const oppdEl = document.getElementById('oppd');
+const scriptEl = document.getElementById('script');
+const covEl = document.getElementById('cov');
+const paceEl = document.getElementById('pace');
+const siteEl = document.getElementById('site');
+const wxEl = document.getElementById('wx');
+const roleEl = document.getElementById('role');
+const cbShadowEl = document.getElementById('cbShadow');
+const splitEl = document.getElementById('splitSlider');
+[oppdEl,scriptEl,covEl,paceEl,siteEl,wxEl,roleEl,cbShadowEl,splitEl].forEach(el=>{ el.addEventListener('input', ()=>{ updateLabels(); compute(); }); });
+
+document.getElementById('resetBtn').onclick = ()=>{
+  oppdEl.value=2; scriptEl.value=2; covEl.value=1; paceEl.value=1; siteEl.value=0; wxEl.value=0; roleEl.value=0;
+  cbShadowEl.value=0; splitEl.value=0;
+  setWeek('');
+  document.getElementById('byeArea').innerHTML='';
+  updateLabels(); compute();
+};
+
+function applyWeekAutofill(){
+  const byeArea = document.getElementById('byeArea');
+  byeArea.innerHTML = '';
+  const cbNote = document.getElementById('cbNote');
+  if(!currentPlayer || !globalWeekEl.value){
+    document.getElementById('autoNote').textContent = 'Pick a Week above to auto-fill from the real 2026 schedule.';
+    if(cbNote) cbNote.textContent = 'Select a Week to see the opponent\'s top corner.';
+    return;
+  }
+  const wk = parseInt(globalWeekEl.value,10);
+  const team = TEAMS[currentPlayer.t];
+  const g = team.sch[wk-1];
+  if(g === 'BYE'){
+    byeArea.innerHTML = `<div class="byebanner">${team.name} are on their Week ${wk} bye \u2014 no game, no projection this week.</div>`;
+    document.getElementById('autoNote').textContent = 'Bye week \u2014 sliders left as-is but there is no game to project.';
+    if(cbNote) cbNote.textContent = '\u2014';
+    return;
+  }
+  const away = g.startsWith('@');
+  const oppAb = g.replace('@','').replace('vs ','').trim();
+  const opp = TEAMS[oppAb];
+  siteEl.value = away ? 1 : 0;
+  const tier = (currentPlayer.p==='RB') ? opp.rushD : opp.passD;
+  oppdEl.value = tier;
+  document.getElementById('autoNote').textContent = `Week ${wk}: ${away?'@':'vs'} ${oppAb} (${opp.name}) \u2014 ${currentPlayer.p==='RB'?'run':'pass'} defense tier auto-set from 2025 data.`;
+
+  // Real coverage-shell autofill from FTN charting data (via nflverse), 2025 season
+  const cov = COVERAGE_2025[oppAb];
+  const covNote = document.getElementById('covNote');
+  if(cov && covNote){
+    // Compare each defense's man rate to the league-wide average (31.7% in 2025),
+    // not an absolute cutoff — every defense plays more zone than man, so the
+    // question is whether a team is relatively man-heavy or zone-heavy for the league.
+    const vsAvg = cov.man - LEAGUE_AVG_MAN;
+    if(vsAvg > 0.07) covEl.value = 0;       // relatively man-heavy defense
+    else if(vsAvg < -0.07) covEl.value = 2; // relatively zone-heavy defense
+    else covEl.value = 1;                   // in line with league norm
+    covNote.textContent = `${opp.name} 2025: ${(cov.man*100).toFixed(0)}% man \u00b7 ${(cov.zone*100).toFixed(0)}% zone (league avg: ${(LEAGUE_AVG_MAN*100).toFixed(0)}% man) \u00b7 most common shell: ${cov.dom} (${(cov.domPct*100).toFixed(0)}%). Real per-play charting via FTN Data/nflverse \u2014 slider auto-set, still adjustable.`;
+  } else if(covNote){
+    covNote.textContent = 'Select a Week to auto-fill from the opponent\'s real 2025 man/zone rates (FTN charting via nflverse).';
+  }
+
+  if(cbNote && currentPlayer.p==='WR'){
+    cbNote.textContent = `${opp.name}'s top corner: ${opp.cb}. Real shadow assignments aren't confirmed pre-season \u2014 toggle above applies an illustrative penalty if you expect this matchup.`;
+  }
+  updateLabels();
+}
+
+function updateLabels(){
+  document.getElementById('lbl-oppd').textContent = oppdLabels[oppdEl.value];
+  document.getElementById('lbl-script').textContent = scriptLabels[scriptEl.value];
+  document.getElementById('lbl-cov').textContent = covLabels[covEl.value];
+  document.getElementById('lbl-pace').textContent = paceLabels[paceEl.value];
+  document.getElementById('lbl-site').textContent = siteLabels[siteEl.value];
+  document.getElementById('lbl-wx').textContent = wxLabels[wxEl.value];
+  const rv = parseInt(roleEl.value,10);
+  document.getElementById('lbl-role').textContent = (rv>0?'+':'') + rv + '%';
+  document.getElementById('lbl-cb').textContent = cbShadowEl.value==='1' ? 'On \u2014 shadowed' : 'Off';
+  const sv = parseInt(splitEl.value,10);
+  const basePct = 50 + sv;
+  document.getElementById('lbl-split').textContent = basePct + '% / ' + (100-basePct) + '%';
+  syncAllSegs();
+}
+
+/* ====================================================================
+   TAP-FRIENDLY SEGMENTED CONTROLS
+   Mobile range sliders are hard to drag precisely. Each control below
+   keeps its original hidden <input> as the source of truth (so every
+   existing compute()/applyWeekAutofill() call that reads/sets .value
+   keeps working unchanged) and adds a row of tap targets on top of it.
+==================================================================== */
+const segRegistry = [];
+function buildSeg(inputId, values, labels){
+  const input = document.getElementById(inputId);
+  if(!input) return;
+  input.style.display = 'none';
+  const wrap = document.createElement('div');
+  wrap.className = 'segrow';
+  wrap.id = inputId+'-seg';
+  values.forEach((val, i)=>{
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'segbtn';
+    btn.textContent = labels[i];
+    btn.dataset.val = val;
+    btn.onclick = ()=>{
+      input.value = val;
+      input.dispatchEvent(new Event('input', {bubbles:true}));
+    };
+    wrap.appendChild(btn);
+  });
+  input.insertAdjacentElement('afterend', wrap);
+  segRegistry.push(inputId);
+  syncSeg(inputId);
+}
+function syncSeg(inputId){
+  const input = document.getElementById(inputId);
+  const wrap = document.getElementById(inputId+'-seg');
+  if(!input || !wrap) return;
+  [...wrap.children].forEach(btn=>{
+    btn.classList.toggle('active', String(btn.dataset.val) === String(input.value));
+  });
+}
+function syncAllSegs(){ segRegistry.forEach(syncSeg); }
+
+buildSeg('oppd',   [0,1,2,3,4], ['Elite','Above','Avg','Below','Poor']);
+buildSeg('script', [0,1,2,3,4], ['--','-','Even','+','++']);
+buildSeg('cov',    [0,1,2],     ['Man','Balanced','Zone']);
+buildSeg('cbShadow',[0,1],      ['Off','Shadowed']);
+buildSeg('pace',   [0,1,2],     ['Slow','Avg','Fast']);
+buildSeg('site',   [0,1],       ['Home','Away']);
+buildSeg('wx',     [0,1],       ['Dome/Clear','Wind/Rain']);
+buildSeg('role',   [-30,-15,0,10,20], ['-30%','-15%','0%','+10%','+20%']);
+buildSeg('splitSlider', [-30,-15,0,15,30], ['-30%','-15%','Even','+15%','+30%']);
+
+updateLabels();
+function compute(){
+  if(!currentPlayer) return;
+  const p = currentPlayer;
+  if(globalWeekEl.value){
+    const team = TEAMS[p.t];
+    if(team.sch[parseInt(globalWeekEl.value,10)-1] === 'BYE'){
+      document.getElementById('stat-strip').innerHTML = '';
+      document.getElementById('fpts-ppr').textContent='\u2014';
+      document.getElementById('fpts-half').textContent='\u2014';
+      document.getElementById('fpts-std').textContent='\u2014';
+      return;
+    }
+  }
+  // pull real pressure rate for the current opponent, if a week is selected
+  let pressure = null;
+  if(globalWeekEl.value){
+    const team = TEAMS[p.t];
+    const g = team.sch[parseInt(globalWeekEl.value,10)-1];
+    if(g && g !== 'BYE'){
+      const oppAb = g.replace('@','').replace('vs ','').trim();
+      const covData = COVERAGE_2025[oppAb];
+      if(covData) pressure = covData.pressure;
+    }
+  }
+  const opts = {
+    oppTier: parseInt(oppdEl.value,10),
+    script: parseInt(scriptEl.value,10),
+    cov: parseInt(covEl.value,10),
+    pace: parseInt(paceEl.value,10),
+    site: parseInt(siteEl.value,10),
+    wx: parseInt(wxEl.value,10),
+    role: parseInt(roleEl.value,10),
+    cbShadow: cbShadowEl.value==='1',
+    split: parseInt(splitEl.value,10),
+    pressure: pressure,
+  };
+  const result = computeProjection(p, opts);
+
+  const strip = document.getElementById('stat-strip');
+  strip.innerHTML = '';
+  result.lines.forEach(ln=>{
+    const delta = ((ln.val-ln.base)/Math.max(ln.base,0.01))*100;
+    const dcls = delta>2 ? 'up' : (delta<-2 ? 'down' : 'flat');
+    const arrow = delta>2 ? '\u25b2' : (delta<-2 ? '\u25bc' : '\u2014');
+    const box = document.createElement('div');
+    box.className='stat-box';
+    box.innerHTML = `<div class="lbl">${ln.label}</div>
+      <div class="val">${fmtN(ln.val)}</div>
+      <div class="delta ${dcls}">${arrow} ${fmtN(Math.abs(delta),0)}% vs. season avg (${fmtN(ln.base)})</div>`;
+    strip.appendChild(box);
+  });
+
+  document.getElementById('fpts-ppr').textContent = fmtN(result.ppr,1);
+  document.getElementById('fpts-half').textContent = fmtN(result.half,1);
+  document.getElementById('fpts-std').textContent = fmtN(result.std,1);
+}
+
+/* ====================================================================
+   SCHEDULE STRENGTH HEATMAP
+==================================================================== */
+function renderScheduleStrip(p){
+  const row = document.getElementById('heatRow');
+  row.innerHTML = '';
+  const team = TEAMS[p.t];
+  const curWk = globalWeekEl.value ? parseInt(globalWeekEl.value,10) : null;
+  team.sch.forEach((g, idx)=>{
+    const wk = idx+1;
+    const cell = document.createElement('div');
+    cell.className = 'heatcell';
+    if(g === 'BYE'){
+      cell.classList.add('bye');
+      cell.innerHTML = `<span class="wk">W${wk}</span><span class="op">BYE</span>`;
+    } else {
+      const away = g.startsWith('@');
+      const oppAb = g.replace('@','').replace('vs ','').trim();
+      const opp = TEAMS[oppAb];
+      const tier = (p.p==='RB') ? opp.rushD : opp.passD;
+      cell.classList.add('t'+tier);
+      cell.innerHTML = `<span class="wk">W${wk}</span><span class="op">${away?'@':''}${oppAb}</span>`;
+    }
+    if(curWk === wk) cell.classList.add('current');
+    row.appendChild(cell);
+  });
+}
+
+/* ====================================================================
+   RANKINGS VIEW
+==================================================================== */
+let rankPos = 'QB';
+let rankFmt = 'ppr';
+const rankTabsEl = document.getElementById('rankTabs');
+buildPosTabs(rankTabsEl, (pos)=>{ rankPos = pos; refreshPosTabs(rankTabsEl,rankPos); renderRankings(); }, ()=>rankPos);
+
+const rankTeamFilterEl = document.getElementById('rankTeamFilter');
+Object.keys(TEAMS).sort().forEach(ab=>{
+  const o = document.createElement('option'); o.value=ab; o.textContent = ab+' — '+TEAMS[ab].name;
+  rankTeamFilterEl.appendChild(o);
+});
+rankTeamFilterEl.onchange = renderRankings;
+
+document.getElementById('scoreToggle').querySelectorAll('button').forEach(btn=>{
+  btn.onclick = ()=>{
+    rankFmt = btn.dataset.fmt;
+    document.getElementById('scoreToggle').querySelectorAll('button').forEach(b=>b.classList.toggle('active', b===btn));
+    renderRankings();
+  };
+});
+
+function renderRankings(){
+  const wk = globalWeekEl.value ? parseInt(globalWeekEl.value,10) : null;
+  const teamF = rankTeamFilterEl.value;
+  document.getElementById('rankAutoNote').textContent = wk
+    ? `Ranking Week ${wk} projections \u2014 real opponent & site auto-applied per player, other situational inputs held neutral.`
+    : 'No week selected \u2014 ranking by season-baseline per-game average (neutral matchup).';
+
+  const rows = P.filter(p=>p.p===rankPos && (!teamF || p.t===teamF)).map(p=>{
+    const {opts, isBye, oppAb} = neutralOptsFor(p, wk);
+    if(isBye) return {p, isBye:true, pts:-1};
+    const result = computeProjection(p, opts);
+    const pts = result[rankFmt];
+    const keyLine = result.lines[result.lines.length-1 - (p.p==='QB'?2:0)] || result.lines[0];
+    let keyStatLabel;
+    if(p.p==='QB') keyStatLabel = `${fmtN(result.lines[0].val)} pass yd, ${fmtN(result.lines[1].val)} pass TD`;
+    else if(p.p==='RB') keyStatLabel = `${fmtN(result.lines[1].val)} rush yd, ${fmtN(result.lines[3].val)} rec`;
+    else keyStatLabel = `${fmtN(result.lines[1].val)} rec, ${fmtN(result.lines[2].val)} yd`;
+    return {p, isBye:false, pts, oppAb, keyStatLabel};
+  });
+
+  rows.sort((a,b)=> b.pts - a.pts);
+
+  const tbody = document.getElementById('rankBody');
+  tbody.innerHTML = '';
+  rows.forEach((r,i)=>{
+    const tr = document.createElement('tr');
+    if(r.isBye) tr.className = 'byerow';
+    const oppText = r.isBye ? 'BYE' : (r.oppAb ? ((TEAMS[r.p.t].sch[wk-1].startsWith('@')?'@':'vs ')+r.oppAb) : '\u2014');
+    tr.innerHTML = `<td class="rk">${i+1}</td>
+      <td class="nm">${r.p.n}${r.p.f?' \u26a0':''}</td>
+      <td class="tm">${r.p.t}</td>
+      <td class="oppcell">${oppText}</td>
+      <td>${r.isBye?'\u2014':r.keyStatLabel}</td>
+      <td class="pts">${r.isBye?'\u2014':fmtN(r.pts,1)}</td>
+      <td><button class="addbtn ${compareSet.has(r.p.n)?'on':''}" data-nm="${r.p.n}">${compareSet.has(r.p.n)?'Added':'+ Compare'}</button></td>`;
+    tbody.appendChild(tr);
+  });
+  tbody.querySelectorAll('.addbtn').forEach(btn=>{
+    btn.onclick = ()=>{ toggleCompare(btn.dataset.nm); renderRankings(); };
+  });
+}
+
+/* ====================================================================
+   COMPARE VIEW
+==================================================================== */
+let compareSet = new Set();
+let cmpPos = 'QB';
+const cmpTabsEl = document.getElementById('cmpTabs');
+buildPosTabs(cmpTabsEl, (pos)=>{ cmpPos = pos; refreshPosTabs(cmpTabsEl,cmpPos); renderCompareGrid(); }, ()=>cmpPos);
+
+const cmpTeamFilterEl = document.getElementById('cmpTeamFilter');
+Object.keys(TEAMS).sort().forEach(ab=>{
+  const o = document.createElement('option'); o.value=ab; o.textContent = ab+' — '+TEAMS[ab].name;
+  cmpTeamFilterEl.appendChild(o);
+});
+cmpTeamFilterEl.onchange = renderCompareGrid;
+const cmpSearchEl = document.getElementById('cmpSearchBox');
+cmpSearchEl.oninput = renderCompareGrid;
+
+function toggleCompare(name){
+  if(compareSet.has(name)) compareSet.delete(name);
+  else {
+    if(compareSet.size >= 4){ alert('Compare up to 4 players at a time \u2014 remove one first.'); return; }
+    compareSet.add(name);
+  }
+  renderCompareTray();
+  renderCompareTable();
+}
+
+function renderCompareTray(){
+  const tray = document.getElementById('cmpTray');
+  tray.innerHTML = '';
+  if(compareSet.size===0){ tray.innerHTML = '<span class="autonote">Add up to 4 players below to compare them side by side.</span>'; return; }
+  [...compareSet].forEach(name=>{
+    const chip = document.createElement('div');
+    chip.className = 'cmp-chip';
+    chip.innerHTML = `${name} <button data-nm="${name}">\u2715</button>`;
+    chip.querySelector('button').onclick = ()=>{ toggleCompare(name); renderCompareGrid(); };
+    tray.appendChild(chip);
+  });
+}
+
+function renderCompareGrid(){
+  const grid = document.getElementById('cmpGrid');
+  grid.innerHTML = '';
+  const teamF = cmpTeamFilterEl.value;
+  const q = cmpSearchEl.value.trim().toLowerCase();
+  const list = P.filter(p=>p.p===cmpPos && (!teamF || p.t===teamF) && (!q || p.n.toLowerCase().includes(q)));
+  document.getElementById('cmpEmptyNote').style.display = list.length ? 'none' : 'block';
+  list.forEach(p=>{
+    const c = document.createElement('div');
+    c.className = 'pcard' + (compareSet.has(p.n) ? ' selected':'');
+    c.innerHTML = `<div class="cmpbox ${compareSet.has(p.n)?'on':''}"></div><div class="nm">${p.n}</div><div class="tm">${p.t} \u00b7 ${p.p}</div><div class="headline">${headline(p)}</div>${p.f?`<div class="flagchip">FLAG</div>`:''}`;
+    c.onclick = ()=>{ toggleCompare(p.n); renderCompareGrid(); };
+    grid.appendChild(c);
+  });
+  renderCompareTray();
+  renderCompareTable();
+}
+
+function renderCompareTable(){
+  const resultEl = document.getElementById('cmpResult');
+  const names = [...compareSet];
+  if(names.length < 2){ resultEl.innerHTML = names.length===1 ? '<div class="autonote">Add at least one more player to compare.</div>' : ''; return; }
+  const wk = globalWeekEl.value ? parseInt(globalWeekEl.value,10) : null;
+  const players = names.map(n=>P.find(p=>p.n===n)).filter(Boolean);
+  // require same position group for a clean stat comparison
+  const positions = new Set(players.map(p=>p.p));
+  const results = players.map(p=>{
+    const {opts, isBye, oppAb} = neutralOptsFor(p, wk);
+    const result = isBye ? null : computeProjection(p, opts);
+    return {p, isBye, oppAb, result};
+  });
+
+  let html = `<table class="cmp-table"><thead><tr><th></th>`;
+  results.forEach(r=>{ html += `<th><div class="cmp-namehead">${r.p.n}</div><div class="tm">${r.p.t} \u00b7 ${r.p.p}</div></th>`; });
+  html += `</tr></thead><tbody>`;
+
+  html += `<tr><td class="rowlbl">Opponent</td>`;
+  results.forEach(r=>{
+    const oppText = r.isBye ? 'BYE' : (wk ? ((TEAMS[r.p.t].sch[wk-1].startsWith('@')?'@':'vs ')+r.oppAb) : '\u2014 (season avg)');
+    html += `<td>${oppText}</td>`;
+  });
+  html += `</tr>`;
+
+  if(positions.size===1){
+    const sampleLines = results.find(r=>r.result)?.result.lines || [];
+    sampleLines.forEach((_,li)=>{
+      const label = sampleLines[li].label;
+      const vals = results.map(r=> r.isBye ? null : r.result.lines[li].val);
+      const maxVal = Math.max(...vals.filter(v=>v!==null));
+      html += `<tr><td class="rowlbl">${label}</td>`;
+      results.forEach((r,i)=>{
+        if(r.isBye){ html += `<td>\u2014</td>`; return; }
+        const v = vals[i];
+        const isBest = v === maxVal && vals.filter(x=>x===maxVal).length===1;
+        html += `<td class="${isBest?'best':''}">${fmtN(v)}</td>`;
+      });
+      html += `</tr>`;
+    });
+  } else {
+    html += `<tr><td class="rowlbl" colspan="${results.length+1}" style="color:var(--text-faint);font-style:italic;">Mixed positions \u2014 stat lines aren't directly comparable, showing fantasy points only.</td></tr>`;
+  }
+
+  ['ppr','half','std'].forEach(fmt=>{
+    const label = fmt==='ppr'?'PPR Pts':fmt==='half'?'Half-PPR Pts':'Standard Pts';
+    const vals = results.map(r=> r.isBye ? null : r.result[fmt]);
+    const maxVal = Math.max(...vals.filter(v=>v!==null));
+    html += `<tr><td class="rowlbl">${label}</td>`;
+    results.forEach((r,i)=>{
+      if(r.isBye){ html += `<td>\u2014</td>`; return; }
+      const v = vals[i];
+      const isBest = v === maxVal && vals.filter(x=>x===maxVal).length===1;
+      html += `<td class="${isBest?'best':''}">${fmtN(v,1)}</td>`;
+    });
+    html += `</tr>`;
+  });
+
+  html += `</tbody></table>`;
+  resultEl.innerHTML = html;
+}
+
+/* ====================================================================
+   INIT
+==================================================================== */
+renderGrid();
+</script>
+</body>
+</html>
