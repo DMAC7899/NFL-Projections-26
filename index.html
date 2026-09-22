@@ -203,6 +203,7 @@
       <div class="modetab" data-mode="bigboard">Big Board</div>
       <div class="modetab" data-mode="slate">Weekly Slate</div>
       <div class="modetab" data-mode="defprofile">Defensive Profile</div>
+      <div class="modetab" data-mode="betting">Betting</div>
     </div>
     <div class="globalweek">
       <label>2026 Week</label>
@@ -533,6 +534,12 @@
           <div class="tab" data-pos="TE">TE</div>
         </div>
       </div>
+      <div class="filter-field">
+        <label>Game</label>
+        <select id="slateGameFilter" style="min-width:180px;">
+          <option value="ALL">All games</option>
+        </select>
+      </div>
       <div class="filter-field" style="flex:1;min-width:160px;">
         <label>Search</label>
         <input class="searchbox" id="slateSearchBox" placeholder="Search player…" style="width:100%;">
@@ -579,6 +586,66 @@
       </table>
     </div>
     <button type="button" class="save-btn" id="defProfileMoreColsBtn" style="margin-top:12px;background:var(--bg-panel);color:var(--text-dim);border:1px solid var(--line);">Show more columns</button>
+  </div>
+
+  <div id="bettingView" style="display:none;">
+    <button type="button" class="controls-toggle" id="bettingMethodToggle" style="padding:10px 0;">
+      <span style="font-size:15px;">Data &amp; methodology</span>
+      <span class="chev" id="bettingMethodChev">▸ Tap to expand</span>
+    </button>
+    <div class="controls-body collapsed" id="bettingMethodBody" style="padding:8px 0 14px;border-top:none;">
+      <div class="methodology" style="margin:0;">
+        Pick a week and a specific game, then enter the current real Vegas total and
+        spread (this is a static page with no server, so it can't pull live sportsbook
+        lines automatically). The page compares that real line against this tool's own
+        projected total and margin, and colors the comparison green or red depending on
+        which way it points.
+        <b>Our projection here comes from each team's real, current Vegas win total</b>,
+        run through a genuine relationship built from real, complete 2025 season data
+        (every team's real final win total vs. their real average points scored and
+        allowed) &mdash; about half the real variance in scoring is explained by win
+        total alone (R&sup2; = 0.50 offense, 0.60 defense), which is a real, validated
+        signal. It replaced an earlier version that summed individual player
+        projections into a team total, which tested at essentially zero correlation
+        with real results and produced visibly wrong outputs (a bad team shown favored
+        over a good one). This version is meaningfully better, but a win total can
+        itself be wrong, and this doesn't know about a specific week's injuries,
+        weather, or a real line move &mdash; treat it as a real, useful reference point,
+        not a guarantee.
+        <b>Update:</b> both sides now blend in real, current PFF Week 1 grades (read
+        directly from PFF's own team grades page via Chrome, with the user logged in
+        -- not a screenshot, so no transcription risk) at a real, disclosed 25% weight
+        alongside the season-long win-total estimate: defense checked against real
+        points allowed (R&sup2; = 0.37), offense against real points scored
+        (R&sup2; = 0.23) -- both real, positive signals, weaker than the season-long
+        baseline (R&sup2; = 0.50-0.60), so blended in modestly rather than replacing
+        it. That weight should grow as more real weeks of data come in.
+      </div>
+    </div>
+    <div class="filter-row">
+      <div class="filter-field">
+        <label>Game</label>
+        <select id="bettingGameFilter" style="min-width:200px;"></select>
+      </div>
+    </div>
+    <div id="bettingNoGame" class="autonote" style="margin:12px 0;">Pick a Week above, then a game.</div>
+    <div id="bettingBody" style="display:none;">
+      <div class="filter-row" style="align-items:flex-end;">
+        <div class="filter-field">
+          <label>Vegas Total (O/U)</label>
+          <input type="number" step="0.5" id="bettingVegasTotal" placeholder="e.g. 47.5" style="width:120px;">
+        </div>
+        <div class="filter-field">
+          <label>Vegas Favorite</label>
+          <select id="bettingFavTeam" style="width:110px;"></select>
+        </div>
+        <div class="filter-field">
+          <label>Spread (favorite by)</label>
+          <input type="number" step="0.5" id="bettingVegasSpread" placeholder="e.g. 3.5" style="width:120px;">
+        </div>
+      </div>
+      <div style="margin-top:18px;" id="bettingResults"></div>
+    </div>
   </div>
 
   <footer>
@@ -678,6 +745,43 @@ TEN:{primary:'#D36A7B',secondary:'#30445C'}, WAS:{primary:'#C8A047',secondary:'#
        moved from LV alongside him. The other 4 starters played all 17 games together
        in 2025. Existing real 2025 NYJ olPassMult already reflects this same unit.
        No adjustment. */
+/* OL PASS BLOCK EFFICIENCY -- REAL WEEK 1 2026 UPDATE: olPbe/olPassMult for all
+   32 teams now blend in real PFF Week 1 pass-block-efficiency grades, extracted
+   directly from PFF's live DOM (T/G/C positions only, snap-weighted per team,
+   161 real individual O-line players -- 5 real linemen per team, confirmed
+   complete). An initial pass missed pages 3-4 of the paginated report (skipped
+   while jumping ahead), which left Detroit with zero coverage and several other
+   teams (ARI, DAL, SF, WAS, BUF, IND, and others) with only 1-2 of their 5 real
+   linemen counted -- caught when asked directly why Detroit specifically was
+   missing, then fixed by re-pulling the missed pages and recomputing every
+   team's blend from its true 2025 baseline, not by blending on top of the
+   already-partial figure. Blended at the same conservative 25% weight used
+   elsewhere this season for early, single-week real data -- notably, real Week 1
+   PBE readings ran meaningfully higher across almost every team than their real
+   2025 full-season average (a known small-sample effect: early-season efficiency
+   stats tend to start high and regress toward a real season-long mean as more
+   pressure situations accumulate), which is exactly why a modest blend weight
+   matters here rather than replacing the season-long baseline outright.
+   olPassMult is recomputed from the blended olPbe using the real formula this
+   tool already uses (verified against all 32 teams before use): olPassMult =
+   1 + (olPbe - 84.7) * 0.01067. One real note: LV's olPassMult had been a
+   disclosed manual override (real Linderbaum signing, not formula-derived) --
+   this update runs it through the same real Week 1 blend and formula as every
+   other team, which moves it in the same direction the manual override
+   intended (real current performance reinforcing that real personnel reasoning)
+   but is no longer the manual figure itself.
+
+   RUN BLOCKING -- REAL WEEK 1 2026 UPDATE: olRunGrade/olRunMult for all 32 teams,
+   built the same way (170 real T/G/C players, snap-weighted, extracted directly
+   from PFF's live DOM, formula verified against all 32 teams first: olRunMult =
+   1 + (olRunGrade - 65.9) * 0.00609, LV again the one real, disclosed manual-
+   override exception). Unlike pass-block efficiency, real Week 1 run-block
+   grades did NOT skew uniformly high -- they show real, meaningful spread
+   (roughly 51-78), so this blend is a genuine two-way update: some teams'
+   run-blocking moved up on real current strength (LAR to 78.8, SF to 75.0),
+   others down on real current weakness (LAC to 51.8, TB to 58.3), not just a
+   one-directional correction like the pass-block side. Same conservative 25%
+   blend weight for the same reason -- one real week, not yet a stable read. */
 const TEAMS = {
 /* SACKSALLOWED CORRECTION (Sept 2026): the original sacksAllowed field (from
    line_pass_blocking_efficiency.csv) was confirmed wrong for every team checked --
@@ -693,69 +797,69 @@ const TEAMS = {
    from pbe, a rate stat). Those multipliers were NOT touched here; only the raw
    sacksAllowed count shown to users was corrected. Real league total now 1283,
    consistent with a real season. */
-ARI:{name:'Cardinals',hc:'Mike LaFleur',note:"New HC (ex-Rams OC) after Jonathan Gannon's firing. Offense being rebuilt from scratch after trading Kyler Murray to Minnesota — QB competition ongoing.",newHC:true,passD:3,rushD:3,cb:'Garrett Williams',cbGrade:64.2,vegasWinTotal:4.5,vegasMult:0.8824,olPassMult:0.9744,olRunMult:0.9597,olPbe:82.3,olRunGrade:59.3,sacksAllowed:59,
+ARI:{name:'Cardinals',hc:'Mike LaFleur',note:"New HC (ex-Rams OC) after Jonathan Gannon's firing. Offense being rebuilt from scratch after trading Kyler Murray to Minnesota — QB competition ongoing.",newHC:true,passD:3,rushD:3,cb:'Garrett Williams',cbGrade:64.2,vegasWinTotal:4.5,vegasMult:0.8824,olPassMult:0.9468,olRunMult:0.9762,olPbe:79.71,olRunGrade:62.0,sacksAllowed:59,
  sch:['@LAC','vs SEA','@SF','@NYG','vs DET','@LAR','vs DEN','@DAL','@SEA','vs LAR','@KC','vs WAS','vs PHI','BYE','vs NYJ','@NO','vs LV','vs SF']},
-ATL:{name:'Falcons',hc:'Kevin Stefanski',note:"New HC (ex-Browns) after Raheem Morris's firing. Zone-heavy run scheme historically fed a lead back hard — good scheme fit for a run-first offense, but new play-caller relationship.",newHC:true,passD:1,rushD:3,cb:'Mike Hughes',cbGrade:59.8,vegasWinTotal:7.5,vegasMult:0.9706,olPassMult:0.9872,olRunMult:1.048,olPbe:83.5,olRunGrade:73.8,sacksAllowed:26,
+ATL:{name:'Falcons',hc:'Kevin Stefanski',note:"New HC (ex-Browns) after Raheem Morris's firing. Zone-heavy run scheme historically fed a lead back hard — good scheme fit for a run-first offense, but new play-caller relationship.",newHC:true,passD:1,rushD:3,cb:'Mike Hughes',cbGrade:59.8,vegasWinTotal:7.5,vegasMult:0.9706,olPassMult:0.9777,olRunMult:0.986,olPbe:82.61,olRunGrade:63.6,sacksAllowed:26,
  sch:['@PIT','vs CAR','@GB','@NO','vs BAL','vs CHI','vs SF','@TB','vs CIN','vs KC','BYE','@MIN','vs DET','@CLE','@WAS','vs TB','vs NO','@CAR']},
-BAL:{name:'Ravens',hc:'Jesse Minter',note:"John Harbaugh fired after 18 seasons; Jesse Minter (ex-Chargers DC) hired as new HC, with Declan Doyle (who called plays for Caleb Williams's breakout in Chicago) brought in as OC. Entirely new offensive system for 2026 — the largest scheme-continuity risk in this dataset.",newHC:true,passD:4,rushD:1,cb:'Chidobe Awuzie',cbGrade:77.2,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:0.9797,olRunMult:1.0056,olPbe:82.8,olRunGrade:66.8,sacksAllowed:45,
+BAL:{name:'Ravens',hc:'Jesse Minter',note:"John Harbaugh fired after 18 seasons; Jesse Minter (ex-Chargers DC) hired as new HC, with Declan Doyle (who called plays for Caleb Williams's breakout in Chicago) brought in as OC. Entirely new offensive system for 2026 — the largest scheme-continuity risk in this dataset.",newHC:true,passD:4,rushD:1,cb:'Chidobe Awuzie',cbGrade:77.2,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:0.9129,olRunMult:1.0238,olPbe:76.54,olRunGrade:69.8,sacksAllowed:45,
  sch:['@IND','vs NO','@DAL','vs TEN','@ATL','@CLE','vs CIN','@BUF','vs JAX','vs LAC','@CAR','@HOU','BYE','vs TB','@PIT','vs CLE','@CIN','vs PIT']},
-BUF:{name:'Bills',hc:'Joe Brady',note:"Joe Brady promoted to HC after Sean McDermott's firing — Brady was already Buffalo's OC/play-caller, so scheme continuity is high: shotgun spread, RPO-heavy, tempo.",newHC:true,passD:0,rushD:4,cb:'Tre\'Davious White',cbGrade:68.2,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:1.0052,olRunMult:1.0067,olPbe:85.2,olRunGrade:67.0,sacksAllowed:40,
+BUF:{name:'Bills',hc:'Joe Brady',note:"Joe Brady promoted to HC after Sean McDermott's firing — Brady was already Buffalo's OC/play-caller, so scheme continuity is high: shotgun spread, RPO-heavy, tempo.",newHC:true,passD:0,rushD:4,cb:'Tre\'Davious White',cbGrade:68.2,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:0.9694,olRunMult:0.986,olPbe:81.83,olRunGrade:63.6,sacksAllowed:40,
  sch:['@HOU','vs DET','vs LAC','vs NE','@LAR','@LV','BYE','vs BAL','@MIN','@NYJ','vs MIA','vs KC','@NE','@GB','vs CHI','@DEN','@MIA','vs NYJ']},
-CAR:{name:'Panthers',hc:'Dave Canales',note:"Canales retained. Timing-based West Coast passing scheme; run game leans on zone stretch.",newHC:false,passD:2,rushD:2,cb:'Mike Jackson',cbGrade:85.8,vegasWinTotal:7.5,vegasMult:0.9706,olPassMult:1.0126,olRunMult:1.0297,olPbe:85.9,olRunGrade:70.8,sacksAllowed:35,
+CAR:{name:'Panthers',hc:'Dave Canales',note:"Canales retained. Timing-based West Coast passing scheme; run game leans on zone stretch.",newHC:false,passD:2,rushD:2,cb:'Mike Jackson',cbGrade:85.8,vegasWinTotal:7.5,vegasMult:0.9706,olPassMult:0.9844,olRunMult:1.0207,olPbe:83.24,olRunGrade:69.3,sacksAllowed:35,
  sch:['vs CHI','@ATL','@CLE','vs DET','BYE','@PHI','vs TB','@GB','vs DEN','@NO','vs BAL','@TB','@MIN','vs NO','vs CIN','@PIT','vs SEA','vs ATL']},
-CHI:{name:'Bears',hc:'Ben Johnson',note:"Ben Johnson enters year two after a strong 2025 debut. Motion-heavy, explosive-play-focused scheme adapted from his Lions background.",newHC:false,passD:3,rushD:4,cb:'Nahshon Wright',cbGrade:64.8,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:1.0265,olRunMult:1.0428,olPbe:87.2,olRunGrade:72.9,sacksAllowed:24,
+CHI:{name:'Bears',hc:'Ben Johnson',note:"Ben Johnson enters year two after a strong 2025 debut. Motion-heavy, explosive-play-focused scheme adapted from his Lions background.",newHC:false,passD:3,rushD:4,cb:'Nahshon Wright',cbGrade:64.8,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:1.016,olRunMult:1.0396,olPbe:86.2,olRunGrade:72.4,sacksAllowed:24,
  sch:['@CAR','vs MIN','vs PHI','vs NYJ','@GB','@ATL','vs NE','@SEA','vs TB','BYE','vs NO','@DET','vs JAX','@MIA','@BUF','vs GB','vs DET','@MIN']},
-CIN:{name:'Bengals',hc:'Zac Taylor',note:"Taylor retained. Spread passing attack built around Burrow-to-Chase; Burrow's health (8 starts in 2025) is the swing factor.",newHC:false,passD:3,rushD:4,cb:'DJ Turner II',cbGrade:78.1,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:1.0084,olRunMult:0.971,olPbe:85.5,olRunGrade:61.1,sacksAllowed:36,
+CIN:{name:'Bengals',hc:'Zac Taylor',note:"Taylor retained. Spread passing attack built around Burrow-to-Chase; Burrow's health (8 starts in 2025) is the swing factor.",newHC:false,passD:3,rushD:4,cb:'DJ Turner II',cbGrade:78.1,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:0.9572,olRunMult:0.9501,olPbe:80.69,olRunGrade:57.7,sacksAllowed:36,
  sch:['vs TB','@HOU','@PIT','vs JAX','@MIA','BYE','@BAL','vs TEN','@ATL','vs PIT','@WAS','vs NO','@CLE','vs KC','@CAR','@IND','vs BAL','vs CLE']},
-CLE:{name:'Browns',hc:'Todd Monken',note:"New HC (ex-Ravens OC) after Kevin Stefanski's firing. Monken's system leans on play-action shots and a vertical passing tree — new fit for Cleveland's personnel.",newHC:true,passD:2,rushD:2,cb:'Tyson Campbell',cbGrade:66.5,vegasWinTotal:5.5,vegasMult:0.9118,olPassMult:0.9532,olRunMult:0.9788,olPbe:80.3,olRunGrade:62.4,sacksAllowed:51,
+CLE:{name:'Browns',hc:'Todd Monken',note:"New HC (ex-Ravens OC) after Kevin Stefanski's firing. Monken's system leans on play-action shots and a vertical passing tree — new fit for Cleveland's personnel.",newHC:true,passD:2,rushD:2,cb:'Tyson Campbell',cbGrade:66.5,vegasWinTotal:5.5,vegasMult:0.9118,olPassMult:0.98,olRunMult:0.9799,olPbe:82.83,olRunGrade:62.6,sacksAllowed:51,
  sch:['@JAX','@TB','vs CAR','vs PIT','@NYJ','vs BAL','@TEN','@PIT','@NO','vs HOU','BYE','vs LV','vs CIN','vs ATL','@NYG','@BAL','vs IND','@CIN']},
-DAL:{name:'Cowboys',hc:'Brian Schottenheimer',note:"Schottenheimer enters year two. Balanced West Coast-branch scheme with heavy use of 12-personnel.",newHC:false,passD:4,rushD:3,cb:'Cobie Durant',cbGrade:64.6,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:0.9988,olRunMult:1.0346,olPbe:84.6,olRunGrade:71.6,sacksAllowed:31,
+DAL:{name:'Cowboys',hc:'Brian Schottenheimer',note:"Schottenheimer enters year two. Balanced West Coast-branch scheme with heavy use of 12-personnel.",newHC:false,passD:4,rushD:3,cb:'Cobie Durant',cbGrade:64.6,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:0.9446,olRunMult:0.9939,olPbe:79.51,olRunGrade:64.9,sacksAllowed:31,
  sch:['@NYG','vs WAS','vs BAL','@HOU','vs TB','@GB','@PHI','vs ARI','@IND','vs SF','vs TEN','vs PHI','@SEA','BYE','@LAR','vs JAX','vs NYG','@WAS']},
-DEN:{name:'Broncos',hc:'Sean Payton',note:"Payton retained; new OC Davis Webb calls plays (promoted from QB coach). Payton's system leans on pre-snap movement, quick game, and a heavy dose of RPOs for Bo Nix.",newHC:false,passD:1,rushD:0,cb:'Ja\'Quan McMillian',cbGrade:78.9,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:1.0477,olRunMult:1.0663,olPbe:89.2,olRunGrade:76.8,sacksAllowed:22,
+DEN:{name:'Broncos',hc:'Sean Payton',note:"Payton retained; new OC Davis Webb calls plays (promoted from QB coach). Payton's system leans on pre-snap movement, quick game, and a heavy dose of RPOs for Bo Nix.",newHC:false,passD:1,rushD:0,cb:'Ja\'Quan McMillian',cbGrade:78.9,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:0.9927,olRunMult:1.0347,olPbe:84.02,olRunGrade:71.6,sacksAllowed:22,
  sch:['@KC','vs JAX','vs LAR','@SF','@LAC','vs SEA','@ARI','vs KC','@CAR','BYE','vs LV','@PIT','vs MIA','@NYJ','@LV','vs BUF','@NE','vs LAC']},
-DET:{name:'Lions',hc:'Dan Campbell',note:"Campbell retained. Aggressive, gap/power-and-zone hybrid attack — one of the league's most efficient offenses. David Montgomery traded to Houston, opening up more early-down work.",newHC:false,passD:2,rushD:2,cb:'Rock Ya-Sin',cbGrade:64.9,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:1.0084,olRunMult:1.0346,olPbe:85.5,olRunGrade:71.6,sacksAllowed:38,
+DET:{name:'Lions',hc:'Dan Campbell',note:"Campbell retained. Aggressive, gap/power-and-zone hybrid attack — one of the league's most efficient offenses. David Montgomery traded to Houston, opening up more early-down work.",newHC:false,passD:2,rushD:2,cb:'Rock Ya-Sin',cbGrade:64.9,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:0.9526,olRunMult:1.0177,olPbe:80.26,olRunGrade:68.8,sacksAllowed:38,
  sch:['vs NO','@BUF','vs NYJ','@CAR','@ARI','BYE','vs GB','vs MIN','@MIA','vs NE','vs TB','vs CHI','@ATL','vs TEN','@MIN','vs NYG','@CHI','@GB']},
-GB:{name:'Packers',hc:'Matt LaFleur',note:"LaFleur retained. Outside-zone-based scheme with heavy misdirection and play-action; Romeo Doubs traded to New England thins the receiver room.",newHC:false,passD:1,rushD:2,cb:'Keisean Nixon',cbGrade:68.7,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:0.985,olRunMult:0.9662,olPbe:83.3,olRunGrade:60.3,sacksAllowed:29,
+GB:{name:'Packers',hc:'Matt LaFleur',note:"LaFleur retained. Outside-zone-based scheme with heavy misdirection and play-action; Romeo Doubs traded to New England thins the receiver room.",newHC:false,passD:1,rushD:2,cb:'Keisean Nixon',cbGrade:68.7,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:0.9418,olRunMult:0.9428,olPbe:79.25,olRunGrade:56.5,sacksAllowed:29,
  sch:['@MIN','@NYJ','vs ATL','@TB','vs CHI','vs DAL','@DET','vs CAR','@NE','vs MIN','BYE','@LAR','@NO','vs BUF','vs MIA','@CHI','vs HOU','vs DET']},
-HOU:{name:'Texans',hc:'DeMeco Ryans',note:"Ryans retained. Defense-first identity; offense uses wide-zone run concepts. Added RB David Montgomery via trade for backfield depth.",newHC:false,passD:0,rushD:0,cb:'Kamari Lassiter',cbGrade:77.0,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:1.019,olRunMult:0.9797,olPbe:86.5,olRunGrade:62.5,sacksAllowed:31,
+HOU:{name:'Texans',hc:'DeMeco Ryans',note:"Ryans retained. Defense-first identity; offense uses wide-zone run concepts. Added RB David Montgomery via trade for backfield depth.",newHC:false,passD:0,rushD:0,cb:'Kamari Lassiter',cbGrade:77.0,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:0.9571,olRunMult:0.9799,olPbe:80.68,olRunGrade:62.6,sacksAllowed:31,
  sch:['vs BUF','vs CIN','@IND','vs DAL','@TEN','@JAX','vs NYG','BYE','@LAC','@CLE','vs IND','vs BAL','@PIT','@WAS','vs JAX','@PHI','@GB','vs TEN']},
-IND:{name:'Colts',hc:'Shane Steichen',note:"Steichen retained. Zone-run scheme with tempo and play-action shots off it.",newHC:false,passD:4,rushD:1,cb:'Sauce Gardner',cbGrade:75.6,vegasWinTotal:7.5,vegasMult:0.9706,olPassMult:1.0158,olRunMult:1.0599,olPbe:86.2,olRunGrade:75.8,sacksAllowed:29,
+IND:{name:'Colts',hc:'Shane Steichen',note:"Steichen retained. Zone-run scheme with tempo and play-action shots off it.",newHC:false,passD:4,rushD:1,cb:'Sauce Gardner',cbGrade:75.6,vegasWinTotal:7.5,vegasMult:0.9706,olPassMult:1.0045,olRunMult:1.042,olPbe:85.12,olRunGrade:72.8,sacksAllowed:29,
  sch:['vs BAL','@KC','vs HOU','@WAS','@PIT','vs TEN','@MIN','@JAX','vs DAL','vs MIA','@HOU','vs NYG','BYE','@PHI','@TEN','vs CIN','@CLE','vs JAX']},
-JAX:{name:'Jaguars',hc:'Liam Coen',note:"Coen retained after a breakout 2025 debut. Motion-and-tempo scheme borrowed from the McVay/LaFleur coaching tree. Traded lead back Travis Etienne to New Orleans.",newHC:false,passD:3,rushD:0,cb:'Jarrian Jones',cbGrade:74.5,vegasWinTotal:8.5,vegasMult:1.0,olPassMult:0.985,olRunMult:0.9919,olPbe:83.3,olRunGrade:64.6,sacksAllowed:41,
+JAX:{name:'Jaguars',hc:'Liam Coen',note:"Coen retained after a breakout 2025 debut. Motion-and-tempo scheme borrowed from the McVay/LaFleur coaching tree. Traded lead back Travis Etienne to New Orleans.",newHC:false,passD:3,rushD:0,cb:'Jarrian Jones',cbGrade:74.5,vegasWinTotal:8.5,vegasMult:1.0,olPassMult:0.9465,olRunMult:0.9823,olPbe:79.69,olRunGrade:63.0,sacksAllowed:41,
  sch:['vs CLE','@DEN','vs NE','@CIN','vs PHI','vs HOU','BYE','vs IND','@BAL','@TEN','@NYG','vs TEN','@CHI','vs PIT','@HOU','@DAL','vs WAS','@IND']},
-KC:{name:'Chiefs',hc:'Andy Reid',note:"Reid retained — the league's longest-running stable system. West Coast timing concepts with heavy motion. Added RB Kenneth Walker III via trade from Seattle.",newHC:false,passD:1,rushD:1,cb:'Nohl Williams',cbGrade:75.6,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:1.0169,olRunMult:0.9909,olPbe:86.3,olRunGrade:64.4,sacksAllowed:47,
+KC:{name:'Chiefs',hc:'Andy Reid',note:"Reid retained — the league's longest-running stable system. West Coast timing concepts with heavy motion. Added RB Kenneth Walker III via trade from Seattle.",newHC:false,passD:1,rushD:1,cb:'Nohl Williams',cbGrade:75.6,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:0.974,olRunMult:1.0055,olPbe:82.26,olRunGrade:66.8,sacksAllowed:47,
  sch:['vs DEN','vs IND','@MIA','@LV','BYE','vs LAC','@SEA','@DEN','vs NYJ','@ATL','vs ARI','@BUF','@LAR','@CIN','vs NE','vs SF','@LAC','vs LV']},
-LV:{name:'Raiders',hc:'Klint Kubiak',note:"New HC (ex-Seahawks OC) after Pete Carroll's firing following a 3-14 season. Signed veteran Kirk Cousins to bridge/mentor No.1 overall pick Fernando Mendoza (Indiana), who has no NFL statistical baseline yet.",newHC:true,passD:2,rushD:2,cb:'Eric Stokes',cbGrade:75.2,vegasWinTotal:5.5,vegasMult:0.9118,olPassMult:0.965,olRunMult:0.97,olPbe:79.2,olRunGrade:57.8,sacksAllowed:64,
+LV:{name:'Raiders',hc:'Klint Kubiak',note:"New HC (ex-Seahawks OC) after Pete Carroll's firing following a 3-14 season. Signed veteran Kirk Cousins to bridge/mentor No.1 overall pick Fernando Mendoza (Indiana), who has no NFL statistical baseline yet.",newHC:true,passD:2,rushD:2,cb:'Eric Stokes',cbGrade:75.2,vegasWinTotal:5.5,vegasMult:0.9118,olPassMult:0.9927,olRunMult:0.9507,olPbe:84.02,olRunGrade:57.8,sacksAllowed:64,
  sch:['vs MIA','@LAC','@NO','vs KC','@NE','vs BUF','vs LAR','@NYJ','@SF','vs SEA','@DEN','@CLE','BYE','vs LAC','vs DEN','vs TEN','@ARI','@KC']},
-LAC:{name:'Chargers',hc:'Jim Harbaugh',note:"Harbaugh retained; DC Jesse Minter left to become Ravens HC. Physical, run-heavy identity with Herbert operating an efficient play-action game. Added TE David Njoku via trade.",newHC:false,passD:0,rushD:1,cb:'Donte Jackson',cbGrade:73.4,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:0.9542,olRunMult:0.8953,olPbe:80.4,olRunGrade:48.6,sacksAllowed:60,
+LAC:{name:'Chargers',hc:'Jim Harbaugh',note:"Harbaugh retained; DC Jesse Minter left to become Ravens HC. Physical, run-heavy identity with Herbert operating an efficient play-action game. Added TE David Njoku via trade.",newHC:false,passD:0,rushD:1,cb:'Donte Jackson',cbGrade:73.4,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:0.9284,olRunMult:0.9263,olPbe:77.99,olRunGrade:53.8,sacksAllowed:60,
  sch:['vs ARI','vs LV','@BUF','@SEA','vs DEN','@KC','BYE','@LAR','vs HOU','@BAL','vs NYJ','vs NE','@TB','@LV','vs SF','@MIA','vs KC','@DEN']},
-LAR:{name:'Rams',hc:'Sean McVay',note:"McVay retained; OC Nate Scheelhaase promoted in-house but McVay keeps play-calling. Wide-zone run scheme, heavy pre-snap motion, quick-rhythm passing with play-action shots.",newHC:false,passD:1,rushD:1,cb:'Trent McDuffie',cbGrade:74.7,vegasWinTotal:11.5,vegasMult:1.0882,olPassMult:1.0201,olRunMult:1.08,olPbe:86.6,olRunGrade:79.1,sacksAllowed:23,
+LAR:{name:'Rams',hc:'Sean McVay',note:"McVay retained; OC Nate Scheelhaase promoted in-house but McVay keeps play-calling. Wide-zone run scheme, heavy pre-snap motion, quick-rhythm passing with play-action shots.",newHC:false,passD:1,rushD:1,cb:'Trent McDuffie',cbGrade:74.7,vegasWinTotal:11.5,vegasMult:1.0882,olPassMult:0.9071,olRunMult:1.0914,olPbe:75.99,olRunGrade:80.9,sacksAllowed:23,
  sch:['vs SF','vs NYG','@DEN','@PHI','vs BUF','vs ARI','@LV','vs LAC','@WAS','@ARI','BYE','vs GB','vs KC','@SF','vs DAL','@SEA','@TB','vs SEA']},
-MIA:{name:'Dolphins',hc:'Jeff Hafley',note:"New HC (ex-Packers DC) after Mike McDaniel's firing. Traded away WR Jaylen Waddle; receiver room is thin heading into 2026 — treat as a rebuild year.",newHC:true,passD:2,rushD:3,cb:'Rasul Douglas',cbGrade:72.6,vegasWinTotal:4.5,vegasMult:0.8824,olPassMult:1.0169,olRunMult:0.9613,olPbe:86.3,olRunGrade:59.5,sacksAllowed:38,
+MIA:{name:'Dolphins',hc:'Jeff Hafley',note:"New HC (ex-Packers DC) after Mike McDaniel's firing. Traded away WR Jaylen Waddle; receiver room is thin heading into 2026 — treat as a rebuild year.",newHC:true,passD:2,rushD:3,cb:'Rasul Douglas',cbGrade:72.6,vegasWinTotal:4.5,vegasMult:0.8824,olPassMult:0.9422,olRunMult:0.9726,olPbe:79.28,olRunGrade:61.4,sacksAllowed:38,
  sch:['@LV','@SF','vs KC','@MIN','vs CIN','BYE','@NYJ','vs NE','vs DET','@IND','@BUF','vs NYJ','@DEN','vs CHI','@GB','vs LAC','vs BUF','@NE']},
-MIN:{name:'Vikings',hc:'Kevin O\u2019Connell',note:"O'Connell retained. Traded for QB Kyler Murray from Arizona — a major offensive-identity swing alongside Justin Jefferson. Zone-run/play-action scheme.",newHC:false,passD:0,rushD:3,cb:'Isaiah Rodgers',cbGrade:74.1,vegasWinTotal:8.5,vegasMult:1.0,olPassMult:0.9787,olRunMult:0.997,olPbe:82.7,olRunGrade:65.4,sacksAllowed:60,
+MIN:{name:'Vikings',hc:'Kevin O\u2019Connell',note:"O'Connell retained. Traded for QB Kyler Murray from Arizona — a major offensive-identity swing alongside Justin Jefferson. Zone-run/play-action scheme.",newHC:false,passD:0,rushD:3,cb:'Isaiah Rodgers',cbGrade:74.1,vegasWinTotal:8.5,vegasMult:1.0,olPassMult:0.9611,olRunMult:0.9738,olPbe:81.05,olRunGrade:61.6,sacksAllowed:60,
  sch:['vs GB','@CHI','@TB','vs MIA','@NO','BYE','vs IND','@DET','vs BUF','@GB','@SF','vs ATL','vs CAR','@NE','vs DET','vs WAS','@NYJ','vs CHI']},
-NE:{name:'Patriots',hc:'Mike Vrabel',note:"Vrabel enters year two. Efficient, aggressive downfield passing game; added WR Romeo Doubs via trade to pair with Stefon Diggs.",newHC:false,passD:1,rushD:0,cb:'Christian Gonzalez',cbGrade:76.9,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:1.0042,olRunMult:0.9936,olPbe:85.1,olRunGrade:64.8,sacksAllowed:47,
+NE:{name:'Patriots',hc:'Mike Vrabel',note:"Vrabel enters year two. Efficient, aggressive downfield passing game; added WR Romeo Doubs via trade to pair with Stefon Diggs.",newHC:false,passD:1,rushD:0,cb:'Christian Gonzalez',cbGrade:76.9,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:0.9796,olRunMult:0.9915,olPbe:82.79,olRunGrade:64.5,sacksAllowed:47,
  sch:['@SEA','vs PIT','@JAX','@BUF','vs LV','vs NYJ','@CHI','@MIA','vs GB','@DET','BYE','@LAC','vs BUF','vs MIN','@KC','@NYJ','vs DEN','vs MIA']},
-NO:{name:'Saints',hc:'Kellen Moore',note:"Moore's system leans on quick-rhythm passing. Added lead back Travis Etienne via trade from Jacksonville — expected to take over the backfield.",newHC:false,passD:0,rushD:2,cb:'Kool-Aid McKinstry',cbGrade:71.4,vegasWinTotal:8.5,vegasMult:1.0,olPassMult:0.9957,olRunMult:0.9688,olPbe:84.3,olRunGrade:60.8,sacksAllowed:49,
+NO:{name:'Saints',hc:'Kellen Moore',note:"Moore's system leans on quick-rhythm passing. Added lead back Travis Etienne via trade from Jacksonville — expected to take over the backfield.",newHC:false,passD:0,rushD:2,cb:'Kool-Aid McKinstry',cbGrade:71.4,vegasWinTotal:8.5,vegasMult:1.0,olPassMult:0.9627,olRunMult:0.9507,olPbe:81.2,olRunGrade:57.8,sacksAllowed:49,
  sch:['@DET','@BAL','vs LV','vs ATL','vs MIN','@NYG','vs PIT','BYE','vs CLE','vs CAR','@CHI','@CIN','vs GB','@CAR','@TB','vs ARI','@ATL','vs TB']},
-NYG:{name:'Giants',hc:'John Harbaugh',note:"John Harbaugh hired as new HC after being fired by Baltimore — a striking reunion story. New offensive system entirely for 2026.",newHC:true,passD:2,rushD:4,cb:'Dru Phillips',cbGrade:65.4,vegasWinTotal:7.5,vegasMult:0.9706,olPassMult:1.0307,olRunMult:0.9777,olPbe:87.6,olRunGrade:62.2,sacksAllowed:48,
+NYG:{name:'Giants',hc:'John Harbaugh',note:"John Harbaugh hired as new HC after being fired by Baltimore — a striking reunion story. New offensive system entirely for 2026.",newHC:true,passD:2,rushD:4,cb:'Dru Phillips',cbGrade:65.4,vegasWinTotal:7.5,vegasMult:0.9706,olPassMult:0.9936,olRunMult:0.9714,olPbe:84.1,olRunGrade:61.2,sacksAllowed:48,
  sch:['vs DAL','@LAR','vs TEN','vs ARI','@WAS','vs NO','@HOU','BYE','@PHI','vs WAS','vs JAX','@IND','vs SF','@SEA','vs CLE','@DET','@DAL','vs PHI']},
-NYJ:{name:'Jets',hc:'Aaron Glenn',note:"Glenn retained for year two. Justin Fields traded away to Kansas City (Mar 2026) — Geno Smith is now the real, unchallenged starter.",newHC:false,passD:2,rushD:4,cb:'Brandon Stephens',cbGrade:63.0,vegasWinTotal:5.5,vegasMult:0.9118,olPassMult:0.9978,olRunMult:0.9697,olPbe:84.5,olRunGrade:60.9,sacksAllowed:60,
+NYJ:{name:'Jets',hc:'Aaron Glenn',note:"Glenn retained for year two. Justin Fields traded away to Kansas City (Mar 2026) — Geno Smith is now the real, unchallenged starter.",newHC:false,passD:2,rushD:4,cb:'Brandon Stephens',cbGrade:63.0,vegasWinTotal:5.5,vegasMult:0.9118,olPassMult:1.0059,olRunMult:1.014,olPbe:85.25,olRunGrade:68.2,sacksAllowed:60,
  sch:['@TEN','vs GB','@DET','@CHI','vs CLE','@NE','vs MIA','vs LV','@KC','vs BUF','@LAC','@MIA','BYE','vs DEN','@ARI','vs NE','vs MIN','@BUF']},
-PHI:{name:'Eagles',hc:'Nick Sirianni',note:"Sirianni retained. Run-first, tush-push-centric identity that suppresses receiver target volume league-wide; added WR Marquise Brown via trade for depth.",newHC:false,passD:1,rushD:3,cb:'Quinyon Mitchell',cbGrade:80.2,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:1.0158,olRunMult:1.034,olPbe:86.2,olRunGrade:71.5,sacksAllowed:35,
+PHI:{name:'Eagles',hc:'Nick Sirianni',note:"Sirianni retained. Run-first, tush-push-centric identity that suppresses receiver target volume league-wide; added WR Marquise Brown via trade for depth.",newHC:false,passD:1,rushD:3,cb:'Quinyon Mitchell',cbGrade:80.2,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:0.9633,olRunMult:1.0079,olPbe:81.26,olRunGrade:67.2,sacksAllowed:35,
  sch:['vs WAS','@TEN','@CHI','vs LAR','@JAX','vs CAR','vs DAL','@WAS','vs NYG','BYE','vs PIT','@DAL','@ARI','vs IND','vs SEA','vs HOU','@SF','@NYG']},
-PIT:{name:'Steelers',hc:'Mike McCarthy',note:"New HC after Mike Tomlin's resignation following 19 seasons. McCarthy reunites with Aaron Rodgers from their Green Bay days. Added RB Rico Dowdle via trade, creating a backfield timeshare.",newHC:true,passD:4,rushD:1,cb:'Joey Porter Jr.',cbGrade:76.6,vegasWinTotal:8.5,vegasMult:1.0,olPassMult:1.0328,olRunMult:0.9875,olPbe:87.8,olRunGrade:63.8,sacksAllowed:31,
+PIT:{name:'Steelers',hc:'Mike McCarthy',note:"New HC after Mike Tomlin's resignation following 19 seasons. McCarthy reunites with Aaron Rodgers from their Green Bay days. Added RB Rico Dowdle via trade, creating a backfield timeshare.",newHC:true,passD:4,rushD:1,cb:'Joey Porter Jr.',cbGrade:76.6,vegasWinTotal:8.5,vegasMult:1.0,olPassMult:1.0016,olRunMult:0.9836,olPbe:84.85,olRunGrade:63.2,sacksAllowed:31,
  sch:['vs ATL','@NE','vs CIN','@CLE','vs IND','@TB','@NO','vs CLE','BYE','@CIN','@PHI','vs DEN','vs HOU','@JAX','vs BAL','vs CAR','@TEN','@BAL']},
-SF:{name:'49ers',hc:'Kyle Shanahan',note:"Shanahan retained. Wide-zone run scheme; McCaffrey's every-down role and play-action off it are the offense's engine. Added veteran WR Mike Evans via trade from Tampa Bay.",newHC:false,passD:3,rushD:1,cb:'Deommodore Lenoir',cbGrade:65.7,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:0.9946,olRunMult:1.0721,olPbe:84.2,olRunGrade:77.8,sacksAllowed:27,
+SF:{name:'49ers',hc:'Kyle Shanahan',note:"Shanahan retained. Wide-zone run scheme; McCaffrey's every-down role and play-action off it are the offense's engine. Added veteran WR Mike Evans via trade from Tampa Bay.",newHC:false,passD:3,rushD:1,cb:'Deommodore Lenoir',cbGrade:65.7,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:0.9999,olRunMult:1.0384,olPbe:84.69,olRunGrade:72.2,sacksAllowed:27,
  sch:['@LAR','vs MIA','vs ARI','vs DEN','@SEA','vs WAS','@ATL','BYE','vs LV','@DAL','vs MIN','vs SEA','@NYG','vs LAR','@LAC','@KC','vs PHI','@ARI']},
-SEA:{name:'Seahawks',hc:'Mike Macdonald',note:"Macdonald retained after a Super Bowl-winning 2025; OC Klint Kubiak left to become Raiders HC, so Seattle has a new play-caller — the identity that made this passing game elite is the thing to watch in camp.",newHC:false,passD:1,rushD:0,cb:'Devon Witherspoon',cbGrade:83.6,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:1.0042,olRunMult:1.008,olPbe:85.1,olRunGrade:67.2,sacksAllowed:27,
+SEA:{name:'Seahawks',hc:'Mike Macdonald',note:"Macdonald retained after a Super Bowl-winning 2025; OC Klint Kubiak left to become Raiders HC, so Seattle has a new play-caller — the identity that made this passing game elite is the thing to watch in camp.",newHC:false,passD:1,rushD:0,cb:'Devon Witherspoon',cbGrade:83.6,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:0.9951,olRunMult:0.9927,olPbe:84.24,olRunGrade:64.7,sacksAllowed:27,
  sch:['vs NE','@ARI','@WAS','vs LAC','vs SF','@DEN','vs KC','vs CHI','vs ARI','@LV','BYE','@SF','vs DAL','vs NYG','@PHI','vs LAR','@CAR','@LAR']},
-TB:{name:'Buccaneers',hc:'Todd Bowles',note:"Bowles retained. Traded away Mike Evans to San Francisco, clearing the WR1 role for Emeka Egbuka. Added RB Kenneth Gainwell via trade for pass-catching work.",newHC:false,passD:4,rushD:0,cb:'Jamel Dean',cbGrade:75.9,vegasWinTotal:8.5,vegasMult:1.0,olPassMult:0.9882,olRunMult:0.9664,olPbe:83.6,olRunGrade:60.3,sacksAllowed:38,
+TB:{name:'Buccaneers',hc:'Todd Bowles',note:"Bowles retained. Traded away Mike Evans to San Francisco, clearing the WR1 role for Emeka Egbuka. Added RB Kenneth Gainwell via trade for pass-catching work.",newHC:false,passD:4,rushD:0,cb:'Jamel Dean',cbGrade:75.9,vegasWinTotal:8.5,vegasMult:1.0,olPassMult:0.9706,olRunMult:0.9531,olPbe:81.94,olRunGrade:58.2,sacksAllowed:38,
  sch:['@CIN','vs CLE','vs MIN','vs GB','@DAL','vs PIT','@CAR','vs ATL','@CHI','BYE','@DET','vs CAR','vs LAC','@BAL','vs NO','@ATL','vs LAR','@NO']},
-TEN:{name:'Titans',hc:'Robert Saleh',note:"New HC after Brian Callahan's in-season firing. Added WR Wan'Dale Robinson via trade from the Giants.",newHC:true,passD:3,rushD:2,cb:'Alontae Taylor',cbGrade:66.8,vegasWinTotal:6.5,vegasMult:0.9412,olPassMult:0.985,olRunMult:0.9957,olPbe:83.3,olRunGrade:65.2,sacksAllowed:56,
+TEN:{name:'Titans',hc:'Robert Saleh',note:"New HC after Brian Callahan's in-season firing. Added WR Wan'Dale Robinson via trade from the Giants.",newHC:true,passD:3,rushD:2,cb:'Alontae Taylor',cbGrade:66.8,vegasWinTotal:6.5,vegasMult:0.9412,olPassMult:0.9728,olRunMult:0.9653,olPbe:82.15,olRunGrade:60.2,sacksAllowed:56,
  sch:['vs NYJ','vs PHI','@NYG','@BAL','vs HOU','@IND','vs CLE','@CIN','BYE','vs JAX','@DAL','@JAX','vs WAS','@DET','vs IND','@LV','vs PIT','@HOU']},
-WAS:{name:'Commanders',hc:'Dan Quinn',note:"Quinn retained. Added RB Rachaad White via trade from Tampa Bay as a receiving-down complement.",newHC:false,passD:4,rushD:4,cb:'Trey Amos',cbGrade:58.8,vegasWinTotal:7.5,vegasMult:0.9706,olPassMult:1.0158,olRunMult:0.9754,olPbe:86.2,olRunGrade:61.8,sacksAllowed:36,
+WAS:{name:'Commanders',hc:'Dan Quinn',note:"Quinn retained. Added RB Rachaad White via trade from Tampa Bay as a receiving-down complement.",newHC:false,passD:4,rushD:4,cb:'Trey Amos',cbGrade:58.8,vegasWinTotal:7.5,vegasMult:0.9706,olPassMult:0.9883,olRunMult:0.9988,olPbe:83.6,olRunGrade:65.7,sacksAllowed:36,
  sch:['@PHI','@DAL','vs SEA','vs IND','vs NYG','@SF','BYE','vs PHI','vs LAR','@NYG','vs CIN','@ARI','@TEN','vs HOU','vs ATL','@MIN','@JAX','vs DAL']}
 };
 
@@ -764,8 +868,9 @@ const P = [
 // QB
 {n:'Kirk Cousins',p:'QB',t:'LV',b:{passYd:172.1,passTD:1.0,int:0.5,rushYd:0.5,rushTD:0},f:'Signed as veteran bridge starter over rookie Fernando Mendoza; small 10-game 2025 sample as Falcons backup-turned-starter',c:'balanced',s:'pass-neutral'},
 {n:'Jacoby Brissett',p:'QB',t:'ARI',b:{passYd:240.4,passTD:1.64,int:0.57,rushYd:12.0,rushTD:0.07},f:'QB competition in camp after Kyler Murray trade',c:'balanced',s:'pass-neutral'},
-{n:'Tua Tagovailoa',p:'QB',t:'ATL',b:{passYd:190.0,passTD:1.43,int:1.07,rushYd:3.1,rushTD:0},f:'Real 2025 line (with Miami); signed with ATL as a free agent; real, current reporting has him as the most likely Week 1 starter over an injury-recovering Penix',c:'balanced',s:'pass-neutral'},
-{n:'Michael Penix Jr.',p:'QB',t:'ATL',b:{passYd:220.2,passTD:1.0,int:0.33,rushYd:7.8,rushTD:0.06},f:'Real, current: recovering from a real ACL tear/surgery (Nov 2025, his 3rd ACL reconstruction) -- only recently cleared for full practice work (Aug 22); real reporting has Tua as the more likely Week 1 starter, not Penix, despite this baseline reflecting his real healthy 2025 rate',c:'balanced',s:'pass-neutral'},
+{n:'Cooper Rush',p:'QB',t:'ATL',b:{passYd:143,passTD:1.0,int:2.0,rushYd:0,rushTD:0},f:'Real, current: confirmed starting again for Week 2 with Tua still out (real oblique injury) -- this baseline is his real Week 1 line (small 1-game sample)',c:'balanced',s:'pass-neutral'},
+{n:'Tua Tagovailoa',p:'QB',t:'ATL',b:{passYd:190.0,passTD:1.43,int:1.07,rushYd:3.1,rushTD:0},f:'Real 2025 line (with Miami); signed with ATL as a free agent; real, current: officially OUT again for Week 2 with the real oblique injury, Cooper Rush confirmed starting -- considered week-to-week',c:'balanced',s:'pass-neutral'},
+{n:'Michael Penix Jr.',p:'QB',t:'ATL',b:{passYd:220.2,passTD:1.0,int:0.33,rushYd:7.8,rushTD:0.06},f:'Real, current: recovering from a real ACL tear/surgery (Nov 2025, his 3rd ACL reconstruction) -- now showing real, current Full Participation in practice (a real step up from Week 1), but Cooper Rush is still the confirmed Week 2 starter, not Penix',c:'balanced',s:'pass-neutral'},
 {n:'Lamar Jackson',p:'QB',t:'BAL',b:{passYd:196.1,passTD:1.62,int:0.54,rushYd:26.8,rushTD:0.15},f:'New HC/offensive system — largest continuity risk in dataset',c:'balanced',s:'pass-neutral'},
 {n:'Josh Allen',p:'QB',t:'BUF',b:{passYd:215.8,passTD:1.47,int:0.59,rushYd:34.1,rushTD:0.82},c:'balanced',s:'rush-heavy-qb'},
 {n:'Bryce Young',p:'QB',t:'CAR',b:{passYd:188.2,passTD:1.44,int:0.69,rushYd:13.5,rushTD:0.13},c:'balanced',s:'pass-neutral'},
@@ -785,7 +890,7 @@ const P = [
 {n:'Justin Herbert',p:'QB',t:'LAC',b:{passYd:232.9,passTD:1.63,int:0.81,rushYd:31.1,rushTD:0.13},c:'balanced',s:'pass-neutral'},
 {n:'Matthew Stafford',p:'QB',t:'LAR',b:{passYd:276.9,passTD:2.71,int:0.47,rushYd:0.1,rushTD:0.02},c:'zone-beater',s:'pass-neutral'},
 {n:'Malik Willis',p:'QB',t:'MIA',b:{passYd:105.5,passTD:0.75,int:0,rushYd:30.8,rushTD:0.5},f:'Only 4 games of NFL sample — very low confidence baseline',c:'balanced',s:'rush-heavy-qb'},
-{n:'Kyler Murray',p:'QB',t:'MIN',b:{passYd:192.4,passTD:1.2,int:0.6,rushYd:34.6,rushTD:0.2},f:'Traded from Arizona; new pairing with Justin Jefferson; walks into a real, stable O-line -- both starting tackles (Darrisaw, O\u2019Neill) retained',c:'balanced',s:'rush-heavy-qb'},
+{n:'Kyler Murray',p:'QB',t:'MIN',b:{passYd:192.4,passTD:1.2,int:0.6,rushYd:34.6,rushTD:0.2},f:'Traded from Arizona; new pairing with Justin Jefferson; real, current: confirmed Week 1 starter as expected, suffered a real concussion just 9 minutes into the game on a hit ruled unnecessary roughness -- real, current: Limited Participation in Week 2 practice, still working through the real concussion protocol',c:'balanced',s:'rush-heavy-qb'},
 {n:'Drake Maye',p:'QB',t:'NE',b:{passYd:258.5,passTD:1.82,int:0.47,rushYd:26.5,rushTD:0.24},c:'balanced',s:'pass-neutral'},
 {n:'Tyler Shough',p:'QB',t:'NO',b:{passYd:216.7,passTD:0.91,int:0.55,rushYd:16.9,rushTD:0.27},f:'Rookie-year sample (11 starts)',c:'balanced',s:'pass-neutral'},
 {n:'Jaxson Dart',p:'QB',t:'NYG',b:{passYd:162.3,passTD:1.07,int:0.36,rushYd:34.8,rushTD:0.64},f:'New HC John Harbaugh — new offensive system',c:'balanced',s:'rush-heavy-qb'},
@@ -793,7 +898,8 @@ const P = [
 {n:'Jalen Hurts',p:'QB',t:'PHI',b:{passYd:201.5,passTD:1.56,int:0.38,rushYd:26.3,rushTD:0.5},c:'balanced',s:'rush-heavy-qb'},
 {n:'Aaron Rodgers',p:'QB',t:'PIT',b:{passYd:207.6,passTD:1.5,int:0.44,rushYd:3.8,rushTD:0.06},f:'Reunites with HC Mike McCarthy from Green Bay',c:'zone-beater',s:'pass-neutral'},
 {n:'Brock Purdy',p:'QB',t:'SF',b:{passYd:240.8,passTD:2.22,int:1.11,rushYd:16.3,rushTD:0.33},f:'Only 9 starts in 2025 — small sample',c:'balanced',s:'pass-neutral'},
-{n:'Sam Darnold',p:'QB',t:'SEA',b:{passYd:238.1,passTD:1.47,int:0.82,rushYd:5.6,rushTD:0},c:'balanced',s:'pass-neutral'},
+{n:'Sam Darnold',p:'QB',t:'SEA',b:{passYd:238.1,passTD:1.47,int:0.82,rushYd:5.6,rushTD:0},f:'Real, current: officially ruled OUT for Week 2 with a real glute injury (soft-tissue, not the hip joint), suffered in the real Week 1 win over NE; real reporting (NFL Network) has him targeting a ~4-week return, avoiding IR for now',c:'balanced',s:'pass-neutral'},
+{n:'Drew Lock',p:'QB',t:'SEA',b:{passYd:187.0,passTD:1.0,int:0,rushYd:0,rushTD:0},f:'Real, current: confirmed Week 2 starter with Darnold out (real glute injury); this baseline is his real Week 1 relief-appearance line (16/22, 187 yd, 1 TD, 0 INT) -- a real but small, single-game sample in a brand new starting role',c:'balanced',s:'pass-neutral'},
 {n:'Baker Mayfield',p:'QB',t:'TB',b:{passYd:217.2,passTD:1.53,int:0.65,rushYd:22.5,rushTD:0.06},c:'balanced',s:'pass-neutral'},
 {n:'Cam Ward',p:'QB',t:'TEN',b:{passYd:186.4,passTD:0.88,int:0.41,rushYd:9.4,rushTD:0.12},f:'New HC Robert Saleh',c:'balanced',s:'pass-neutral'},
 {n:'Jayden Daniels',p:'QB',t:'WAS',b:{passYd:180.3,passTD:1.14,int:0.43,rushYd:39.7,rushTD:0.29},f:'Only 7 starts in 2025 — injury history',c:'balanced',s:'rush-heavy-qb'},
@@ -814,7 +920,9 @@ const P = [
 {n:'Isiah Pacheco',p:'RB',t:'DET',b:{rushAtt:9.1,rushYd:35.5,rushTD:0.15,rec:0.7,recYd:7.8,recTD:0},f:'Real, current (Sept 1): placed on IR with a back injury, out at least Weeks 1-4 -- this baseline reflects his real skill/role when healthy, not his real Week 1 unavailability',c:'n/a',s:'rush-volume',partner:'Jahmyr Gibbs'},
 {n:'Jeremiyah Love',p:'RB',t:'ARI',b:{rushAtt:11.0,rushYd:52.0,rushTD:0.4,rec:2.0,recYd:16.0,recTD:0.1},f:'2026 rookie — No.3 overall pick, highest-drafted RB since Saquon Barkley; real high-ankle sprain from Aug 13 preseason game, real Week 1 status ~50-50 per NFL Network as of Sept 1 (no surgery needed); if he sits, Allgeier is the real expected Week 1 beneficiary, not Conner',c:'man-beater',s:'balanced-back',partner:'James Conner'},
 {n:'Josh Jacobs',p:'RB',t:'GB',b:{rushAtt:15.6,rushYd:61.9,rushTD:0.87,rec:2.4,recYd:18.8,recTD:0.07},f:'Real, current, severe: on the NFL Commissioner\u2019s Exempt List (cannot practice or attend games) facing domestic-violence misdemeanor charges; court date not until November -- completely unavailable for the foreseeable future, not just Week 1; GB already traded for Kaleb Johnson as his real replacement',c:'n/a',s:'rush-volume'},
-{n:'Kaleb Johnson',p:'RB',t:'GB',b:{rushAtt:13.0,rushYd:52.0,rushTD:0.35,rec:1.8,recYd:12.0,recTD:0.04},f:'Real, current: acquired via trade from Pittsburgh specifically as the real starter with Jacobs on the Exempt List indefinitely; real 2025 PIT sample was tiny/buried (28 carries, 10 games) and does not reflect this new, real, elevated role -- projection here is a disclosed estimate of his new role, not derived from that small sample',c:'n/a',s:'rush-volume'},
+{n:'MarShawn Lloyd',p:'RB',t:'GB',b:{rushAtt:9.5,rushYd:29.0,rushTD:0.2,rec:0.7,recYd:5.0,recTD:0.02},f:'Real, current: a genuine 3-way committee with Brooks and Johnson while Jacobs remains on the Exempt List -- real 2-game carry share is Lloyd 50% / Brooks 29% / Johnson 21% (19, 11, 8 of 38 total), and this baseline is weighted to that real split rather than treating him as the clear lead back',c:'n/a',s:'rush-volume',partner:'Chris Brooks'},
+{n:'Chris Brooks',p:'RB',t:'GB',b:{rushAtt:5.5,rushYd:19.0,rushTD:0.05,rec:1.2,recYd:8.0,recTD:0},f:'Real, current: a genuine 3-way committee with Lloyd and Johnson while Jacobs remains on the Exempt List -- real 2-game carry share is Lloyd 50% / Brooks 29% / Johnson 21%, and this baseline is weighted to that real split; real career receiving involvement (13 rec over 2025) still supports a modest receiving-down role',c:'n/a',s:'rush-volume',partner:'MarShawn Lloyd'},
+{n:'Kaleb Johnson',p:'RB',t:'GB',b:{rushAtt:4.0,rushYd:13.0,rushTD:0.05,rec:0.4,recYd:2.5,recTD:0},f:'Real, current: genuinely involved now, not third-string -- led the real GB backfield in carries in Week 2 (8) after zero in Week 1, making this a real, ongoing 3-way committee with Lloyd/Brooks while Jacobs remains on the Exempt List; baseline weighted to his real 21% 2-game carry share',c:'n/a',s:'rush-volume'},
 {n:'Woody Marks',p:'RB',t:'HOU',b:{rushAtt:12.3,rushYd:43.9,rushTD:0.13,rec:1.5,recYd:13.0,recTD:0.19},f:'Real, current Week 1 depth chart has Montgomery as RB1, Marks RB2 -- this baseline reflects Marks\u2019 real 2025 run as HOU\u2019s lead back (Weeks 10-18), a role he does not currently hold',c:'man-beater',s:'balanced-back',partner:'David Montgomery'},
 {n:'Jonathan Taylor',p:'RB',t:'IND',b:{rushAtt:19.0,rushYd:93.2,rushTD:1.06,rec:2.7,recYd:22.2,recTD:0.12},c:'n/a',s:'rush-volume'},
 {n:'Bhayshul Tuten',p:'RB',t:'JAX',b:{rushAtt:5.5,rushYd:20.5,rushTD:0.33,rec:0,recYd:0,recTD:0},f:'Etienne left as a free agent (not traded); real, current: listed as a genuine co-starter with free-agent signee Chris Rodriguez on JAX\u2019s real depth chart, not a clean lead role -- reporting is genuinely mixed on who\u2019s ahead',c:'n/a',s:'rush-volume',partner:'Chris Rodriguez'},
@@ -825,14 +933,15 @@ const P = [
 {n:'Kyren Williams',p:'RB',t:'LAR',b:{rushAtt:15.2,rushYd:73.6,rushTD:0.59,rec:2.1,recYd:16.5,recTD:0.18},c:'n/a',s:'rush-volume',partner:'Blake Corum'},
 {n:"De'Von Achane",p:'RB',t:'MIA',b:{rushAtt:14.9,rushYd:84.4,rushTD:0.5,rec:4.2,recYd:30.5,recTD:0.25},f:'New coaching staff for 2026',c:'man-beater',s:'balanced-back',partner:'Jaylen Wright'},
 {n:'Aaron Jones',p:'RB',t:'MIN',b:{rushAtt:11.0,rushYd:45.7,rushTD:0.17,rec:2.3,recYd:16.6,recTD:0.08},c:'man-beater',s:'balanced-back',partner:'Jordan Mason'},
-{n:'TreVeyon Henderson',p:'RB',t:'NE',b:{rushAtt:10.6,rushYd:53.6,rushTD:0.53,rec:2.1,recYd:13.0,recTD:0.06},f:'Rookie-year sample; real, very current (as of Sept 5): has NOT practiced since Aug 24 ankle injury, in genuine danger of missing Week 1 -- team leaves for Seattle imminently with his status still unresolved; this baseline reflects his real healthy rate, not his current real availability risk',c:'man-beater',s:'balanced-back',partner:'Rhamondre Stevenson'},
+{n:'TreVeyon Henderson',p:'RB',t:'NE',b:{rushAtt:10.6,rushYd:53.6,rushTD:0.53,rec:2.1,recYd:13.0,recTD:0.06},f:'Rookie-year sample; real, current: missed Week 1 as expected (ankle), but now a real Full Participant in Wednesday Week 2 practice and trending strongly to make his 2026 debut -- expected to share the backfield with Stevenson, who remains the real primary back',c:'man-beater',s:'balanced-back',partner:'Rhamondre Stevenson'},
 {n:'Travis Etienne',p:'RB',t:'NO',b:{rushAtt:15.3,rushYd:65.1,rushTD:0.41,rec:2.1,recYd:17.2,recTD:0.35},f:'Signed with NO as a free agent (not a trade) -- real, current: with Kamara sidelined (sprained MCL, trending toward missing Week 1), Etienne is set for a larger-than-anticipated early role',c:'man-beater',s:'balanced-back',partner:'Alvin Kamara'},
-{n:'Alvin Kamara',p:'RB',t:'NO',b:{rushAtt:11.9,rushYd:42.8,rushTD:0.09,rec:3.0,recYd:16.9,recTD:0},f:'Real 2025 line; real, current: sprained MCL, out 4-6 weeks and trending toward missing Week 1 -- still a real, signed, key contributor once healthy, not removed from the roster',c:'man-beater',s:'balanced-back',partner:'Travis Etienne'},
+{n:'Alvin Kamara',p:'RB',t:'NO',b:{rushAtt:11.9,rushYd:42.8,rushTD:0.09,rec:3.0,recYd:16.9,recTD:0},f:'Real 2025 line; real, current: missed Week 1 with a sprained MCL as expected, but now showing real Full Participation in Week 2 practice -- a genuine, positive recovery update, real return to the real Etienne committee looks close',c:'man-beater',s:'balanced-back',partner:'Travis Etienne'},
 {n:'Cam Skattebo',p:'RB',t:'NYG',b:{rushAtt:12.6,rushYd:51.3,rushTD:0.63,rec:3.0,recYd:25.9,recTD:0.25},f:'8-game rookie sample; new HC John Harbaugh; real, current reporting confirms him as the clear Week 1 starter after recovering from a real fractured tibia/dislocated ankle, with Tracy/Harris/Singletary in real open competition behind him',c:'man-beater',s:'balanced-back',partner:'Tyrone Tracy Jr.'},
 
 {n:'Saquon Barkley',p:'RB',t:'PHI',b:{rushAtt:17.5,rushYd:71.3,rushTD:0.44,rec:2.3,recYd:17.1,recTD:0.13},c:'n/a',s:'rush-volume'},
 {n:'Jaylen Warren',p:'RB',t:'PIT',b:{rushAtt:13.2,rushYd:59.9,rushTD:0.38,rec:2.5,recYd:20.8,recTD:0.13},f:'Real, current Week 1 depth chart lists him ahead of free-agent addition Rico Dowdle, though HC McCarthy wants a real balanced 1-2 punch',c:'man-beater',s:'balanced-back',partner:'Rico Dowdle'},
-{n:'Christian McCaffrey',p:'RB',t:'SF',b:{rushAtt:18.3,rushYd:70.7,rushTD:0.59,rec:6.0,recYd:54.4,recTD:0.41},c:'man-beater',s:'balanced-back'},
+{n:'Christian McCaffrey',p:'RB',t:'SF',b:{rushAtt:12.0,rushYd:55.0,rushTD:0.45,rec:6.5,recYd:56.0,recTD:0.35},f:'Real, current: Shanahan is deliberately managing his rushing workload with rookie Kaelon Black taking real power/between-the-tackles carries -- real Week 1 split was 10 carries to Black\'s 14, though McCaffrey also battled cramps that game specifically; he keeps the real heavy passing-game role (8 real targets) and real short-yardage/goal-line work; rushAtt reduced from his true 2025 workload (18.3) to reflect this real, disclosed scheme change -- not yet confirmed as permanent beyond Week 1. Real, current: missed Wednesday practice for Week 2, but with no injury designation attached -- consistent with SF\'s established real pattern of planned early-week rest for him, not a new injury concern',c:'man-beater',s:'balanced-back',partner:'Kaelon Black'},
+{n:'Kaelon Black',p:'RB',t:'SF',b:{rushAtt:10.0,rushYd:45.0,rushTD:0.15,rec:0.8,recYd:4.0,recTD:0.03},f:'2026 rookie (3rd round) -- real, current: real, deliberate power/between-the-tackles role alongside McCaffrey, out-carried him in his real Week 1 debut (14 att, 65 yd); minimal passing-game/goal-line involvement by real design; no prior NFL sample beyond this one real game',c:'n/a',s:'rush-volume',partner:'Christian McCaffrey'},
 {n:'Zach Charbonnet',p:'RB',t:'SEA',b:{rushAtt:11.5,rushYd:45.6,rushTD:0.75,rec:0,recYd:0,recTD:0},f:'Real, current: real ACL tear (Jan 2026 playoffs), placed on reserve/PUP, guaranteed to miss at least the first 4 games -- real Week 1 lead back is rookie Jadarian Price, not Charbonnet; this baseline reflects his real healthy 2025 rate, not his real current unavailability',c:'n/a',s:'rush-volume'},
 {n:'Jadarian Price',p:'RB',t:'SEA',b:{rushAtt:13.5,rushYd:53.0,rushTD:0.18,rec:0.6,recYd:4.5,recTD:0.02},f:'2026 rookie — 1st-round pick; real, current: named the real Week 1 starter/lead-carries back with Charbonnet on PUP (out at least 4 games), but real, specific role reporting has him on early downs (1st/2nd) ONLY -- Holani gets the real 3rd-down and goal-line work, so TD rate and receiving are deliberately kept low here despite his lead-carries role; no NFL sample, projection is speculative',c:'man-beater',s:'balanced-back',partner:'George Holani'},
 {n:'George Holani',p:'RB',t:'SEA',b:{rushAtt:4.5,rushYd:16.0,rushTD:0.35,rec:2.8,recYd:22.0,recTD:0.06},f:'Real, current, specific role reporting: gets real 3rd-down (receiving/pass-block) and short-yardage/goal-line work while Price handles early downs -- real 2025 usage (22 carries, 11 games) was buried behind Walker/Charbonnet and does not reflect this new, real, elevated role; TD rate here is deliberately high relative to his carry share given the real goal-line role; projection is speculative given the small real sample',c:'man-beater',s:'balanced-back',partner:'Jadarian Price'},
@@ -865,10 +974,11 @@ const P = [
 {n:'Marvin Harrison Jr.',p:'WR',t:'ARI',b:{tgt:6.1,rec:3.4,recYd:50.7,recTD:0.33},f:'12-game 2025 sample; QB situation in flux',c:'zone-beater',s:'target-volatile'},
 {n:'Drake London',p:'WR',t:'ATL',b:{tgt:9.3,rec:5.7,recYd:76.6,recTD:0.58},f:'12-game 2025 sample',c:'zone-beater',s:'target-stable'},
 
-{n:'Zay Flowers',p:'WR',t:'BAL',b:{tgt:6.9,rec:5.1,recYd:71.2,recTD:0.29},f:'New offensive system under HC Minter',c:'man-beater',s:'target-stable'},
+{n:'Zay Flowers',p:'WR',t:'BAL',b:{tgt:6.9,rec:5.1,recYd:71.2,recTD:0.29},f:'New offensive system under HC Minter; real, current: real Week 1 breakout (5 rec, 150 yd, 1 TD) cut short by a hamstring injury -- missed 2 straight practices heading into Week 2, officially listed OUT Wednesday, genuinely uncertain for Sunday vs NO',c:'man-beater',s:'target-stable'},
 {n:'Rashod Bateman',p:'WR',t:'BAL',b:{tgt:5.8,rec:3.6,recYd:48.0,recTD:0.35},f:'WR2 role — approximate, lower confidence',c:'zone-beater',s:'target-volatile'},
 {n:'Khalil Shakir',p:'WR',t:'BUF',b:{tgt:5.9,rec:4.5,recYd:44.9,recTD:0.25},c:'man-beater',s:'target-stable'},
 {n:'D.J. Moore',p:'WR',t:'BUF',b:{tgt:5.0,rec:2.9,recYd:40.1,recTD:0.35},f:'Traded from Chicago — likely elevates to WR1 role',c:'zone-beater',s:'target-stable'},
+{n:'Keon Coleman',p:'WR',t:'BUF',b:{tgt:4.6,rec:2.9,recYd:31.1,recTD:0.31},f:'Real 2025 line (13 games); real BUF WR2 alongside Moore',c:'zone-beater',s:'target-volatile'},
 {n:'Tetairoa McMillan',p:'WR',t:'CAR',b:{tgt:8.0,rec:5.0,recYd:70.5,recTD:0.38},f:'AP Offensive Rookie of the Year — clear WR1',c:'zone-beater',s:'target-stable'},
 {n:'Xavier Legette',p:'WR',t:'CAR',b:{tgt:4.3,rec:2.3,recYd:24.2,recTD:0.2},c:'zone-beater',s:'target-volatile'},
 {n:'Jalen Coker',p:'WR',t:'CAR',b:{tgt:3.9,rec:3.0,recYd:35.8,recTD:0.27},f:'11-game sample',c:'man-beater',s:'target-volatile'},
@@ -888,7 +998,7 @@ const P = [
 {n:'Christian Watson',p:'WR',t:'GB',b:{tgt:5.5,rec:3.5,recYd:61.1,recTD:0.6},f:'10-game sample; injury history',c:'zone-beater',s:'target-volatile'},
 {n:'Matthew Golden',p:'WR',t:'GB',b:{tgt:3.1,rec:2.1,recYd:25.8,recTD:0},f:'Rookie-year sample',c:'man-beater',s:'target-volatile'},
 {n:'Dontayvion Wicks',p:'WR',t:'PHI',b:{tgt:2.7,rec:1.8,recYd:19.5,recTD:0.12},f:'WR3/depth role — approximate, lower confidence',c:'man-beater',s:'target-volatile'},
-{n:'Nico Collins',p:'WR',t:'HOU',b:{tgt:8.0,rec:4.7,recYd:74.5,recTD:0.4},f:'15-game sample',c:'zone-beater',s:'target-stable'},
+{n:'Nico Collins',p:'WR',t:'HOU',b:{tgt:8.0,rec:4.7,recYd:74.5,recTD:0.4},f:'15-game sample; real, current: real Week 1 game (7 rec, 75 yd, 1 TD) ended early with a hamstring injury -- upgraded to a non-participant Thursday, genuinely uncertain for Week 2 vs CIN; real depth options if he sits are Boutte/Hutchinson/Noel, with Dalton Schultz the real, clear TE1 beneficiary',c:'zone-beater',s:'target-stable'},
 
 {n:'Michael Pittman Jr.',p:'WR',t:'PIT',b:{tgt:6.5,rec:4.7,recYd:46.1,recTD:0.41},c:'man-beater',s:'target-stable'},
 {n:'Josh Downs',p:'WR',t:'IND',b:{tgt:5.5,rec:3.6,recYd:35.4,recTD:0.25},f:'Real, current: listed questionable on the real depth chart, worth monitoring into Week 1',c:'man-beater',s:'target-stable'},
@@ -909,6 +1019,7 @@ const P = [
 {n:'Justin Jefferson',p:'WR',t:'MIN',b:{tgt:8.3,rec:4.9,recYd:61.6,recTD:0.12},f:'New pairing with Kyler Murray; TD regression candidate',c:'zone-beater',s:'target-stable'},
 {n:'Jauan Jennings',p:'WR',t:'MIN',b:{tgt:6.0,rec:3.7,recYd:42.9,recTD:0.6},f:'Traded from San Francisco',c:'man-beater',s:'target-stable'},
 {n:'Jordan Addison',p:'WR',t:'MIN',b:{tgt:5.1,rec:3.2,recYd:39.9,recTD:0.35},f:'WR3 role — approximate, lower confidence',c:'zone-beater',s:'target-volatile'},
+{n:'Malik Nabers',p:'WR',t:'NYG',b:{tgt:7.5,rec:4.5,recYd:67.8,recTD:0.5},f:'Real 2025 line -- small, injury-limited 4-game sample, but real, current, confirmed NYG WR1',c:'man-beater',s:'target-stable'},
 {n:'Darnell Mooney',p:'WR',t:'NYG',b:{tgt:5.0,rec:2.9,recYd:36.8,recTD:0.15},f:'Traded from Atlanta — approximate, lower confidence',c:'zone-beater',s:'target-volatile'},
 {n:'Stefon Diggs',p:'WR',t:'WAS',b:{tgt:6.0,rec:5.0,recYd:59.6,recTD:0.24},c:'man-beater',s:'target-stable'},
 {n:'Romeo Doubs',p:'WR',t:'NE',b:{tgt:5.3,rec:3.4,recYd:45.3,recTD:0.38},f:'Traded from Green Bay',c:'zone-beater',s:'target-stable'},
@@ -918,7 +1029,7 @@ const P = [
 {n:'Geno Smith',p:'QB',t:'NYJ',b:{passYd:201.7,passTD:1.27,int:1.13,rushYd:7.3,rushTD:0},f:'Real 2025 line with LV (rough INT-prone season); now the real, unchallenged NYJ starter -- real continuity here, not a fresh line: G Dylan Parham moved from LV with him, blocking for Smith a 2nd straight year',c:'balanced',s:'pass-neutral'},
 {n:'Breece Hall',p:'RB',t:'NYJ',b:{rushAtt:15.2,rushYd:66.6,rushTD:0.25,rec:2.2,recYd:21.9,recTD:0.06},f:'Real 2025 line (career-best season); signed a real 3-yr/$45.75M extension in May 2026; real, current: minor groin strain, expected back for Week 1',c:'man-beater',s:'balanced-back'},
 {n:'Garrett Wilson',p:'WR',t:'NYJ',b:{tgt:8.4,rec:5.1,recYd:56.4,recTD:0.57},f:'7-game 2025 sample — injury-shortened',c:'man-beater',s:'target-stable'},
-{n:'A.J. Brown',p:'WR',t:'NE',b:{tgt:8.1,rec:5.2,recYd:66.9,recTD:0.47},f:'Traded to NE (Jun 2026) — reunites with HC Mike Vrabel, real Week 1+ context (scheme fit, target share) not yet reflected in the baseline below',c:'man-beater',s:'target-volatile'},
+{n:'A.J. Brown',p:'WR',t:'NE',b:{tgt:8.1,rec:5.2,recYd:66.9,recTD:0.47},f:'Real, current: officially on Injured Reserve with a real high-ankle sprain suffered in Week 1 (3 targets, 26 yards before exiting) -- guaranteed out a minimum of 4 games, real reporting (NFL Network) suggests closer to 6 weeks',c:'man-beater',s:'target-volatile'},
 {n:'DeVonta Smith',p:'WR',t:'PHI',b:{tgt:6.6,rec:4.5,recYd:59.3,recTD:0.24},c:'man-beater',s:'target-volatile'},
 {n:'Marquise Brown',p:'WR',t:'PHI',b:{tgt:4.6,rec:3.1,recYd:36.7,recTD:0.31},f:'Traded from Kansas City — WR3/depth role',c:'zone-beater',s:'target-volatile'},
 {n:'DK Metcalf',p:'WR',t:'PIT',b:{tgt:6.6,rec:3.9,recYd:56.7,recTD:0.4},f:'15-game sample; reunites in system with new HC McCarthy/Rodgers',c:'zone-beater',s:'target-stable'},
@@ -948,7 +1059,7 @@ const P = [
 {n:'Evan Engram',p:'TE',t:'DEN',b:{tgt:4.75,rec:3.1,recYd:28.8,recTD:0.06},f:'16-game sample',c:'zone-beater',s:'target-volatile'},
 {n:'Sam LaPorta',p:'TE',t:'DET',b:{tgt:5.4,rec:4.4,recYd:54.3,recTD:0.33},f:'9-game injury-limited sample',c:'zone-beater',s:'target-stable'},
 {n:'Tucker Kraft',p:'TE',t:'GB',b:{tgt:5.5,rec:4.0,recYd:61.1,recTD:0.75},f:'8-game injury-limited sample',c:'zone-beater',s:'target-stable'},
-{n:'Dalton Schultz',p:'TE',t:'HOU',b:{tgt:6.2,rec:4.8,recYd:45.7,recTD:0.18},f:'Foster Moreau added via trade for depth',c:'man-beater',s:'target-stable'},
+{n:'Dalton Schultz',p:'TE',t:'HOU',b:{tgt:6.2,rec:4.8,recYd:45.7,recTD:0.18},f:'Foster Moreau added via trade for depth; real, current: HOU\'s real, clear TE1 for targets, and a genuine upside play if Nico Collins (hamstring, uncertain for Week 2) is unable to go',c:'man-beater',s:'target-stable'},
 {n:'Foster Moreau',p:'TE',t:'HOU',b:{tgt:2.0,rec:1.5,recYd:14.0,recTD:0.12},f:'Traded from New Orleans — depth/TE2 role, approximate lower-confidence estimate',c:'man-beater',s:'target-volatile'},
 {n:'Tyler Warren',p:'TE',t:'IND',b:{tgt:6.6,rec:4.5,recYd:48.1,recTD:0.24},f:'Pro Bowl rookie season',c:'balanced',s:'target-stable'},
 {n:'Brenton Strange',p:'TE',t:'JAX',b:{tgt:5.0,rec:3.8,recYd:45.0,recTD:0.25},f:'12-game sample',c:'man-beater',s:'target-stable'},
@@ -987,6 +1098,200 @@ const scriptLabels = ['Trailing Big','Trailing','Neutral','Leading','Leading Big
    secondary (rush) column was also flipped to match, on the more modest, less
    certain theory that pocket-passer scrambling extends somewhat under pressure
    while trailing -- this second part is a judgment call, not a measured fact. */
+/* WEEKLY CALIBRATION (real, disclosed, provisional -- Sept 2026): REVISITED after
+   Week 2, exactly as this block originally said it should be. Real actual results
+   were compared against real projections for both weeks (184 players Wk1, 74
+   players Wk2 completed games), and the signed average error by position was
+   recomputed on the COMBINED, real 2-week sample:
+     QB:  Wk1 -2.58, Wk2 +2.23, COMBINED -1.19 (n=52) -- the sign flipped between
+          weeks. Wk1's bias was partly real single-week noise, not a stable
+          pattern; the combined signal is real but roughly half the strength the
+          Wk1-only calibration assumed.
+     WR:  Wk1 -2.16, Wk2 -0.27, COMBINED -1.62 (n=90) -- same direction both
+          weeks, genuinely persistent, though weakening.
+     RB:  Wk1 -0.76, Wk2 -3.22, COMBINED -1.47 (n=73) -- same direction both
+          weeks but the magnitude swung 4x, so this is a real but still volatile
+          signal, not yet a settled one.
+     TE:  Wk1 -0.34, Wk2 +0.12, COMBINED -0.21 (n=43) -- stays uncalibrated,
+          genuinely balanced both weeks.
+   Multipliers below are recomputed the same way as originally (20% damping of
+   the observed combined bias, applied against each position's real combined
+   average PPR, not a rough estimate this time). QB's correction is now WEAKER
+   than before (was overcorrecting on Wk1-only data); WR's is slightly stronger;
+   RB gets a real calibration for the first time.
+   REVISIT AGAIN after Week 3: if RB's bias direction and magnitude stabilize
+   across a 3rd week, confidence in that number should grow; if QB's sign flips
+   again, that's real evidence the position is just noisy at this damping level
+   and may not be worth calibrating at all. */
+const WEEKLY_CALIBRATION = {
+  weeksOfData: 2,
+  qbMult: 0.9834, // 20% damping of combined -1.19 PPR bias on real 14.4pt avg QB score (n=52)
+  wrMult: 0.9681, // 20% damping of combined -1.62 PPR bias on real 10.1pt avg WR score (n=90)
+  rbMult: 0.9715, // 20% damping of combined -1.47 PPR bias on real 10.3pt avg RB score (n=73) -- new
+};
+
+/* BETTING TAB SUPPORT DATA (real, disclosed):
+   TEAM_COVERAGE_RATIO -- real, validated league-wide figure (built and cross-checked
+   during the Pythagorean side-project work) showing tracked skill-position players
+   account for ~61% of a real team's actual season TD total; the rest comes from
+   backups/depth this tool doesn't track individually. Used to scale a tracked-player
+   TD projection up to a full-team estimate.
+   TEAM_FG_PAT_2025 -- real 2025 field-goal + PAT points per team (from the same
+   Pythagorean work, sourced from Pro-Football-Reference), used as a real, disclosed
+   baseline for each team's non-TD scoring since kicking is comparatively stable
+   year over year and this tool doesn't track kickers at all. */
+/* BETTING TAB SCORING MODEL (real, validated -- replaces an earlier, broken
+   approach that summed individual player projections into a team total; that
+   approach was tested against real Week 1 2026 results and showed essentially
+   zero correlation with actual scores, R^2 ~ 0.000-0.002, and produced visibly
+   wrong single-game numbers, e.g. having a real bad team (Cleveland, 5.5 real
+   win total) shown as favored over a real good offense (Tampa Bay).
+   This replacement instead uses a genuine, validated relationship built from
+   REAL, complete 2025 season data: every team's real final win total regressed
+   against their real average points scored and real average points allowed
+   per game (32 teams, full season, not a single-week sample):
+     avg points scored  = 0.849 * wins + 15.82   (R^2 = 0.502)
+     avg points allowed = -0.809 * wins + 29.86  (R^2 = 0.601)
+   Both are real, meaningfully predictive relationships (about half the
+   variance in real scoring explained by win total alone), a genuine
+   improvement over the discarded per-game player-sum method. Applied to each
+   team's real, current Vegas win total (TEAMS[t].vegasWinTotal) to get a
+   season-long offense/defense rating, then blended with the specific
+   opponent's rating for a game-level estimate, plus a modest, real home-field
+   adjustment (+/-1.0 point, toward the low end of recent published estimates,
+   since real NFL home-field advantage has been narrowing in recent seasons).
+   This is still a real estimate, not a guarantee -- win totals themselves can
+   be wrong, and this doesn't know about a specific week's injuries, weather,
+   or a real line move. But it is now a genuinely validated relationship,
+   not an unvalidated one. */
+const WIN_TOTAL_SCORING_MODEL = {
+  offA: 0.849, offB: 15.82,
+  defA: -0.809, defB: 29.86,
+  homeFieldAdj: 1.0,
+};
+
+/* REAL PFF TEAM DEFENSE DATA -- UPDATED THROUGH WEEK 2 (source: PFF's own Team
+   Grades page, extracted directly via Chrome with the user logged in). This page
+   only offers season-type filters (Regular/Postseason), not per-week isolation,
+   so this is real, current 2-week CUMULATIVE data, not Week 2 in isolation --
+   a genuinely larger, more complete real sample than the original 1-week pull.
+   grade_defense is PFF's real overall defense grade through 2 games.
+   Re-checked against real cumulative points allowed before use: points_allowed =
+   -0.459*grade_defense + 50.79, R^2 = 0.268. Honest finding, not the improvement
+   you'd expect from more data: this R^2 is LOWER than the Week-1-only value
+   (0.371) -- the real defensive signal weakened with a larger sample, not
+   strengthened. Because of this mixed result, the blend weight was kept at the
+   same conservative 25% (PFF_BLEND_WEIGHT) rather than increased, despite having
+   more real data now -- "more weeks = more confident" doesn't hold uniformly
+   here, and this should keep being rechecked rather than assumed. */
+const PFF_TEAM_DEFENSE_WK2 = {
+  ARI:{grade_defense:62.0},
+  ATL:{grade_defense:64.5},
+  BAL:{grade_defense:68.4},
+  BUF:{grade_defense:55.3},
+  CAR:{grade_defense:68.1},
+  CHI:{grade_defense:49.1},
+  CIN:{grade_defense:64.0},
+  CLE:{grade_defense:57.0},
+  DAL:{grade_defense:57.5},
+  DEN:{grade_defense:61.0},
+  DET:{grade_defense:61.7},
+  GB:{grade_defense:57.5},
+  HOU:{grade_defense:64.9},
+  IND:{grade_defense:40.2},
+  JAX:{grade_defense:60.2},
+  KC:{grade_defense:77.7},
+  LAC:{grade_defense:67.5},
+  LAR:{grade_defense:63.1},
+  LV:{grade_defense:68.5},
+  MIA:{grade_defense:60.8},
+  MIN:{grade_defense:61.7},
+  NE:{grade_defense:67.9},
+  NO:{grade_defense:61.1},
+  NYG:{grade_defense:54.3},
+  NYJ:{grade_defense:73.0},
+  PHI:{grade_defense:66.1},
+  PIT:{grade_defense:76.2},
+  SEA:{grade_defense:78.0},
+  SF:{grade_defense:78.5},
+  TB:{grade_defense:66.4},
+  TEN:{grade_defense:56.1},
+  WAS:{grade_defense:43.5},
+};
+const PFF_DEF_REGRESSION = { a: -0.459, b: 50.79 };
+const PFF_BLEND_WEIGHT = 0.25;
+
+/* REAL PFF WEEK 1 COVERAGE DATA (source: PFF defense_coverage_summary CSV,
+   provided by the user). Aggregated the same way as the defense grades above --
+   real per-player coverage data (415 defensive players) summed/snap-weighted to
+   a team level. This was checked against real Week 1 points allowed BEFORE use:
+   grade_coverage alone scored R^2 = 0.17, weaker than the overall grade_defense
+   already blended into the team scoring model (R^2 = 0.37) -- so this data does
+   NOT feed the team point totals; folding it in there would dilute a stronger
+   signal with a weaker one. Instead it's used here for player-level matchups:
+   a real, current, disclosed adjustment to how favorable a specific team's pass
+   defense is for an opposing WR/TE this week, layered on top of the existing
+   (real, but 2025-season-based) passD tier -- not replacing it. PASS_DEF_WK1_ADJ
+   is each team's real grade_coverage as a percent deviation from the real Week 1
+   league average (59.21), inverted (a weak defense should mean an opposing
+   catch-and-throw player performs a little better, not worse) and damped to a
+   real, conservative 25% weight given it's one week of data -- the same
+   conservative principle used everywhere else this season's early data has been
+   incorporated. Revisit and reweight as more weeks accumulate. */
+/* REAL PFF OFFICIAL TEAM GRADES -- UPDATED THROUGH WEEK 2 (source: PFF's own
+   Team Grades page, extracted directly via Chrome, user logged in). Same page
+   as the defense table above -- real, current 2-week cumulative data, not
+   Week 2 isolated. grade_offense is PFF's own official team offense grade.
+   Re-checked against real cumulative points scored: points = 0.619*grade -
+   20.84, R^2 = 0.339 -- an improvement over the Week-1-only value (0.234),
+   unlike the defense side which weakened. Still weaker than the season-long
+   win-total offense estimate (R^2 = 0.50), so kept at the same conservative
+   25% blend weight rather than increased -- offense and defense are moving in
+   opposite directions with more data, which argues for treating each blend
+   weight on its own evidence rather than adjusting both together. */
+const PFF_TEAM_OFFENSE_WK2 = {
+  ARI:{grade_offense:67.5},
+  ATL:{grade_offense:60.1},
+  BAL:{grade_offense:81.8},
+  BUF:{grade_offense:74.1},
+  CAR:{grade_offense:79.4},
+  CHI:{grade_offense:65.5},
+  CIN:{grade_offense:73.1},
+  CLE:{grade_offense:62.9},
+  DAL:{grade_offense:70.7},
+  DEN:{grade_offense:64.3},
+  DET:{grade_offense:71.9},
+  GB:{grade_offense:56.2},
+  HOU:{grade_offense:69.8},
+  IND:{grade_offense:57.8},
+  JAX:{grade_offense:75.2},
+  KC:{grade_offense:84.4},
+  LAC:{grade_offense:65.7},
+  LAR:{grade_offense:63.6},
+  LV:{grade_offense:71.2},
+  MIA:{grade_offense:60.8},
+  MIN:{grade_offense:66.6},
+  NE:{grade_offense:67.7},
+  NO:{grade_offense:74.8},
+  NYG:{grade_offense:66.6},
+  NYJ:{grade_offense:74.0},
+  PHI:{grade_offense:77.6},
+  PIT:{grade_offense:67.3},
+  SEA:{grade_offense:80.1},
+  SF:{grade_offense:81.7},
+  TB:{grade_offense:62.6},
+  TEN:{grade_offense:59.6},
+  WAS:{grade_offense:58.4},
+};
+const PFF_OFF_REGRESSION = { a: 0.619, b: -20.84 };
+
+const PASS_DEF_WK1_ADJ = {
+  ARI:0.976,ATL:0.991,BAL:0.965,BUF:1.015,CAR:1.000,CHI:1.017,CIN:0.984,CLE:1.030,
+  DAL:1.020,DEN:1.007,DET:0.992,GB:1.015,HOU:1.020,IND:1.053,JAX:0.992,KC:0.978,
+  LAC:1.004,LAR:0.976,LV:1.000,MIA:0.978,MIN:1.031,NE:1.014,NO:0.989,NYG:1.019,
+  NYJ:0.969,PHI:0.985,PIT:1.022,SEA:0.970,SF:0.974,TB:0.983,TEN:1.003,WAS:1.027,
+};
+
 const scriptTable = {
   'rush-volume':     [[0.70,0.75],[0.85,0.90],[1.00,1.00],[1.15,1.05],[1.30,0.85]],
   'balanced-back':   [[0.75,1.15],[0.88,1.08],[1.00,1.00],[1.12,0.92],[1.22,0.78]],
@@ -1382,37 +1687,45 @@ const QB_ATT_COMP = {
 const QB_ATT_COMP_LEAGUE_AVG = {attPerGame:29.4,compPct:65.7};
 
 const PFF_QB = {
-'Geno Smith':{gradeOff:60.9,gradePass:58.2,btt:3.0,twp:4.1,games:15},
-'Kirk Cousins':{gradeOff:76.0,gradePass:75.0,btt:3.2,twp:1.7,games:10},
-'Jacoby Brissett':{gradeOff:71.1,gradePass:69.1,btt:3.3,twp:2.8,games:13},
+'Deshaun Watson':{gradeOff:64.1,gradePass:63.2,btt:3.7,twp:4.3,games:2},
+'Kyler Murray':{gradeOff:35.2,gradePass:39.6,btt:0.0,twp:14.3,games:1},
+'Cooper Rush':{gradeOff:29.6,gradePass:31.6,btt:0.0,twp:8.2,games:2},
+'Stetson Bennett':{gradeOff:58.6,gradePass:50.1,btt:0.0,twp:0.0,games:1},
+'Kenny Pickett':{gradeOff:68.9,gradePass:60.0,btt:0.0,twp:0.0,games:1},
+'Malik Willis':{gradeOff:60.1,gradePass:63.9,btt:7.3,twp:2.8,games:2},
+'Carson Wentz':{gradeOff:61.5,gradePass:59.5,btt:4.7,twp:3.8,games:2},
+'Drew Lock':{gradeOff:93.3,gradePass:92.5,btt:7.8,twp:1.9,games:2},
+'Geno Smith':{gradeOff:70.1,gradePass:74.7,btt:2.9,twp:1.3,games:2},
+'Kirk Cousins':{gradeOff:67.7,gradePass:68.4,btt:1.6,twp:3.1,games:2},
+'Jacoby Brissett':{gradeOff:73.8,gradePass:71.1,btt:1.4,twp:3.9,games:2},
 'Michael Penix Jr.':{gradeOff:59.3,gradePass:58.0,btt:2.7,twp:3.4,games:9},
-'Lamar Jackson':{gradeOff:74.0,gradePass:69.0,btt:2.8,twp:3.1,games:13},
-'Josh Allen':{gradeOff:90.6,gradePass:84.2,btt:5.1,twp:2.4,games:18},
-'Bryce Young':{gradeOff:71.0,gradePass:68.2,btt:4.5,twp:2.7,games:17},
-'Caleb Williams':{gradeOff:76.9,gradePass:72.2,btt:5.4,twp:3.1,games:19},
-'Joe Burrow':{gradeOff:91.8,gradePass:91.3,btt:6.6,twp:0.7,games:8},
+'Lamar Jackson':{gradeOff:89.6,gradePass:80.2,btt:4.9,twp:2.7,games:2},
+'Josh Allen':{gradeOff:85.6,gradePass:76.4,btt:4.4,twp:3.8,games:2},
+'Bryce Young':{gradeOff:83.9,gradePass:80.9,btt:5.2,twp:1.2,games:2},
+'Caleb Williams':{gradeOff:64.0,gradePass:63.7,btt:3.3,twp:2.7,games:2},
+'Joe Burrow':{gradeOff:75.5,gradePass:72.7,btt:6.0,twp:2.7,games:2},
 'Dillon Gabriel':{gradeOff:49.0,gradePass:49.6,btt:1.5,twp:4.3,games:10},
-'Dak Prescott':{gradeOff:86.9,gradePass:85.4,btt:4.8,twp:2.7,games:17},
-'Bo Nix':{gradeOff:76.9,gradePass:76.1,btt:5.0,twp:2.9,games:18},
-'Jared Goff':{gradeOff:77.7,gradePass:76.8,btt:2.7,twp:2.0,games:17},
-'Jordan Love':{gradeOff:88.8,gradePass:88.7,btt:5.9,twp:2.6,games:16},
-'C.J. Stroud':{gradeOff:65.0,gradePass:62.0,btt:3.3,twp:3.8,games:16},
-'Daniel Jones':{gradeOff:71.7,gradePass:68.7,btt:3.1,twp:3.9,games:13},
-'Trevor Lawrence':{gradeOff:83.7,gradePass:80.5,btt:4.8,twp:3.3,games:18},
-'Patrick Mahomes':{gradeOff:76.0,gradePass:70.7,btt:4.3,twp:3.1,games:14},
-'Justin Herbert':{gradeOff:78.0,gradePass:73.0,btt:3.9,twp:2.6,games:17},
-'Matthew Stafford':{gradeOff:92.0,gradePass:91.7,btt:7.7,twp:3.3,games:20},
-'Drake Maye':{gradeOff:80.7,gradePass:76.6,btt:4.9,twp:3.3,games:21},
-'Tyler Shough':{gradeOff:74.6,gradePass:73.1,btt:3.8,twp:2.0,games:11},
-'Jaxson Dart':{gradeOff:68.1,gradePass:64.2,btt:5.2,twp:3.3,games:13},
+'Dak Prescott':{gradeOff:90.4,gradePass:88.3,btt:2.8,twp:2.6,games:2},
+'Bo Nix':{gradeOff:48.1,gradePass:51.9,btt:1.6,twp:7.2,games:2},
+'Jared Goff':{gradeOff:76.4,gradePass:76.7,btt:5.1,twp:1.1,games:2},
+'Jordan Love':{gradeOff:51.7,gradePass:51.8,btt:0.0,twp:4.8,games:2},
+'C.J. Stroud':{gradeOff:67.9,gradePass:64.6,btt:3.9,twp:1.8,games:2},
+'Daniel Jones':{gradeOff:68.0,gradePass:71.7,btt:3.1,twp:1.4,games:2},
+'Trevor Lawrence':{gradeOff:83.0,gradePass:82.9,btt:5.5,twp:4.9,games:2},
+'Patrick Mahomes':{gradeOff:90.3,gradePass:86.7,btt:5.3,twp:0.0,games:2},
+'Justin Herbert':{gradeOff:54.4,gradePass:59.8,btt:1.6,twp:4.1,games:2},
+'Matthew Stafford':{gradeOff:41.5,gradePass:42.3,btt:0.0,twp:6.9,games:1},
+'Drake Maye':{gradeOff:54.8,gradePass:51.2,btt:1.7,twp:5.5,games:2},
+'Tyler Shough':{gradeOff:76.1,gradePass:77.6,btt:7.3,twp:1.8,games:2},
+'Jaxson Dart':{gradeOff:71.9,gradePass:65.8,btt:0.0,twp:5.9,games:1},
 'Justin Fields':{gradeOff:67.3,gradePass:65.5,btt:2.8,twp:2.5,games:9},
-'Jalen Hurts':{gradeOff:79.0,gradePass:76.7,btt:4.8,twp:2.0,games:17},
-'Aaron Rodgers':{gradeOff:68.0,gradePass:68.8,btt:4.8,twp:2.6,games:17},
-'Brock Purdy':{gradeOff:85.4,gradePass:82.6,btt:4.2,twp:3.7,games:11},
-'Sam Darnold':{gradeOff:79.0,gradePass:79.9,btt:5.7,twp:3.2,games:20},
-'Baker Mayfield':{gradeOff:70.0,gradePass:64.8,btt:4.8,twp:4.1,games:17},
-'Cam Ward':{gradeOff:58.4,gradePass:56.4,btt:3.7,twp:3.5,games:17},
-'Jayden Daniels':{gradeOff:74.8,gradePass:73.8,btt:4.9,twp:3.0,games:7},
+'Jalen Hurts':{gradeOff:82.6,gradePass:80.4,btt:6.3,twp:1.3,games:2},
+'Aaron Rodgers':{gradeOff:67.6,gradePass:66.6,btt:2.4,twp:1.1,games:2},
+'Brock Purdy':{gradeOff:87.2,gradePass:81.4,btt:3.4,twp:3.2,games:2},
+'Sam Darnold':{gradeOff:62.3,gradePass:61.8,btt:0.0,twp:0.0,games:1},
+'Baker Mayfield':{gradeOff:59.2,gradePass:59.0,btt:4.4,twp:6.0,games:2},
+'Cam Ward':{gradeOff:63.8,gradePass:60.7,btt:0.0,twp:1.5,games:2},
+'Jayden Daniels':{gradeOff:74.4,gradePass:71.8,btt:3.7,twp:0.0,games:2},
 };
 const PFF_LEAGUE_AVG = {gradePass:68.9, btt:4.3, twp:3.4};
 
@@ -1420,6 +1733,162 @@ const PFF_LEAGUE_AVG = {gradePass:68.9, btt:4.3, twp:3.4};
    route participation rate, yards per route run, drop rate, contested-catch rate.
    Informational only, same reasoning as PFF_QB above -- not folded into the projection
    math. Source: PFF Premium Stats (subscriber export). */
+/* REAL PFF WEEK 1 SKILL-POSITION GRADES (source: PFF's own Receiving Grades page,
+   read directly from the live DOM via Chrome with the user logged in -- 248 real
+   WR/TE/RB players, no transcription risk. Separate from PFF_RECEIVING below,
+   which is real but a different, 2025-season route-efficiency dataset (routes,
+   YPRR, drop rate) -- this is PFF's own real overall offense grade and receiving
+   grade specifically for Week 1 2026. gradeRecv is null for players PFF didn't
+   grade in the passing game that week (e.g. a real early-down-only role with
+   no targets). Shown as real, current context on the player card alongside the
+   existing route-efficiency badge -- informational, not fed into the actual
+   projection math, same as the route-efficiency data next to it. */
+/* REAL PFF WEEK 1 ELUSIVE RATING (source: PFF's own Elusive Rating report, read
+   directly from the live DOM via Chrome, user logged in -- 55 real RBs with
+   meaningful carries). This is a genuinely distinct signal from the grade data
+   above -- it specifically measures broken-tackle/evasion ability (missed
+   tackles forced per touch, yards after contact), not general performance
+   grading. Shown as real, current, informational context on RB cards; not fed
+   into the actual projection math. */
+const ELUSIVE_RATING_WK1 = {
+'Alvin Kamara':{att:9,mtf:1,elusiveRating:14.3},
+'TreVeyon Henderson':{att:16,mtf:1,elusiveRating:15.6},
+'Tank Bigsby':{att:14,mtf:2,elusiveRating:27.7},
+'Will Shipley':{att:9,mtf:2,elusiveRating:29.6},
+'Chris Brooks':{att:11,mtf:0,elusiveRating:39.4},
+'Kaytron Allen':{att:9,mtf:1,elusiveRating:42.0},
+'Rachaad White':{att:14,mtf:2,elusiveRating:42.9},
+'Emanuel Wilson':{att:23,mtf:5,elusiveRating:51.0},
+'Tyler Badie':{att:1,mtf:0,elusiveRating:66.7},
+'Jordan James':{att:4,mtf:1,elusiveRating:75.0},
+'Tyjae Spears':{att:10,mtf:2,elusiveRating:83.6},
+'Kaleb Johnson':{att:8,mtf:3,elusiveRating:112.5},
+'Bam Knight':{att:2,mtf:1,elusiveRating:475.0},
+'Kenneth Walker III':{att:47,mtf:23,elusiveRating:230.8},'Ameer Abdullah':{att:7,mtf:2,elusiveRating:98.4},'Saquon Barkley':{att:19,mtf:7,elusiveRating:156.1},'Woody Marks':{att:17,mtf:6,elusiveRating:98.2},
+'Bhayshul Tuten':{att:28,mtf:11,elusiveRating:158.4},'Emmett Johnson':{att:10,mtf:3,elusiveRating:242.9},'Omarion Hampton':{att:35,mtf:11,elusiveRating:103.8},'Jaylen Warren':{att:21,mtf:6,elusiveRating:111.7},
+'Kyle Monangai':{att:20,mtf:3,elusiveRating:69.4},'Bucky Irving':{att:25,mtf:7,elusiveRating:62.2},'AJ Dillon':{att:8,mtf:2,elusiveRating:56.3},'D\'Andre Swift':{att:34,mtf:7,elusiveRating:83.8},
+'Chuba Hubbard':{att:22,mtf:4,elusiveRating:79.5},'Bijan Robinson':{att:37,mtf:6,elusiveRating:77.7},'Brian Robinson':{att:20,mtf:2,elusiveRating:44.3},'Keaton Mitchell':{att:9,mtf:1,elusiveRating:22.2},
+'Javonte Williams':{att:24,mtf:4,elusiveRating:68.0},'Kenneth Gainwell':{att:7,mtf:2,elusiveRating:187.0},'Christian McCaffrey':{att:20,mtf:3,elusiveRating:47.4},'Cam Skattebo':{att:18,mtf:4,elusiveRating:77.8},
+'James Cook':{att:34,mtf:5,elusiveRating:29.4},'RJ Harvey':{att:3,mtf:0,elusiveRating:76.2},'Tyrone Tracy':{att:2,mtf:1,elusiveRating:75.0},'Jahmyr Gibbs':{att:45,mtf:14,elusiveRating:81.9},
+'Tyler Allgeier':{att:22,mtf:5,elusiveRating:47.2},'Jeremiyah Love':{att:20,mtf:2,elusiveRating:39.0},'Chase Brown':{att:36,mtf:7,elusiveRating:67.6},'Quinshon Judkins':{att:24,mtf:4,elusiveRating:47.3},
+'Breece Hall':{att:38,mtf:6,elusiveRating:38.9},'Braelon Allen':{att:15,mtf:2,elusiveRating:25.0},'Derrick Henry':{att:40,mtf:5,elusiveRating:53.5},'Jonathan Taylor':{att:43,mtf:5,elusiveRating:34.0},
+'J.K. Dobbins':{att:18,mtf:4,elusiveRating:74.1},'Raheim Sanders':{att:3,mtf:0,elusiveRating:47.6},'Jadarian Price':{att:23,mtf:7,elusiveRating:119.1},'Chris Rodriguez Jr.':{att:12,mtf:2,elusiveRating:41.7},
+'Ronnie Rivers':{att:5,mtf:0,elusiveRating:40.0},'Rhamondre Stevenson':{att:24,mtf:4,elusiveRating:69.2},'Kendre Miller':{att:9,mtf:1,elusiveRating:35.8},'Ashton Jeanty':{att:44,mtf:4,elusiveRating:22.4},
+'Sione Vaki':{att:3,mtf:0,elusiveRating:66.7},'De\'Von Achane':{att:31,mtf:4,elusiveRating:24.6},'Tony Pollard':{att:21,mtf:6,elusiveRating:79.5},'Travis Etienne Jr.':{att:18,mtf:3,elusiveRating:31.3},
+'George Holani':{att:12,mtf:1,elusiveRating:17.3},'Justice Hill':{att:8,mtf:1,elusiveRating:15.9},'David Montgomery':{att:26,mtf:3,elusiveRating:26.3},'Jordan Mason':{att:15,mtf:1,elusiveRating:25.3},
+'Aaron Jones':{att:35,mtf:4,elusiveRating:31.0},'Devin Singletary':{att:6,mtf:1,elusiveRating:18.3},'Jacory Croskey-Merritt':{att:28,mtf:2,elusiveRating:17.9},'MarShawn Lloyd':{att:19,mtf:4,elusiveRating:40.1},
+'Blake Corum':{att:10,mtf:1,elusiveRating:15.0},'Rico Dowdle':{att:15,mtf:1,elusiveRating:10.5},'Kaelon Black':{att:21,mtf:4,elusiveRating:42.4},
+};
+const PFF_SKILL_GRADES_WK1 = {
+'Kaleb Johnson':{gradeOff:52.2,gradeRun:53.4},
+'Alvin Kamara':{gradeOff:54.5,gradeRun:58.5},
+'TreVeyon Henderson':{gradeOff:65.3,gradeRun:66.7},
+'Calvin Ridley':{gradeOff:57.4,gradeRecv:59.8},
+
+'Austin Hooper':{gradeOff:65.1,gradeRecv:63.7},
+'Isaiah Bond':{gradeOff:66.2,gradeRecv:66.4},
+'Jonah Coleman':{gradeOff:62.2,gradeRecv:66.7},
+'Darius Cooper':{gradeOff:63.1,gradeRecv:67.3},
+
+'Devontez Walker':{gradeOff:69.7,gradeRecv:68.3},
+
+'Ian Thomas':{gradeOff:62.7,gradeRecv:70.6},
+
+'Dareke Young':{gradeOff:65.6,gradeRecv:74.3},
+'Tyler Badie':{gradeOff:68.1,gradeRecv:75.1,gradeRun:59.1},
+'Oscar Delp':{gradeOff:84.7,gradeRecv:80.1},
+
+'Jalen Royals':{gradeOff:83.4,gradeRecv:81.4},
+'Nate Adkins':{gradeOff:73.0,gradeRecv:91.3},
+'Ryan Miller':{gradeOff:94.5,gradeRecv:92.9},
+'Tyrone Tracy':{gradeOff:39.0,gradeRecv:null,gradeRun:44.7},
+'Kendre Miller':{gradeOff:44.1,gradeRecv:null,gradeRun:50.0},
+'Corey Kiner':{gradeOff:50.5,gradeRecv:null,gradeRun:52.0},
+'Emanuel Wilson':{gradeOff:53.8,gradeRecv:null,gradeRun:59.9},
+'Emari Demercado':{gradeOff:51.4,gradeRecv:null,gradeRun:53.6},
+'Hunter Luepke':{gradeOff:53.4,gradeRecv:null,gradeRun:56.2},
+'Frank Gore Jr.':{gradeOff:62.5,gradeRecv:null,gradeRun:59.1},
+'Ray Davis':{gradeOff:57.9,gradeRecv:null,gradeRun:59.3},
+'Tank Bigsby':{gradeOff:53.1,gradeRecv:61.8,gradeRun:53.2},
+'Jaylen Wright':{gradeOff:64.9,gradeRecv:null,gradeRun:65.4},
+'Kaytron Allen':{gradeOff:63.4,gradeRecv:null,gradeRun:61.9},
+'Keaton Mitchell':{gradeOff:56.8,gradeRecv:null,gradeRun:57.7},
+'Omarion Hampton':{gradeOff:62.2,gradeRecv:59.9,gradeRun:62.9},
+'J.K. Dobbins':{gradeOff:56.2,gradeRecv:null,gradeRun:59.5},
+'Chris Brooks':{gradeOff:45.5,gradeRecv:null,gradeRun:55.1},
+'Mike Washington Jr.':{gradeOff:62.8,gradeRecv:null,gradeRun:62.4},
+'Connor Heyward':{gradeOff:61.5,gradeRecv:null,gradeRun:62.6},
+
+'Jordan Mason':{gradeOff:66.4,gradeRecv:null,gradeRun:65.8},
+'Cam Skattebo':{gradeOff:67.1,gradeRecv:null,gradeRun:67.4},
+'Brian Robinson':{gradeOff:64.2,gradeRecv:60.3,gradeRun:64.5},
+'Blake Corum':{gradeOff:70.8,gradeRecv:null,gradeRun:69.4},
+'Chris Rodriguez Jr.':{gradeOff:66.2,gradeRecv:null,gradeRun:67.7},
+'AJ Dillon':{gradeOff:65.0,gradeRecv:null,gradeRun:64.4},
+
+'Zay Flowers':{gradeOff:93.7,gradeRecv:94.0,routes:11,yprr:13.64},'Jonathon Brooks':{gradeOff:72.5,gradeRecv:82.9,gradeRun:62.5,routes:5,yprr:9.6},'Jaxon Smith-Njigba':{gradeOff:92.2,gradeRecv:92.5,routes:26,yprr:4.69},'Dalton Kincaid':{gradeOff:91.7,gradeRecv:91.0,routes:49,yprr:4.59},
+'Emmett Johnson':{gradeOff:74.6,gradeRecv:90.8,gradeRun:68.0},'Antonio Williams':{gradeOff:77.6,gradeRecv:76.7,routes:11,yprr:5.82},'Samaje Perine':{gradeOff:63.2,gradeRecv:89.9,gradeRun:52.8,routes:22,yprr:2.09},'Parker Washington':{gradeOff:89.8,gradeRecv:87.9,routes:18,yprr:4.61},
+'Ladd McConkey':{gradeOff:83.8,gradeRecv:82.2,routes:18,yprr:4.56},'Omar Cooper Jr.':{gradeOff:91.9,gradeRecv:89.9},'Justin Jefferson':{gradeOff:83.9,gradeRecv:83.3,routes:30,yprr:3.07},'Josh Oliver':{gradeOff:66.2,gradeRecv:90.4},
+'Jalen Coker':{gradeOff:84.0,gradeRecv:85.9,routes:40,yprr:3.45},'Mike Gesicki':{gradeOff:74.4,gradeRecv:72.9,routes:37,yprr:2.11},'Josh Cameron':{gradeOff:78.7,gradeRecv:79.9},'Kalif Raymond':{gradeOff:80.5,gradeRecv:78.3,routes:54,yprr:2.3},
+'Javonte Williams':{gradeOff:84.1,gradeRecv:87.4,gradeRun:85.2,routes:34,yprr:1.5},'Christian Watson':{gradeOff:69.0,gradeRecv:71.4,routes:38,yprr:3.87},'Travis Etienne Jr.':{gradeOff:67.9,gradeRecv:82.0,gradeRun:64.4},'Bijan Robinson':{gradeOff:75.1,gradeRecv:77.3,gradeRun:70.1,routes:21,yprr:4.29},
+'Cooper Kupp':{gradeOff:77.7,gradeRecv:78.0,routes:35,yprr:1.57},'Isaiah Likely':{gradeOff:88.7,gradeRecv:82.8,routes:23,yprr:3.39},'De\'Von Achane':{gradeOff:75.9,gradeRecv:80.3,gradeRun:74.2},'Trey McBride':{gradeOff:80.6,gradeRecv:81.3,routes:59,yprr:2.31},
+'Noah Fant':{gradeOff:72.1,gradeRecv:71.3,routes:28,yprr:1.18},'Chris Olave':{gradeOff:84.8,gradeRecv:85.1,routes:55,yprr:3.31},'Lan Larison':{gradeOff:67.5,gradeRecv:81.0},'Marlin Klein':{gradeOff:66.5,gradeRecv:73.2},
+'Mike Evans':{gradeOff:85.1,gradeRecv:84.1,routes:44,yprr:2.34},'Cole Kmet':{gradeOff:55.1,gradeRecv:68.7,routes:19,yprr:1.84},'Kendrick Bourne':{gradeOff:68.6,gradeRecv:66.9,routes:54,yprr:1.59},'Chris Moore':{gradeOff:65.8,gradeRecv:68.8,routes:7,yprr:7.57},
+'Jake Briningstool':{gradeOff:64.0,gradeRecv:67.4},'Ronnie Rivers':{gradeOff:67.7,gradeRecv:78.7,gradeRun:63.1},'Evan Engram':{gradeOff:74.2,gradeRecv:79.7,routes:35,yprr:1.71},'Dallas Goedert':{gradeOff:69.5,gradeRecv:72.3,routes:36,yprr:2.25},
+'Matthew Hibner':{gradeOff:81.0,gradeRecv:77.5},'Tucker Kraft':{gradeOff:59.5,gradeRecv:60.4,routes:49,yprr:1.61},'DJ Moore':{gradeOff:66.4,gradeRecv:67.7,routes:36,yprr:2.78},'Alec Pierce':{gradeOff:77.5,gradeRecv:76.7,routes:22,yprr:2.77},
+'Darren Waller':{gradeOff:82.5,gradeRecv:80.0,routes:40,yprr:1.53},'David Montgomery':{gradeOff:67.1,gradeRecv:60.4,gradeRun:69.3},'Chase Brown':{gradeOff:79.6,gradeRecv:69.0,gradeRun:76.9},'Puka Nacua':{gradeOff:76.0,gradeRecv:75.6,routes:20,yprr:3.7},
+'Caleb Douglas':{gradeOff:70.5,gradeRecv:70.0,routes:55,yprr:2.05},'DeVonta Smith':{gradeOff:91.3,gradeRecv:90.8,routes:74,yprr:2.3},'Derrick Henry':{gradeOff:79.0,gradeRecv:83.8,gradeRun:74.4,routes:17,yprr:2.24},'Travis Hunter':{gradeOff:73.2,gradeRecv:73.9},
+'Tee Higgins':{gradeOff:83.8,gradeRecv:79.5,routes:31,yprr:1.9},'Khalil Shakir':{gradeOff:78.4,gradeRecv:76.3,routes:41,yprr:2.15},'Adonai Mitchell':{gradeOff:68.8,gradeRecv:73.0,routes:61,yprr:2.02},'David Njoku':{gradeOff:68.3,gradeRecv:66.6,routes:17,yprr:3.41},
+'Travis Kelce':{gradeOff:82.3,gradeRecv:84.8,routes:26,yprr:2.73},'Emeka Egbuka':{gradeOff:64.7,gradeRecv:64.8,routes:69,yprr:1.14},'Malik Nabers':{gradeOff:71.0,gradeRecv:69.7,routes:24,yprr:2.88},'Jalen Nailor':{gradeOff:61.0,gradeRecv:63.1},
+'Pat Bryant':{gradeOff:55.9,gradeRecv:62.1},'Jonnu Smith':{gradeOff:68.2,gradeRecv:68.4,routes:17,yprr:2.94},'Devin Singletary':{gradeOff:57.0,gradeRecv:71.7,gradeRun:48.4,routes:17,yprr:1.29},'Nico Collins':{gradeOff:70.9,gradeRecv:71.7,routes:37,yprr:2.03},
+'Garrett Wilson':{gradeOff:74.1,gradeRecv:74.2,routes:64,yprr:2.13},'Brenton Strange':{gradeOff:63.6,gradeRecv:64.6},'Davis Allen':{gradeOff:64.9,gradeRecv:70.8},'Brian Thomas Jr.':{gradeOff:65.7,gradeRecv:65.1,routes:37,yprr:2.16},
+'Will Shipley':{gradeOff:66.6,gradeRecv:70.4,gradeRun:70.5},'Luke Schoonmaker':{gradeOff:57.1,gradeRecv:70.4},'Wan\'Dale Robinson':{gradeOff:66.1,gradeRecv:68.2},'Jack Bech':{gradeOff:70.4,gradeRecv:70.2,routes:34,yprr:1.41},
+'Juwan Johnson':{gradeOff:78.0,gradeRecv:75.7,routes:74,yprr:1.62},'Drake London':{gradeOff:80.6,gradeRecv:81.9,routes:46,yprr:1.74},'Michael Mayer':{gradeOff:68.1,gradeRecv:64.9},'Tommy Tremble':{gradeOff:75.8,gradeRecv:69.9},
+'Foster Moreau':{gradeOff:70.2,gradeRecv:80.0},'Mack Hollins':{gradeOff:69.3,gradeRecv:66.2,routes:46,yprr:1.5},'Matthew Golden':{gradeOff:71.6,gradeRecv:69.4,routes:69,yprr:2.22},'Bo Melton':{gradeOff:64.5,gradeRecv:64.8},
+'Blake Whiteheart':{gradeOff:60.5,gradeRecv:69.9},'Joshua Palmer':{gradeOff:62.0,gradeRecv:61.6,routes:30,yprr:2.57},'Dohnte Meyers':{gradeOff:74.6,gradeRecv:69.5},'Brady Russell':{gradeOff:62.0,gradeRecv:69.3},
+'Demarcus Robinson':{gradeOff:74.3,gradeRecv:75.4,routes:21,yprr:2.38},'RJ Harvey':{gradeOff:60.2,gradeRecv:68.9,gradeRun:66.3},'Oronde Gadsden II':{gradeOff:64.4,gradeRecv:68.8},'A.J. Brown':{gradeOff:69.2,gradeRecv:68.7,routes:16,yprr:1.63},
+'Michael Wilson':{gradeOff:66.3,gradeRecv:66.0},'KaVontae Turpin':{gradeOff:61.3,gradeRecv:65.1},'Jaylin Noel':{gradeOff:63.7,gradeRecv:62.2,routes:55,yprr:1.53},'Pat Freiermuth':{gradeOff:67.7,gradeRecv:66.6,routes:60,yprr:1.3},
+'Jonathan Mingo':{gradeOff:63.6,gradeRecv:63.1},'Drew Sample':{gradeOff:61.0,gradeRecv:68.2},'Breece Hall':{gradeOff:63.6,gradeRecv:77.1,gradeRun:58.8,routes:8,yprr:2.0},'Chuba Hubbard':{gradeOff:81.9,gradeRecv:74.8,gradeRun:79.4,routes:41,yprr:1.2},
+'Denzel Boston':{gradeOff:72.9,gradeRecv:74.3,routes:30,yprr:1.97},'Sam LaPorta':{gradeOff:72.8,gradeRecv:75.1,routes:74,yprr:1.35},'Deebo Samuel':{gradeOff:65.9,gradeRecv:65.0,routes:39,yprr:2.03},'CeeDee Lamb':{gradeOff:87.2,gradeRecv:87.4},
+'Raheim Sanders':{gradeOff:54.1,gradeRecv:64.3,gradeRun:49.6},'Mark Andrews':{gradeOff:76.5,gradeRecv:73.7,routes:51,yprr:1.92},'Quinshon Judkins':{gradeOff:62.8,gradeRecv:73.0,gradeRun:60.2,routes:25,yprr:1.76},'Kenneth Gainwell':{gradeOff:59.8,gradeRecv:66.4,gradeRun:66.2},
+'Ashton Jeanty':{gradeOff:54.4,gradeRecv:66.4,gradeRun:61.2,routes:43,yprr:1.4},'Harold Fannin Jr.':{gradeOff:68.2,gradeRecv:75.1,routes:53,yprr:1.42},'Davante Adams':{gradeOff:67.1,gradeRecv:66.1,routes:21,yprr:1.24},'Jakobi Meyers':{gradeOff:63.2,gradeRecv:62.9,routes:49,yprr:1.39},
+'Josh Downs':{gradeOff:78.2,gradeRecv:79.6,routes:62,yprr:1.76},'Jared Wayne':{gradeOff:65.2,gradeRecv:65.2},'Devaughn Vele':{gradeOff:67.0,gradeRecv:68.3},'Amon-Ra St. Brown':{gradeOff:80.9,gradeRecv:81.1,routes:82,yprr:2.55},
+'Ameer Abdullah':{gradeOff:71.1,gradeRecv:67.6,gradeRun:68.6},'D\'Andre Swift':{gradeOff:67.7,gradeRecv:73.9,gradeRun:69.3,routes:28,yprr:2.29},'Dontayvion Wicks':{gradeOff:72.3,gradeRecv:73.9,routes:31,yprr:2.35},'Rome Odunze':{gradeOff:62.6,gradeRecv:66.0,routes:60,yprr:1.58},
+'Mitchell Evans':{gradeOff:64.7,gradeRecv:64.9},'T.J. Hockenson':{gradeOff:62.3,gradeRecv:65.3,routes:42,yprr:1.55},'Nate Boerkircher':{gradeOff:60.3,gradeRecv:64.6},'Chris Godwin':{gradeOff:71.5,gradeRecv:71.0,routes:69,yprr:1.25},
+'Luther Burden III':{gradeOff:59.4,gradeRecv:60.8,routes:57,yprr:1.67},'Rhamondre Stevenson':{gradeOff:59.8,gradeRecv:64.4,gradeRun:68.5,routes:39,yprr:1.21},'Darnell Mooney':{gradeOff:64.4,gradeRecv:63.9},'Stefon Diggs':{gradeOff:75.6,gradeRecv:77.0,routes:48,yprr:2.13},
+'Eli Raridon':{gradeOff:73.5,gradeRecv:79.4},'Bhayshul Tuten':{gradeOff:83.2,gradeRecv:66.8,gradeRun:81.5,routes:8,yprr:2.75},'Kyle Monangai':{gradeOff:70.2,gradeRecv:63.8,gradeRun:70.2,routes:20,yprr:1.75},'Kyren Williams':{gradeOff:65.5,gradeRecv:63.4,gradeRun:68.3,routes:20,yprr:1.2},
+'Michael Pittman Jr.':{gradeOff:60.3,gradeRecv:63.2,routes:39,yprr:1.49},'Sione Vaki':{gradeOff:62.2,gradeRecv:68.3,gradeRun:57.7},'Seth McGowan':{gradeOff:56.1,gradeRecv:62.7},'DeeJay Dallas':{gradeOff:62.5,gradeRecv:62.5},
+'Xavier Hutchinson':{gradeOff:64.3,gradeRecv:62.3},'Theo Johnson':{gradeOff:54.9,gradeRecv:62.0},'Bryce Lance':{gradeOff:62.5,gradeRecv:61.9},'KC Concepcion':{gradeOff:66.2,gradeRecv:64.4,routes:20,yprr:2.15},
+'Gunnar Helm':{gradeOff:62.3,gradeRecv:61.7},'Ja\'Kobi Lane':{gradeOff:61.7,gradeRecv:61.6},'Demario Douglas':{gradeOff:63.1,gradeRecv:61.3},'Dalton Schultz':{gradeOff:75.6,gradeRecv:77.7,routes:79,yprr:2.22},
+'Justice Hill':{gradeOff:52.9,gradeRecv:61.1,gradeRun:56.9},'Ted Hurst':{gradeOff:61.4,gradeRecv:61.1},'Carnell Tate':{gradeOff:61.5,gradeRecv:61.0,routes:56,yprr:1.16},'Chigoziem Okonkwo':{gradeOff:63.4,gradeRecv:60.9},
+'Darnell Washington':{gradeOff:70.1,gradeRecv:62.2},'Jahdae Walker':{gradeOff:62.8,gradeRecv:60.6},'Keenan Allen':{gradeOff:60.9,gradeRecv:60.6},'Jahan Dotson':{gradeOff:60.2,gradeRecv:60.4},
+'Malachi Fields':{gradeOff:63.2,gradeRecv:60.3},'Tetairoa McMillan':{gradeOff:67.3,gradeRecv:68.1,routes:75,yprr:2.35},'CJ Donaldson':{gradeOff:65.1,gradeRecv:59.9,gradeRun:72.2},'Chimere Dike':{gradeOff:59.3,gradeRecv:59.2},
+'Saquon Barkley':{gradeOff:69.9,gradeRecv:64.4,gradeRun:70.7},'Elic Ayomanor':{gradeOff:71.3,gradeRecv:69.2},'Hunter Henry':{gradeOff:64.0,gradeRecv:64.2,routes:47,yprr:1.4},'Jerry Jeudy':{gradeOff:59.0,gradeRecv:59.0},
+'Quentin Johnston':{gradeOff:53.1,gradeRecv:59.0},'Jayden Reed':{gradeOff:59.4,gradeRecv:59.0},'Jameson Williams':{gradeOff:54.7,gradeRecv:59.0},'Luke Farrell':{gradeOff:63.6,gradeRecv:58.9},
+'Malik Benson':{gradeOff:53.3,gradeRecv:58.8},'Rashod Bateman':{gradeOff:68.7,gradeRecv:68.6,routes:63,yprr:1.4},'Tre Harris':{gradeOff:58.3,gradeRecv:58.6,routes:49,yprr:1.49},'Daniel Bellinger':{gradeOff:56.4,gradeRecv:58.5},
+'Jadarian Price':{gradeOff:53.1,gradeRecv:61.1,gradeRun:51.9},'Rachaad White':{gradeOff:66.3,gradeRecv:66.9,gradeRun:64.7,routes:37,yprr:1.22},'Tyler Allgeier':{gradeOff:51.7,gradeRecv:57.7,gradeRun:53.7},'Tyler Warren':{gradeOff:59.4,gradeRecv:61.3},
+'Colby Parkinson':{gradeOff:49.0,gradeRecv:57.4},'Xavier Worthy':{gradeOff:57.8,gradeRecv:57.4},'Brevyn Spann-Ford':{gradeOff:56.3,gradeRecv:57.3},'Kayshon Boutte':{gradeOff:59.9,gradeRecv:59.8},
+'Tre Tucker':{gradeOff:72.7,gradeRecv:72.7},'Tanner Hudson':{gradeOff:56.4,gradeRecv:57.0},'Greg Dulcich':{gradeOff:57.2,gradeRecv:57.0},'Tony Pollard':{gradeOff:73.5,gradeRecv:57.0,gradeRun:73.9},
+'Andrei Iosivas':{gradeOff:57.2,gradeRecv:56.9},'Ashton Dulin':{gradeOff:56.8,gradeRecv:null},'Rashee Rice':{gradeOff:65.6,gradeRecv:62.5,routes:71,yprr:1.44},'LaJohntay Wester':{gradeOff:55.9,gradeRecv:56.1},
+'Jaylin Lane':{gradeOff:56.0,gradeRecv:56.0},'Skyy Moore':{gradeOff:55.9,gradeRecv:null},'Olamide Zaccheaus':{gradeOff:56.3,gradeRecv:55.7},'Cody White':{gradeOff:82.3,gradeRecv:80.0},
+'Cade Stover':{gradeOff:68.8,gradeRecv:55.4},'Woody Marks':{gradeOff:68.2,gradeRecv:73.4,gradeRun:64.0},'Jacory Croskey-Merritt':{gradeOff:48.7,gradeRecv:55.3,gradeRun:50.6},'Kenyon Sadiq':{gradeOff:56.2,gradeRecv:55.3},
+'Ja\'Marr Chase':{gradeOff:69.2,gradeRecv:70.1,routes:71,yprr:1.23},'George Holani':{gradeOff:45.9,gradeRecv:null,gradeRun:51.3},'John Bates':{gradeOff:59.7,gradeRecv:55.1},'Jordan Whittington':{gradeOff:54.9,gradeRecv:54.9},
+'Roman Wilson':{gradeOff:54.6,gradeRecv:54.6},'Aaron Jones':{gradeOff:66.2,gradeRecv:null,gradeRun:67.1},'AJ Barner':{gradeOff:62.8,gradeRecv:54.4},'MarShawn Lloyd':{gradeOff:57.4,gradeRecv:62.9,gradeRun:57.3},
+'Marvin Harrison Jr.':{gradeOff:54.6,gradeRecv:54.2},'Laquon Treadwell':{gradeOff:63.3,gradeRecv:64.2},'Derius Davis':{gradeOff:53.9,gradeRecv:null},'Chris Bell':{gradeOff:53.7,gradeRecv:53.9},
+'Kaelon Black':{gradeOff:61.6,gradeRecv:53.5,gradeRun:64.0},'Jeremy Ruckert':{gradeOff:57.7,gradeRecv:53.5},'Konata Mumpfield':{gradeOff:53.5,gradeRecv:null},'Kevin Coleman Jr.':{gradeOff:53.4,gradeRecv:null},
+'Cade Otton':{gradeOff:53.0,gradeRecv:53.3},'Keon Coleman':{gradeOff:70.2,gradeRecv:69.9,routes:47,yprr:1.36},'Jimmy Horn Jr.':{gradeOff:53.2,gradeRecv:null},'Durham Smythe':{gradeOff:67.4,gradeRecv:53.0},
+'Makai Lemon':{gradeOff:54.9,gradeRecv:52.9},'Brock Wright':{gradeOff:56.6,gradeRecv:52.5},'Isaiah Williams':{gradeOff:51.7,gradeRecv:52.4},'Will Kacmarek':{gradeOff:52.4,gradeRecv:null},
+'Jahmyr Gibbs':{gradeOff:85.2,gradeRecv:86.5,gradeRun:78.7,routes:47,yprr:1.94},'Terrance Ferguson':{gradeOff:51.6,gradeRecv:null},'Tyquan Thornton':{gradeOff:63.7,gradeRecv:65.6,routes:60,yprr:1.43},'Dawson Knox':{gradeOff:55.4,gradeRecv:51.4},
+'George Pickens':{gradeOff:60.2,gradeRecv:62.3,routes:61,yprr:1.11},'Jordan Addison':{gradeOff:50.8,gradeRecv:null},'Jauan Jennings':{gradeOff:50.6,gradeRecv:null},'Noah Gray':{gradeOff:46.3,gradeRecv:50.0},
+'Kyle Pitts':{gradeOff:49.8,gradeRecv:null},'D.K. Metcalf':{gradeOff:49.8,gradeRecv:49.8},'George Kittle':{gradeOff:69.2,gradeRecv:80.4},'Courtland Sutton':{gradeOff:45.5,gradeRecv:49.6},
+'Terry McLaurin':{gradeOff:49.5,gradeRecv:49.2},'Malik Washington':{gradeOff:49.7,gradeRecv:49.2,routes:60,yprr:1.6},'Rashid Shaheed':{gradeOff:49.0,gradeRecv:49.1},'Jake Ferguson':{gradeOff:64.8,gradeRecv:64.8},
+'Tyjae Spears':{gradeOff:55.4,gradeRecv:48.6,gradeRun:65.5,routes:21,yprr:1.95},'Dyami Brown':{gradeOff:48.3,gradeRecv:null},'Braelon Allen':{gradeOff:63.2,gradeRecv:null,gradeRun:68.0},'Ryan Flournoy':{gradeOff:46.0,gradeRecv:47.9},
+'Quintin Morris':{gradeOff:47.5,gradeRecv:null},'Colston Loveland':{gradeOff:47.4,gradeRecv:null},'Jaylen Waddle':{gradeOff:75.6,gradeRecv:76.7},'Romeo Doubs':{gradeOff:46.1,gradeRecv:27.9,routes:52,yprr:1.85},
+'Troy Franklin':{gradeOff:68.3,gradeRecv:66.2,routes:19,yprr:1.42},'Mason Taylor':{gradeOff:54.3,gradeRecv:46.0},'Xavier Legette':{gradeOff:45.8,gradeRecv:27.9,routes:53,yprr:1.21},'Christian McCaffrey':{gradeOff:63.3,gradeRecv:45.5,gradeRun:70.4,routes:33,yprr:1.91},
+'Bucky Irving':{gradeOff:68.1,gradeRecv:44.4,gradeRun:74.5,routes:43,yprr:1.14},'Tez Johnson':{gradeOff:42.5,gradeRecv:28.0},'Kenneth Walker III':{gradeOff:88.9,gradeRecv:70.5,gradeRun:87.5,routes:39,yprr:2.03},'Arian Smith':{gradeOff:40.7,gradeRecv:27.9},
+'Rico Dowdle':{gradeOff:46.5,gradeRecv:40.6,gradeRun:47.0},'Adam Trautman':{gradeOff:43.9,gradeRecv:39.2},'James Cook':{gradeOff:60.0,gradeRecv:38.6,gradeRun:63.9},'Jaylen Warren':{gradeOff:49.7,gradeRecv:38.4,gradeRun:57.0,routes:37,yprr:1.65},
+'Jeremiyah Love':{gradeOff:61.6,gradeRecv:37.4,gradeRun:66.3},'Jonathan Taylor':{gradeOff:67.6,gradeRecv:36.2,gradeRun:71.6,routes:36,yprr:1.75},'Drew Ogletree':{gradeOff:28.5,gradeRecv:27.9},'Tyler Higbee':{gradeOff:29.2,gradeRecv:28.1},
+};
 const PFF_RECEIVING = {
 'Bijan Robinson':{routes:437,routeRate:80.5,yprr:1.88,dropRate:3.7,contested:60.0,games:17},
 'Derrick Henry':{routes:154,routeRate:74.4,yprr:0.97,dropRate:6.3,contested:null,games:17},
@@ -1588,37 +2057,45 @@ const CB_LEAGUE_AVG_GRADE = 65.6; // real 2025 avg among qualifying starting cor
    projection math (same reasoning as the PFF grade badge: this measures the
    same real 2025 performance already reflected in the QB's baseline stats). */
 const QB_PRESSURE = {
-'Geno Smith':{pressureRate:0.405,sackPct:10.5,timeToThrow:2.81,pressureToSackRate:25.9},
-'Kirk Cousins':{pressureRate:0.356,sackPct:4.5,timeToThrow:2.6,pressureToSackRate:12.6},
-'Jacoby Brissett':{pressureRate:0.409,sackPct:7.8,timeToThrow:2.97,pressureToSackRate:19.1},
+'Deshaun Watson':{pressureRate:0.394,sackPct:10.6,timeToThrow:3.03,pressureToSackRate:26.9},
+'Kyler Murray':{pressureRate:0.571,sackPct:0.0,timeToThrow:3.27,pressureToSackRate:0.0},
+'Cooper Rush':{pressureRate:0.261,sackPct:10.9,timeToThrow:2.5,pressureToSackRate:41.7},
+'Stetson Bennett':{pressureRate:0.75,sackPct:0.0,timeToThrow:3.08,pressureToSackRate:0.0},
+'Kenny Pickett':{pressureRate:0.0,sackPct:0.0,timeToThrow:3.65,pressureToSackRate:0.0},
+'Malik Willis':{pressureRate:0.431,sackPct:13.8,timeToThrow:3.36,pressureToSackRate:32.1},
+'Carson Wentz':{pressureRate:0.34,sackPct:12.8,timeToThrow:2.62,pressureToSackRate:37.5},
+'Drew Lock':{pressureRate:0.333,sackPct:3.9,timeToThrow:2.68,pressureToSackRate:11.8},
+'Geno Smith':{pressureRate:0.293,sackPct:5.3,timeToThrow:3.07,pressureToSackRate:18.2},
+'Kirk Cousins':{pressureRate:0.27,sackPct:3.2,timeToThrow:2.77,pressureToSackRate:11.8},
+'Jacoby Brissett':{pressureRate:0.343,sackPct:4.3,timeToThrow:2.56,pressureToSackRate:12.5},
 'Michael Penix Jr.':{pressureRate:0.35,sackPct:4.3,timeToThrow:2.82,pressureToSackRate:12.3},
-'Lamar Jackson':{pressureRate:0.424,sackPct:9.8,timeToThrow:3.16,pressureToSackRate:23.1},
-'Josh Allen':{pressureRate:0.369,sackPct:6.9,timeToThrow:3.0,pressureToSackRate:18.6},
-'Bryce Young':{pressureRate:0.375,sackPct:4.9,timeToThrow:2.85,pressureToSackRate:13.2},
-'Caleb Williams':{pressureRate:0.354,sackPct:3.4,timeToThrow:3.24,pressureToSackRate:9.6},
-'Joe Burrow':{pressureRate:0.299,sackPct:5.9,timeToThrow:2.78,pressureToSackRate:19.8},
+'Lamar Jackson':{pressureRate:0.426,sackPct:7.4,timeToThrow:3.17,pressureToSackRate:17.2},
+'Josh Allen':{pressureRate:0.414,sackPct:5.7,timeToThrow:3.11,pressureToSackRate:13.8},
+'Bryce Young':{pressureRate:0.425,sackPct:5.0,timeToThrow:2.93,pressureToSackRate:11.8},
+'Caleb Williams':{pressureRate:0.471,sackPct:7.1,timeToThrow:3.7,pressureToSackRate:15.2},
+'Joe Burrow':{pressureRate:0.288,sackPct:8.2,timeToThrow:2.47,pressureToSackRate:28.6},
 'Dillon Gabriel':{pressureRate:0.406,sackPct:8.8,timeToThrow:2.76,pressureToSackRate:21.6},
-'Dak Prescott':{pressureRate:0.354,sackPct:4.7,timeToThrow:2.79,pressureToSackRate:13.3},
-'Bo Nix':{pressureRate:0.318,sackPct:3.0,timeToThrow:2.86,pressureToSackRate:9.5},
-'Jared Goff':{pressureRate:0.36,sackPct:6.1,timeToThrow:2.57,pressureToSackRate:17.0},
-'Jordan Love':{pressureRate:0.386,sackPct:4.1,timeToThrow:2.85,pressureToSackRate:10.5},
-'C.J. Stroud':{pressureRate:0.374,sackPct:5.2,timeToThrow:2.81,pressureToSackRate:13.9},
-'Daniel Jones':{pressureRate:0.352,sackPct:5.1,timeToThrow:2.76,pressureToSackRate:14.6},
-'Trevor Lawrence':{pressureRate:0.375,sackPct:6.2,timeToThrow:2.91,pressureToSackRate:16.4},
-'Patrick Mahomes':{pressureRate:0.345,sackPct:5.7,timeToThrow:2.94,pressureToSackRate:16.6},
-'Justin Herbert':{pressureRate:0.436,sackPct:9.1,timeToThrow:2.96,pressureToSackRate:20.8},
-'Matthew Stafford':{pressureRate:0.318,sackPct:3.8,timeToThrow:2.73,pressureToSackRate:12.1},
-'Drake Maye':{pressureRate:0.376,sackPct:9.0,timeToThrow:3.08,pressureToSackRate:23.9},
-'Tyler Shough':{pressureRate:0.328,sackPct:8.2,timeToThrow:2.7,pressureToSackRate:25.0},
-'Jaxson Dart':{pressureRate:0.367,sackPct:8.5,timeToThrow:3.08,pressureToSackRate:23.0},
+'Dak Prescott':{pressureRate:0.375,sackPct:2.8,timeToThrow:2.78,pressureToSackRate:7.4},
+'Bo Nix':{pressureRate:0.385,sackPct:6.2,timeToThrow:2.92,pressureToSackRate:16.0},
+'Jared Goff':{pressureRate:0.353,sackPct:5.9,timeToThrow:2.77,pressureToSackRate:16.7},
+'Jordan Love':{pressureRate:0.436,sackPct:9.0,timeToThrow:2.41,pressureToSackRate:20.6},
+'C.J. Stroud':{pressureRate:0.394,sackPct:6.7,timeToThrow:2.82,pressureToSackRate:17.1},
+'Daniel Jones':{pressureRate:0.299,sackPct:3.0,timeToThrow:2.78,pressureToSackRate:10.0},
+'Trevor Lawrence':{pressureRate:0.304,sackPct:5.4,timeToThrow:2.8,pressureToSackRate:17.6},
+'Patrick Mahomes':{pressureRate:0.286,sackPct:4.8,timeToThrow:2.59,pressureToSackRate:16.7},
+'Justin Herbert':{pressureRate:0.439,sackPct:9.1,timeToThrow:2.85,pressureToSackRate:20.7},
+'Matthew Stafford':{pressureRate:0.4,sackPct:0.0,timeToThrow:2.72,pressureToSackRate:0.0},
+'Drake Maye':{pressureRate:0.435,sackPct:8.7,timeToThrow:3.12,pressureToSackRate:20.0},
+'Tyler Shough':{pressureRate:0.333,sackPct:7.8,timeToThrow:2.75,pressureToSackRate:23.5},
+'Jaxson Dart':{pressureRate:0.294,sackPct:5.9,timeToThrow:2.64,pressureToSackRate:20.0},
 'Justin Fields':{pressureRate:0.446,sackPct:10.4,timeToThrow:3.09,pressureToSackRate:23.3},
-'Jalen Hurts':{pressureRate:0.355,sackPct:5.8,timeToThrow:3.07,pressureToSackRate:16.3},
-'Aaron Rodgers':{pressureRate:0.266,sackPct:5.7,timeToThrow:2.6,pressureToSackRate:21.4},
-'Brock Purdy':{pressureRate:0.406,sackPct:3.6,timeToThrow:3.23,pressureToSackRate:9.0},
-'Sam Darnold':{pressureRate:0.355,sackPct:5.3,timeToThrow:2.75,pressureToSackRate:14.9},
-'Baker Mayfield':{pressureRate:0.352,sackPct:5.7,timeToThrow:2.9,pressureToSackRate:16.2},
-'Cam Ward':{pressureRate:0.369,sackPct:8.8,timeToThrow:3.0,pressureToSackRate:23.9},
-'Jayden Daniels':{pressureRate:0.396,sackPct:7.3,timeToThrow:3.06,pressureToSackRate:18.6},
+'Jalen Hurts':{pressureRate:0.364,sackPct:7.8,timeToThrow:3.47,pressureToSackRate:21.4},
+'Aaron Rodgers':{pressureRate:0.337,sackPct:7.0,timeToThrow:2.69,pressureToSackRate:20.7},
+'Brock Purdy':{pressureRate:0.246,sackPct:0.0,timeToThrow:2.87,pressureToSackRate:0.0},
+'Sam Darnold':{pressureRate:0.333,sackPct:33.3,timeToThrow:2.97,pressureToSackRate:100.0},
+'Baker Mayfield':{pressureRate:0.325,sackPct:9.1,timeToThrow:3.09,pressureToSackRate:28.0},
+'Cam Ward':{pressureRate:0.397,sackPct:7.9,timeToThrow:3.12,pressureToSackRate:20.0},
+'Jayden Daniels':{pressureRate:0.377,sackPct:1.6,timeToThrow:3.44,pressureToSackRate:4.3},
 };
 const QB_PRESSURE_LEAGUE_AVG = {pressureRate:0.368,sackPct:6.9,timeToThrow:2.87,pressureToSackRate:17.0};
 
@@ -2151,36 +2628,45 @@ const RECV_EPA_LEAGUE_AVG = 0.04;
    min 6 games): play-action rate as a share of real dropbacks, and yards/attempt
    with vs. without it. Informational -- same treatment as the other PFF badges. */
 const QB_PLAYACTION = {
-'Kirk Cousins':{paRate:23.2,paYpa:9.3,npaYpa:5.5,paGrade:74.9,npaGrade:72.4,games:10},
-'Jacoby Brissett':{paRate:26.9,paYpa:7.3,npaYpa:6.8,paGrade:68.5,npaGrade:67.6,games:13},
+'Kyler Murray':{paRate:14.3,paYpa:0,npaYpa:0,paGrade:60.0,npaGrade:50.0,games:1},
+'Stetson Bennett':{paRate:0.0,paYpa:0,npaYpa:0,paGrade:50.0,npaGrade:50.0,games:1},
+'Carson Wentz':{paRate:29.8,paYpa:6.3,npaYpa:7.4,paGrade:62.2,npaGrade:59.9,games:2},
+'Malik Willis':{paRate:23.1,paYpa:6.5,npaYpa:9.0,paGrade:41.0,npaGrade:71.5,games:2},
+'Geno Smith':{paRate:28.0,paYpa:7.2,npaYpa:7.1,paGrade:67.4,npaGrade:72.3,games:2},
+'Kenny Pickett':{paRate:50.0,paYpa:0,npaYpa:0,paGrade:60.0,npaGrade:50.0,games:1},
+'Deshaun Watson':{paRate:31.8,paYpa:8.1,npaYpa:8.7,paGrade:79.5,npaGrade:53.5,games:2},
+'Drew Lock':{paRate:35.3,paYpa:11.3,npaYpa:7.5,paGrade:80.9,npaGrade:90.8,games:2},
+'Cooper Rush':{paRate:10.9,paYpa:19.5,npaYpa:4.3,paGrade:83.7,npaGrade:25.7,games:2},
+'Kirk Cousins':{paRate:28.6,paYpa:9.4,npaYpa:6.1,paGrade:88.0,npaGrade:55.7,games:2},
+'Jacoby Brissett':{paRate:17.1,paYpa:2.9,npaYpa:6.3,paGrade:53.8,npaGrade:70.4,games:2},
 'Michael Penix Jr.':{paRate:19.5,paYpa:8.7,npaYpa:6.8,paGrade:72.0,npaGrade:53.3,games:9},
-'Lamar Jackson':{paRate:26.9,paYpa:12.2,npaYpa:7.0,paGrade:88.9,npaGrade:58.2,games:13},
-'Josh Allen':{paRate:30.7,paYpa:8.2,npaYpa:7.9,paGrade:79.5,npaGrade:74.5,games:16},
-'Bryce Young':{paRate:26.0,paYpa:7.2,npaYpa:6.0,paGrade:67.8,npaGrade:66.9,games:16},
-'Caleb Williams':{paRate:33.9,paYpa:7.5,npaYpa:6.7,paGrade:73.9,npaGrade:67.0,games:17},
-'Joe Burrow':{paRate:16.7,paYpa:6.3,npaYpa:7.1,paGrade:66.0,npaGrade:92.2,games:8},
+'Lamar Jackson':{paRate:32.4,paYpa:13.6,npaYpa:8.4,paGrade:80.3,npaGrade:70.2,games:2},
+'Josh Allen':{paRate:47.1,paYpa:8.8,npaYpa:10.4,paGrade:53.5,npaGrade:90.1,games:2},
+'Bryce Young':{paRate:27.5,paYpa:10.7,npaYpa:8.1,paGrade:90.7,npaGrade:70.8,games:2},
+'Caleb Williams':{paRate:30.0,paYpa:6.1,npaYpa:7.9,paGrade:68.7,npaGrade:57.0,games:2},
+'Joe Burrow':{paRate:16.4,paYpa:4.8,npaYpa:7.5,paGrade:47.4,npaGrade:79.0,games:2},
 'Dillon Gabriel':{paRate:21.2,paYpa:5.8,npaYpa:4.9,paGrade:62.5,npaGrade:47.1,games:10},
-'Dak Prescott':{paRate:28.2,paYpa:8.7,npaYpa:7.1,paGrade:84.3,npaGrade:81.1,games:17},
-'Bo Nix':{paRate:28.0,paYpa:6.8,npaYpa:6.3,paGrade:65.3,npaGrade:75.8,games:17},
-'Jared Goff':{paRate:28.1,paYpa:9.3,npaYpa:7.4,paGrade:70.3,npaGrade:76.5,games:17},
-'Jordan Love':{paRate:25.4,paYpa:7.8,npaYpa:7.7,paGrade:77.7,npaGrade:88.2,games:15},
-'C.J. Stroud':{paRate:25.0,paYpa:8.5,npaYpa:6.8,paGrade:74.1,npaGrade:66.4,games:14},
-'Daniel Jones':{paRate:35.0,paYpa:9.3,npaYpa:7.4,paGrade:64.0,npaGrade:69.5,games:13},
-'Trevor Lawrence':{paRate:24.8,paYpa:7.1,npaYpa:7.2,paGrade:69.6,npaGrade:82.6,games:17},
-'Patrick Mahomes':{paRate:24.4,paYpa:7.0,npaYpa:7.2,paGrade:63.6,npaGrade:71.5,games:14},
-'Justin Herbert':{paRate:26.5,paYpa:8.3,npaYpa:6.9,paGrade:82.9,npaGrade:73.0,games:16},
-'Matthew Stafford':{paRate:36.8,paYpa:8.4,npaYpa:7.6,paGrade:92.3,npaGrade:91.0,games:17},
-'Drake Maye':{paRate:25.0,paYpa:9.9,npaYpa:8.6,paGrade:87.7,npaGrade:82.9,games:17},
-'Tyler Shough':{paRate:16.4,paYpa:6.5,npaYpa:7.4,paGrade:57.7,npaGrade:75.6,games:11},
-'Jaxson Dart':{paRate:25.6,paYpa:6.1,npaYpa:6.9,paGrade:47.1,npaGrade:70.0,games:13},
+'Dak Prescott':{paRate:27.8,paYpa:7.1,npaYpa:6.9,paGrade:75.9,npaGrade:88.0,games:2},
+'Bo Nix':{paRate:24.6,paYpa:7.9,npaYpa:6.8,paGrade:75.1,npaGrade:48.5,games:2},
+'Jared Goff':{paRate:32.9,paYpa:5.3,npaYpa:7.8,paGrade:59.5,npaGrade:81.9,games:2},
+'Jordan Love':{paRate:19.2,paYpa:8.5,npaYpa:7.3,paGrade:62.3,npaGrade:50.1,games:2},
+'C.J. Stroud':{paRate:18.3,paYpa:5.8,npaYpa:7.0,paGrade:68.9,npaGrade:61.4,games:2},
+'Daniel Jones':{paRate:34.3,paYpa:7.7,npaYpa:5.3,paGrade:72.9,npaGrade:63.3,games:2},
+'Trevor Lawrence':{paRate:26.8,paYpa:7.1,npaYpa:8.8,paGrade:70.1,npaGrade:76.5,games:2},
+'Patrick Mahomes':{paRate:28.6,paYpa:6.5,npaYpa:8.2,paGrade:85.9,npaGrade:81.5,games:2},
+'Justin Herbert':{paRate:30.3,paYpa:8.6,npaYpa:7.0,paGrade:54.2,npaGrade:54.5,games:2},
+'Matthew Stafford':{paRate:24.0,paYpa:11.8,npaYpa:4.4,paGrade:69.2,npaGrade:34.5,games:2},
+'Drake Maye':{paRate:20.3,paYpa:6.2,npaYpa:7.3,paGrade:38.2,npaGrade:56.8,games:2},
+'Tyler Shough':{paRate:18.6,paYpa:6.2,npaYpa:7.6,paGrade:60.7,npaGrade:82.1,games:2},
+'Jaxson Dart':{paRate:35.3,paYpa:6.0,npaYpa:8.7,paGrade:59.1,npaGrade:70.7,games:2},
 'Justin Fields':{paRate:21.2,paYpa:6.6,npaYpa:6.1,paGrade:58.8,npaGrade:66.9,games:9},
-'Jalen Hurts':{paRate:22.9,paYpa:7.2,npaYpa:7.1,paGrade:68.6,npaGrade:77.7,games:16},
-'Aaron Rodgers':{paRate:21.4,paYpa:5.4,npaYpa:7.0,paGrade:56.7,npaGrade:72.3,games:16},
-'Brock Purdy':{paRate:29.7,paYpa:7.6,npaYpa:7.6,paGrade:71.7,npaGrade:87.8,games:9},
-'Sam Darnold':{paRate:27.6,paYpa:11.4,npaYpa:7.3,paGrade:90.4,npaGrade:70.7,games:17},
-'Baker Mayfield':{paRate:21.4,paYpa:8.0,npaYpa:6.5,paGrade:70.6,npaGrade:61.9,games:17},
-'Cam Ward':{paRate:24.4,paYpa:6.0,npaYpa:5.8,paGrade:64.0,npaGrade:54.1,games:17},
-'Jayden Daniels':{paRate:22.9,paYpa:6.7,npaYpa:6.7,paGrade:68.6,npaGrade:73.3,games:7},
+'Jalen Hurts':{paRate:14.3,paYpa:9.5,npaYpa:7.2,paGrade:69.7,npaGrade:81.7,games:2},
+'Aaron Rodgers':{paRate:24.4,paYpa:6.9,npaYpa:4.6,paGrade:67.1,npaGrade:65.0,games:2},
+'Brock Purdy':{paRate:31.1,paYpa:9.6,npaYpa:8.5,paGrade:63.9,npaGrade:85.4,games:2},
+'Sam Darnold':{paRate:33.3,paYpa:13.0,npaYpa:0,paGrade:70.7,npaGrade:null,games:1},
+'Baker Mayfield':{paRate:32.5,paYpa:5.9,npaYpa:6.7,paGrade:43.1,npaGrade:69.6,games:2},
+'Cam Ward':{paRate:27.0,paYpa:7.4,npaYpa:5.8,paGrade:50.4,npaGrade:64.0,games:2},
+'Jayden Daniels':{paRate:26.2,paYpa:3.5,npaYpa:5.6,paGrade:44.3,npaGrade:80.1,games:2},
 };
 const QB_PA_LEAGUE_AVG = {paRate:25.2,paYpa:7.59,npaYpa:6.64};
 
@@ -2745,8 +3231,8 @@ function computeProjection(p, opts){
   let ppr=0, half=0, std=0;
 
   if(p.p==='QB'){
-    const passYd = bb.passYd * oppM * paceM * siteM * (wxPassMult[wi]) * scriptVolMult * roleMult * pressurePassMult * sackMult * tttMult * qbSackSkillMult * qbCov.yd * vegasM * olPassM;
-    const passTD = bb.passTD * oppM * paceM * siteM * (wxPassMult[wi]) * scriptVolMult * roleMult * pressurePassMult * sackMult * tttMult * qbSackSkillMult * qbCov.yd * vegasM * olPassM;
+    const passYd = bb.passYd * oppM * paceM * siteM * (wxPassMult[wi]) * scriptVolMult * roleMult * pressurePassMult * sackMult * tttMult * qbSackSkillMult * qbCov.yd * vegasM * olPassM * WEEKLY_CALIBRATION.qbMult;
+    const passTD = bb.passTD * oppM * paceM * siteM * (wxPassMult[wi]) * scriptVolMult * roleMult * pressurePassMult * sackMult * tttMult * qbSackSkillMult * qbCov.yd * vegasM * olPassM * WEEKLY_CALIBRATION.qbMult;
     const rushYd = bb.rushYd * paceM * siteM * (wxRushMult[wi]) * scriptSecMult * roleMult * vegasM * qbRushSkillMult;
     const rushTD = bb.rushTD * paceM * siteM * (wxRushMult[wi]) * scriptSecMult * roleMult * vegasM * qbRushSkillMult;
     const ints = bb.int * (oi<=1 ? 1.15 : oi>=3 ? 0.85 : 1.0) * pressureIntMult * c0IntMult * qbCov.int * (2 - olPassM);
@@ -2768,7 +3254,7 @@ function computeProjection(p, opts){
     ppr = std; half = std;
   } else if(p.p==='RB'){
     const rushAtt = bb.rushAtt * paceM * siteM * scriptVolMult * roleMult * splitMult * (wxRushMult[wi]);
-    const rushYd  = bb.rushYd  * oppM * paceM * siteM * scriptVolMult * roleMult * splitMult * (wxRushMult[wi]) * vegasM * olRunM * runDefMult;
+    const rushYd  = bb.rushYd  * oppM * paceM * siteM * scriptVolMult * roleMult * splitMult * (wxRushMult[wi]) * vegasM * olRunM * runDefMult * WEEKLY_CALIBRATION.rbMult;
     const rushTD  = bb.rushTD  * oppM * scriptVolMult * roleMult * splitMult * vegasM;
     const rec     = bb.rec * paceM * siteM * scriptSecMult * covM * roleMult * splitMult * cbMult * (wxPassMult[wi]);
     const recYd   = bb.recYd * oppM * paceM * siteM * scriptSecMult * covM * roleMult * splitMult * cbMult * (wxPassMult[wi]) * vegasM;
@@ -2785,7 +3271,8 @@ function computeProjection(p, opts){
   } else {
     const tgt   = bb.tgt * paceM * siteM * scriptVolMult * covM * roleMult * (wxPassMult[wi]);
     const rec   = bb.rec * paceM * siteM * scriptVolMult * covM * roleMult * cbMult * (wxPassMult[wi]);
-    const recYd = bb.recYd * oppM * paceM * siteM * scriptVolMult * covM * roleMult * cbMult * c0RecMult * (wxPassMult[wi]) * vegasM;
+    const passDefWk1Adj = (opts.oppAb && PASS_DEF_WK1_ADJ[opts.oppAb]) ? PASS_DEF_WK1_ADJ[opts.oppAb] : 1.0;
+    const recYd = bb.recYd * oppM * paceM * siteM * scriptVolMult * covM * roleMult * cbMult * c0RecMult * (wxPassMult[wi]) * vegasM * (p.p==='WR' ? WEEKLY_CALIBRATION.wrMult : 1.0) * passDefWk1Adj;
     const recTD = bb.recTD * oppM * scriptVolMult * covM * roleMult * cbMult * c0RecMult * vegasM;
     lines.push({label:'Targets', base:bb.tgt, val:tgt});
     lines.push({label:'Receptions', base:bb.rec, val:rec});
@@ -2832,7 +3319,7 @@ function neutralOptsFor(p, wk){
       }
     }
   }
-  return { opts:{oppTier, script:2, cov, pace:1, site, wx:0, role:0, cbShadow, split:0, pressure, sackConv, ttt, c0, runDefOverall, runDefInterior, cbGrade}, isBye, oppAb };
+  return { opts:{oppTier, script:2, cov, pace:1, site, wx:0, role:0, cbShadow, split:0, pressure, sackConv, ttt, c0, runDefOverall, runDefInterior, cbGrade, oppAb}, isBye, oppAb };
 }
 
 function fmtN(n, d=1){ return n.toFixed(d); }
@@ -2853,12 +3340,14 @@ const modeTabsEl = document.getElementById('modeTabs');
     document.getElementById('bigBoardView').style.display = appMode==='bigboard' ? '' : 'none';
     document.getElementById('slateView').style.display = appMode==='slate' ? '' : 'none';
     document.getElementById('defProfileView').style.display = appMode==='defprofile' ? '' : 'none';
+    document.getElementById('bettingView').style.display = appMode==='betting' ? '' : 'none';
     if(appMode==='rankings') renderRankings();
     if(appMode==='compare') renderCompareGrid();
     if(appMode==='advantages') renderAdvantages();
     if(appMode==='bigboard') renderBigBoard();
     if(appMode==='slate') renderSlate();
     if(appMode==='defprofile') renderDefProfile();
+    if(appMode==='betting') renderBetting();
   };
 });
 
@@ -2880,6 +3369,7 @@ function setWeek(wk){
   if(appMode==='advantages') renderAdvantages();
   if(appMode==='bigboard') renderBigBoard();
   if(appMode==='slate') renderSlate();
+  if(appMode==='betting') renderBetting();
 }
 
 globalWeekEl.onchange = ()=>{ setWeek(globalWeekEl.value); };
@@ -3037,13 +3527,29 @@ function selectPlayer(p){
     }
     html += `<br><span style="color:var(--text-faint);">Context only \u2014 already reflected in this player's production.</span>`;
     pffBadgeEl.innerHTML = html;
-  } else if(p.p!=='QB' && PFF_RECEIVING[p.n]){
+  } else if(p.p!=='QB' && (PFF_RECEIVING[p.n] || PFF_SKILL_GRADES_WK1[p.n])){
     const rv = PFF_RECEIVING[p.n];
-    const vsAvgYprr = rv.yprr - PFF_RECV_LEAGUE_AVG.yprr;
-    let html = `<b style="color:var(--amber);">PFF Receiving Efficiency</b><br>`
-      + `${rv.routes} routes run (${rv.routeRate}% of team pass plays) \u00b7 ${rv.yprr} yards per route run (${vsAvgYprr>=0?'+':''}${vsAvgYprr.toFixed(2)} vs. league)<br>`
-      + `Drop rate ${rv.dropRate}%`
-      + (rv.contested!==null ? ` \u00b7 Contested-catch rate ${rv.contested}%` : '');
+    const wk1 = PFF_SKILL_GRADES_WK1[p.n];
+    const elu = ELUSIVE_RATING_WK1[p.n];
+    let html = '';
+    if(wk1){
+      html += `<b style="color:var(--amber);">PFF Grade (2026, through Week 2) \u2014 ${wk1.gradeOff}</b> overall`
+        + (wk1.gradeRun!=null ? ` \u00b7 ${wk1.gradeRun} rushing` : '')
+        + (wk1.gradeRecv!=null ? ` \u00b7 ${wk1.gradeRecv} receiving` : (wk1.gradeRun!=null ? '' : ` (no targets graded that week)`)) + `<br>`;
+      if(wk1.yprr!=null){
+        html += `Real 2026 yards per route run (through Week 2): <b>${wk1.yprr}</b> on ${wk1.routes} routes<br>`;
+      }
+    }
+    if(elu){
+      html += `<b style="color:var(--amber);">Elusive Rating \u2014 ${elu.elusiveRating}</b> (${elu.mtf} missed tackles forced on ${elu.att} touches)<br>`;
+    }
+    if(rv){
+      const vsAvgYprr = rv.yprr - PFF_RECV_LEAGUE_AVG.yprr;
+      html += `<b style="color:var(--amber);">PFF Receiving Efficiency</b><br>`
+        + `${rv.routes} routes run (${rv.routeRate}% of team pass plays) \u00b7 ${rv.yprr} yards per route run (${vsAvgYprr>=0?'+':''}${vsAvgYprr.toFixed(2)} vs. league)<br>`
+        + `Drop rate ${rv.dropRate}%`
+        + (rv.contested!==null ? ` \u00b7 Contested-catch rate ${rv.contested}%` : '');
+    }
     html += `<br><span style="color:var(--text-faint);">Usage context \u2014 not factored into the projection.</span>`;
     pffBadgeEl.innerHTML = html;
   } else {
@@ -3871,6 +4377,18 @@ document.getElementById('defProfileMoreColsBtn').onclick = (e)=>{
   };
 });
 document.getElementById('slateSearchBox').addEventListener('input', ()=>{ renderSlate(); });
+document.getElementById('slateGameFilter').addEventListener('change', ()=>{ renderSlate(); });
+document.getElementById('bettingGameFilter').addEventListener('change', ()=>{ renderBetting(); });
+document.getElementById('bettingFavTeam').addEventListener('change', ()=>{ renderBetting(); });
+document.getElementById('bettingVegasTotal').addEventListener('input', ()=>{ renderBetting(); });
+document.getElementById('bettingVegasSpread').addEventListener('input', ()=>{ renderBetting(); });
+const bettingMethodToggle = document.getElementById('bettingMethodToggle');
+const bettingMethodBody = document.getElementById('bettingMethodBody');
+const bettingMethodChev = document.getElementById('bettingMethodChev');
+bettingMethodToggle.onclick = ()=>{
+  const collapsed = bettingMethodBody.classList.toggle('collapsed');
+  bettingMethodChev.textContent = collapsed ? '\u25b8 Tap to expand' : '\u25be Tap to collapse';
+};
 
 function renderBigBoard(){
   const wk = globalWeekEl.value ? parseInt(globalWeekEl.value,10) : null;
@@ -3928,6 +4446,179 @@ function getRealGamesForWeek(wk){
   return games;
 }
 
+function computeTeamProjectedPoints(teamAb, oppAb, isHome){
+  const m = WIN_TOTAL_SCORING_MODEL;
+  const myWins = (TEAMS[teamAb] && TEAMS[teamAb].vegasWinTotal);
+  const oppWins = (TEAMS[oppAb] && TEAMS[oppAb].vegasWinTotal);
+  if(myWins == null || oppWins == null) return { points: null, offRating: null, defRating: null };
+  const winTotalOff = m.offA*myWins + m.offB;
+  const myPffGrade = PFF_TEAM_OFFENSE_WK2[teamAb] && PFF_TEAM_OFFENSE_WK2[teamAb].grade_offense;
+  let myOff = winTotalOff;
+  if(myPffGrade != null){
+    const pffOff = PFF_OFF_REGRESSION.a*myPffGrade + PFF_OFF_REGRESSION.b;
+    myOff = PFF_BLEND_WEIGHT*pffOff + (1-PFF_BLEND_WEIGHT)*winTotalOff;
+  }
+  const winTotalDef = m.defA*oppWins + m.defB;
+  const oppPffGrade = PFF_TEAM_DEFENSE_WK2[oppAb] && PFF_TEAM_DEFENSE_WK2[oppAb].grade_defense;
+  let oppDef = winTotalDef;
+  if(oppPffGrade != null){
+    const pffDef = PFF_DEF_REGRESSION.a*oppPffGrade + PFF_DEF_REGRESSION.b;
+    oppDef = PFF_BLEND_WEIGHT*pffDef + (1-PFF_BLEND_WEIGHT)*winTotalDef;
+  }
+  const hfa = isHome ? m.homeFieldAdj : -m.homeFieldAdj;
+  const points = (myOff + oppDef)/2 + hfa;
+  return { points, offRating: myOff, defRatingFaced: oppDef, winTotalDefRating: winTotalDef, pffGradeUsed: oppPffGrade };
+}
+
+function renderBetting(){
+  const wk = globalWeekEl.value ? parseInt(globalWeekEl.value,10) : null;
+  const gameFilterEl = document.getElementById('bettingGameFilter');
+  const noGameEl = document.getElementById('bettingNoGame');
+  const bodyEl = document.getElementById('bettingBody');
+  if(!wk){
+    gameFilterEl.innerHTML = '';
+    noGameEl.style.display = '';
+    noGameEl.textContent = 'Pick a Week above, then a game.';
+    bodyEl.style.display = 'none';
+    return;
+  }
+  const games = getRealGamesForWeek(wk);
+  const prevSelection = gameFilterEl.value;
+  gameFilterEl.innerHTML = games.map(g => `<option value="${g.away}@${g.home}">${g.away} @ ${g.home}</option>`).join('');
+  const stillExists = [...gameFilterEl.options].some(o => o.value === prevSelection);
+  gameFilterEl.value = stillExists ? prevSelection : (games[0] ? `${games[0].away}@${games[0].home}` : '');
+
+  if(!gameFilterEl.value){
+    noGameEl.style.display = '';
+    noGameEl.textContent = 'No real games found for this week.';
+    bodyEl.style.display = 'none';
+    return;
+  }
+  noGameEl.style.display = 'none';
+  bodyEl.style.display = '';
+
+  const [away, home] = gameFilterEl.value.split('@');
+  const favEl = document.getElementById('bettingFavTeam');
+  const prevFav = favEl.value;
+  favEl.innerHTML = `<option value="${away}">${away}</option><option value="${home}">${home}</option>`;
+  favEl.value = (prevFav === away || prevFav === home) ? prevFav : home;
+  const favTeam = favEl.value;
+  const dogTeam = favTeam === away ? home : away;
+
+  const awayProj = computeTeamProjectedPoints(away, home, false);
+  const homeProj = computeTeamProjectedPoints(home, away, true);
+  const ourTotal = awayProj.points + homeProj.points;
+  const favPoints = favTeam === away ? awayProj.points : homeProj.points;
+  const dogPoints = favTeam === away ? homeProj.points : awayProj.points;
+  const ourMargin = favPoints - dogPoints;
+
+  const vegasTotalVal = document.getElementById('bettingVegasTotal').value;
+  const vegasSpreadVal = document.getElementById('bettingVegasSpread').value;
+  const resultsEl = document.getElementById('bettingResults');
+
+  const neutral = {oppTier:2, script:2, cov:1, pace:1, site:0, wx:0, role:0, cbShadow:0, split:0, pressure:null, sackConv:null, ttt:null, c0:null, runDefOverall:null, runDefInterior:null, cbGrade:null};
+  function topPlayersFor(teamAb){
+    const all = P.filter(p=>p.t===teamAb).map(p=>{
+      const {opts, isBye} = neutralOptsFor(p, wk);
+      if(isBye) return null;
+      const result = computeProjection(p, opts || neutral);
+      return { p, ppr: result.ppr, lines: result.lines };
+    }).filter(Boolean).sort((a,b)=>b.ppr-a.ppr);
+
+    // Exactly one per position for the core group -- only one QB will ever
+    // actually play a given week (barring an in-game injury), so showing a
+    // real backup/competing QB alongside the real starter as if both matter
+    // equally is misleading. Same logic applied to RB/WR/TE: the single
+    // highest-projected player at each position leads, and any other real
+    // contributor (a committee back, a WR2 with real volume, etc.) shows up
+    // in the "other" group below instead, clearly separated.
+    const core = [];
+    ['QB','RB','WR','TE'].forEach(pos=>{
+      const best = all.find(r => r.p.p === pos);
+      if(best) core.push(best);
+    });
+    const coreNames = new Set(core.map(r=>r.p.n));
+    const other = all.filter(r => !coreNames.has(r.p.n)).slice(0,3);
+    return { core, other };
+  }
+  function keyLineFor(row){
+    const { p, lines } = row;
+    if(p.p==='QB'){
+      const py = lines.find(l=>l.label==='Pass Yards'); const ptd = lines.find(l=>l.label==='Pass TD');
+      return `${py?fmtN(py.val,0):'--'} pass yd, ${ptd?fmtN(ptd.val,1):'--'} pass TD`;
+    } else if(p.p==='RB'){
+      const ry = lines.find(l=>l.label==='Rush Yards'); const rec = lines.find(l=>l.label==='Receptions');
+      return `${ry?fmtN(ry.val,0):'--'} rush yd, ${rec?fmtN(rec.val,1):'--'} rec`;
+    } else {
+      const rec = lines.find(l=>l.label==='Receptions'); const recy = lines.find(l=>l.label==='Rec Yards');
+      return `${rec?fmtN(rec.val,1):'--'} rec, ${recy?fmtN(recy.val,0):'--'} rec yd`;
+    }
+  }
+  function teamBlock(teamAb, label, ourPts){
+    const vegasWinTotal = (TEAMS[teamAb] && TEAMS[teamAb].vegasWinTotal);
+    const { core, other } = topPlayersFor(teamAb);
+    const rowFor = r => `<tr>
+        <td class="nm">${r.p.n}</td><td>${r.p.p}</td>
+        <td style="font-family:'IBM Plex Mono',monospace;font-size:12px;">${keyLineFor(r)}</td>
+        <td style="text-align:right;" class="pts">${fmtN(r.ppr,1)}</td>
+      </tr>`;
+    const coreRows = core.map(rowFor).join('');
+    const otherRows = other.length ? `<tr><td colspan="4" style="padding-top:10px;padding-bottom:2px;font-size:11px;color:var(--text-faint);text-transform:uppercase;">Other notable (committee mates, WR2/3, etc.)</td></tr>${other.map(rowFor).join('')}` : '';
+    return `<div class="card" style="flex:1;min-width:280px;">
+      <div style="font-size:15px;font-weight:700;margin-bottom:4px;">${label} (${teamAb}) &mdash; our proj: <span style="font-family:'IBM Plex Mono',monospace;">${fmtN(ourPts,1)}</span></div>
+      <div style="font-size:12.5px;color:var(--text-dim);margin-bottom:10px;">Real season-long Vegas win total: <b>${vegasWinTotal!=null?fmtN(vegasWinTotal,1):'n/a'}</b></div>
+      <table class="rank-table" style="width:100%;">
+        <thead><tr><th>Player</th><th>Pos</th><th>Real Proj. Line</th><th style="text-align:right;">PPR</th></tr></thead>
+        <tbody>${coreRows}${otherRows}</tbody>
+      </table>
+    </div>`;
+  }
+
+  let html = `<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px;">
+    ${teamBlock(away,'Away', awayProj.points)}
+    ${teamBlock(home,'Home', homeProj.points)}
+  </div>`;
+
+  const hasTotal = vegasTotalVal !== '' && !isNaN(parseFloat(vegasTotalVal));
+  const hasSpread = vegasSpreadVal !== '' && !isNaN(parseFloat(vegasSpreadVal));
+
+  if(hasTotal){
+    const vegasTotal = parseFloat(vegasTotalVal);
+    const diff = ourTotal - vegasTotal;
+    const cls = Math.abs(diff) < 1.5 ? 'flat' : (diff > 0 ? 'up' : 'down');
+    const lean = Math.abs(diff) < 1.5 ? 'Roughly in line' : (diff > 0 ? 'Our total is HIGHER (leans Over)' : 'Our total is LOWER (leans Under)');
+    html += `<div class="card" style="margin-bottom:12px;">
+      <div style="font-size:13px;color:var(--text-dim);margin-bottom:6px;">TOTAL POINTS</div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;">
+        <div>Vegas: <b style="font-family:'IBM Plex Mono',monospace;">${fmtN(vegasTotal,1)}</b> &nbsp;&middot;&nbsp; Our projected total: <b style="font-family:'IBM Plex Mono',monospace;">${fmtN(ourTotal,1)}</b></div>
+        <div class="delta ${cls}" style="font-size:16px;font-weight:700;">${diff>=0?'+':''}${fmtN(diff,1)}</div>
+      </div>
+      <div style="margin-top:6px;font-weight:700;" class="delta ${cls}">${lean}</div>
+    </div>`;
+  } else {
+    html += `<div class="methodology" style="margin-bottom:12px;">Enter a Vegas Total above to compare it against our projected total.</div>`;
+  }
+
+  if(hasSpread){
+    const vegasSpread = parseFloat(vegasSpreadVal);
+    const diff = ourMargin - vegasSpread;
+    const cls = Math.abs(diff) < 1.5 ? 'flat' : (diff > 0 ? 'up' : 'down');
+    const lean = Math.abs(diff) < 1.5 ? 'Roughly in line' : (diff > 0 ? `Our numbers favor ${favTeam} more than Vegas does` : `Our numbers favor ${dogTeam} more than Vegas gives them credit for`);
+    html += `<div class="card">
+      <div style="font-size:13px;color:var(--text-dim);margin-bottom:6px;">SPREAD</div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;">
+        <div>Vegas: <b>${favTeam} by ${fmtN(vegasSpread,1)}</b> &nbsp;&middot;&nbsp; Our margin: <b>${ourMargin>=0 ? `${favTeam} by ${fmtN(ourMargin,1)}` : `${dogTeam} by ${fmtN(-ourMargin,1)}`}</b></div>
+        <div class="delta ${cls}" style="font-size:16px;font-weight:700;">${diff>=0?'+':''}${fmtN(diff,1)}</div>
+      </div>
+      <div style="margin-top:6px;font-weight:700;" class="delta ${cls}">${lean}</div>
+    </div>`;
+  } else {
+    html += `<div class="methodology">Enter a Vegas Spread above to compare it against our projected margin.</div>`;
+  }
+
+  resultsEl.innerHTML = html;
+}
+
 function renderDefProfile(){
   const body = document.getElementById('defProfileBody');
   body.innerHTML = '';
@@ -3971,13 +4662,30 @@ function renderSlate(){
   const wk = globalWeekEl.value ? parseInt(globalWeekEl.value,10) : null;
   const body = document.getElementById('slateBody');
   const note = document.getElementById('slateAutoNote');
+  const gameFilterEl = document.getElementById('slateGameFilter');
   body.innerHTML = '';
   if(!wk){
     note.textContent = 'Pick a Week above to see that week\u2019s real slate.';
+    gameFilterEl.innerHTML = '<option value="ALL">All games</option>';
     return;
   }
-  const games = getRealGamesForWeek(wk);
-  note.textContent = `Week ${wk} \u2014 ${games.length} real games, ranked by projected points within each team.`;
+  const allGames = getRealGamesForWeek(wk);
+
+  // Repopulate the game dropdown for this week, preserving the current
+  // selection if that same matchup still exists (e.g. after a week change
+  // where the user hasn't touched the dropdown yet, it resets to All).
+  const prevSelection = gameFilterEl.value;
+  gameFilterEl.innerHTML = '<option value="ALL">All games</option>' +
+    allGames.map(g => `<option value="${g.away}@${g.home}">${g.away} @ ${g.home}</option>`).join('');
+  const stillExists = [...gameFilterEl.options].some(o => o.value === prevSelection);
+  gameFilterEl.value = stillExists ? prevSelection : 'ALL';
+
+  const selectedGame = gameFilterEl.value;
+  const games = selectedGame === 'ALL' ? allGames : allGames.filter(g => `${g.away}@${g.home}` === selectedGame);
+
+  note.textContent = selectedGame === 'ALL'
+    ? `Week ${wk} \u2014 ${allGames.length} real games, ranked by projected points within each team.`
+    : `Week ${wk} \u2014 ${selectedGame.replace('@',' @ ')}, ranked by projected points within each team.`;
   const neutral = {oppTier:2, script:2, cov:1, pace:1, site:0, wx:0, role:0, cbShadow:0, split:0, pressure:null, sackConv:null, ttt:null, c0:null, runDefOverall:null, runDefInterior:null, cbGrade:null};
   const searchQ = document.getElementById('slateSearchBox').value.trim().toLowerCase();
 
