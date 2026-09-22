@@ -649,7 +649,7 @@
   </div>
 
   <footer>
-    <b>Scope:</b> 189 players across QB/RB/WR/TE for all 32 teams, including 2026 draft rookies with a clear
+    <b>Scope:</b> 201 players across QB/RB/WR/TE for all 32 teams, including 2026 draft rookies with a clear
     Year-1 role — one lead player per role plus real committee backfields/WR depth, not literal full rosters.
     <b>Rosters:</b> reflect confirmed 2026 trades, free-agency moves and coaching hires as of early August
     2026. <b>Schedule:</b> official 2026 NFL regular-season grid. <b>Defense tiers:</b> derived from each
@@ -874,7 +874,7 @@ const P = [
 {n:'Lamar Jackson',p:'QB',t:'BAL',b:{passYd:196.1,passTD:1.62,int:0.54,rushYd:26.8,rushTD:0.15},f:'New HC/offensive system — largest continuity risk in dataset',c:'balanced',s:'pass-neutral'},
 {n:'Josh Allen',p:'QB',t:'BUF',b:{passYd:215.8,passTD:1.47,int:0.59,rushYd:34.1,rushTD:0.82},c:'balanced',s:'rush-heavy-qb'},
 {n:'Bryce Young',p:'QB',t:'CAR',b:{passYd:188.2,passTD:1.44,int:0.69,rushYd:13.5,rushTD:0.13},c:'balanced',s:'pass-neutral'},
-{n:'Caleb Williams',p:'QB',t:'CHI',b:{passYd:231.9,passTD:1.59,int:0.41,rushYd:22.8,rushTD:0.18},c:'balanced',s:'rush-heavy-qb'},
+{n:'Caleb Williams',p:'QB',t:'CHI',b:{passYd:231.9,passTD:1.59,int:0.41,rushYd:22.8,rushTD:0.18},f:'Real, current: suffered a real right hamstring injury vs MIN (Week 2), carted off, but a real Monday MRI showed he avoided a major injury -- HC Ben Johnson calls him "week-to-week," genuinely uncertain but not yet ruled out for Week 3 vs PHI',c:'balanced',s:'rush-heavy-qb'},
 {n:'Joe Burrow',p:'QB',t:'CIN',b:{passYd:226.1,passTD:2.13,int:0.63,rushYd:5.1,rushTD:0},f:'Made only 8 starts in 2025 — health is the swing factor',c:'zone-beater',s:'pass-neutral'},
 {n:'Dillon Gabriel',p:'QB',t:'CLE',b:{passYd:93.7,passTD:0.7,int:0.2,rushYd:8.6,rushTD:0},f:'Small 2025 sample; QB competition under new HC Monken',c:'balanced',s:'pass-neutral'},
 {n:'Shedeur Sanders',p:'QB',t:'CLE',b:{passYd:175.0,passTD:0.88,int:1.25,rushYd:21.1,rushTD:0.12},f:'Real rookie-year 2025 sample (8 games) — high real INT rate reflects genuine rookie struggles, not discounted',c:'balanced',s:'pass-neutral'},
@@ -893,7 +893,8 @@ const P = [
 {n:'Kyler Murray',p:'QB',t:'MIN',b:{passYd:192.4,passTD:1.2,int:0.6,rushYd:34.6,rushTD:0.2},f:'Traded from Arizona; new pairing with Justin Jefferson; real, current: confirmed Week 1 starter as expected, suffered a real concussion just 9 minutes into the game on a hit ruled unnecessary roughness -- real, current: Limited Participation in Week 2 practice, still working through the real concussion protocol',c:'balanced',s:'rush-heavy-qb'},
 {n:'Drake Maye',p:'QB',t:'NE',b:{passYd:258.5,passTD:1.82,int:0.47,rushYd:26.5,rushTD:0.24},c:'balanced',s:'pass-neutral'},
 {n:'Tyler Shough',p:'QB',t:'NO',b:{passYd:216.7,passTD:0.91,int:0.55,rushYd:16.9,rushTD:0.27},f:'Rookie-year sample (11 starts)',c:'balanced',s:'pass-neutral'},
-{n:'Jaxson Dart',p:'QB',t:'NYG',b:{passYd:162.3,passTD:1.07,int:0.36,rushYd:34.8,rushTD:0.64},f:'New HC John Harbaugh — new offensive system',c:'balanced',s:'rush-heavy-qb'},
+{n:'Jaxson Dart',p:'QB',t:'NYG',b:{passYd:162.3,passTD:1.07,int:0.36,rushYd:34.8,rushTD:0.64},f:'New HC John Harbaugh — new offensive system; real, current: suffered a real, serious left knee injury vs LAR (Week 2, exited after 3/5 for 20 yd), initially hoped to be an MCL sprain, but a real Tuesday MRI showed it\'s worse than expected -- team is genuinely facing the possibility of season-ending knee surgery per ESPN\'s Schefter; Jameis Winston confirmed as the real starter in his absence',c:'balanced',s:'rush-heavy-qb'},
+{n:'Jameis Winston',p:'QB',t:'NYG',b:{passYd:111.0,passTD:0,int:1.0,rushYd:0.5,rushTD:0},f:'Real, current: confirmed starter with Dart out (real, serious knee injury) -- this baseline is his real Week 2 relief-appearance line (11/27, 111 yd, 1 INT, 2 sacks); a real, veteran-journeyman small sample in a brand new starting role',c:'balanced',s:'pass-neutral'},
 {n:'Justin Fields',p:'QB',t:'KC',b:{passYd:139.9,passTD:0.78,int:0.11,rushYd:42.6,rushTD:0.44},f:'Traded from NYJ to KC (Mar 2026) — real backup behind an injured Patrick Mahomes, real chance at early starts',c:'balanced',s:'rush-heavy-qb'},
 {n:'Jalen Hurts',p:'QB',t:'PHI',b:{passYd:201.5,passTD:1.56,int:0.38,rushYd:26.3,rushTD:0.5},c:'balanced',s:'rush-heavy-qb'},
 {n:'Aaron Rodgers',p:'QB',t:'PIT',b:{passYd:207.6,passTD:1.5,int:0.44,rushYd:3.8,rushTD:0.06},f:'Reunites with HC Mike McCarthy from Green Bay',c:'zone-beater',s:'pass-neutral'},
@@ -1202,13 +1203,13 @@ const PFF_TEAM_DEFENSE_WK2 = {
   JAX:{grade_defense:60.2},
   KC:{grade_defense:77.7},
   LAC:{grade_defense:67.5},
-  LAR:{grade_defense:63.1},
+  LAR:{grade_defense:77.3},
   LV:{grade_defense:68.5},
   MIA:{grade_defense:60.8},
   MIN:{grade_defense:61.7},
   NE:{grade_defense:67.9},
   NO:{grade_defense:61.1},
-  NYG:{grade_defense:54.3},
+  NYG:{grade_defense:47.4},
   NYJ:{grade_defense:73.0},
   PHI:{grade_defense:66.1},
   PIT:{grade_defense:76.2},
@@ -1267,13 +1268,13 @@ const PFF_TEAM_OFFENSE_WK2 = {
   JAX:{grade_offense:75.2},
   KC:{grade_offense:84.4},
   LAC:{grade_offense:65.7},
-  LAR:{grade_offense:63.6},
+  LAR:{grade_offense:82.5},
   LV:{grade_offense:71.2},
   MIA:{grade_offense:60.8},
   MIN:{grade_offense:66.6},
   NE:{grade_offense:67.7},
   NO:{grade_offense:74.8},
-  NYG:{grade_offense:66.6},
+  NYG:{grade_offense:57.7},
   NYJ:{grade_offense:74.0},
   PHI:{grade_offense:77.6},
   PIT:{grade_offense:67.3},
@@ -1687,6 +1688,7 @@ const QB_ATT_COMP = {
 const QB_ATT_COMP_LEAGUE_AVG = {attPerGame:29.4,compPct:65.7};
 
 const PFF_QB = {
+'Jameis Winston':{gradeOff:58.0,gradePass:56.8,btt:3.6,twp:3.3,games:1},
 'Deshaun Watson':{gradeOff:64.1,gradePass:63.2,btt:3.7,twp:4.3,games:2},
 'Kyler Murray':{gradeOff:35.2,gradePass:39.6,btt:0.0,twp:14.3,games:1},
 'Cooper Rush':{gradeOff:29.6,gradePass:31.6,btt:0.0,twp:8.2,games:2},
@@ -1714,10 +1716,10 @@ const PFF_QB = {
 'Trevor Lawrence':{gradeOff:83.0,gradePass:82.9,btt:5.5,twp:4.9,games:2},
 'Patrick Mahomes':{gradeOff:90.3,gradePass:86.7,btt:5.3,twp:0.0,games:2},
 'Justin Herbert':{gradeOff:54.4,gradePass:59.8,btt:1.6,twp:4.1,games:2},
-'Matthew Stafford':{gradeOff:41.5,gradePass:42.3,btt:0.0,twp:6.9,games:1},
+'Matthew Stafford':{gradeOff:64.2,gradePass:64.6,btt:3.3,twp:4.8,games:2},
 'Drake Maye':{gradeOff:54.8,gradePass:51.2,btt:1.7,twp:5.5,games:2},
 'Tyler Shough':{gradeOff:76.1,gradePass:77.6,btt:7.3,twp:1.8,games:2},
-'Jaxson Dart':{gradeOff:71.9,gradePass:65.8,btt:0.0,twp:5.9,games:1},
+'Jaxson Dart':{gradeOff:70.5,gradePass:64.6,btt:0.0,twp:5.1,games:2},
 'Justin Fields':{gradeOff:67.3,gradePass:65.5,btt:2.8,twp:2.5,games:9},
 'Jalen Hurts':{gradeOff:82.6,gradePass:80.4,btt:6.3,twp:1.3,games:2},
 'Aaron Rodgers':{gradeOff:67.6,gradePass:66.6,btt:2.4,twp:1.1,games:2},
@@ -1780,6 +1782,7 @@ const ELUSIVE_RATING_WK1 = {
 'Blake Corum':{att:10,mtf:1,elusiveRating:15.0},'Rico Dowdle':{att:15,mtf:1,elusiveRating:10.5},'Kaelon Black':{att:21,mtf:4,elusiveRating:42.4},
 };
 const PFF_SKILL_GRADES_WK1 = {
+'Tutu Atwell':{gradeOff:66.1,gradeRecv:65.0},
 'Kaleb Johnson':{gradeOff:52.2,gradeRun:53.4},
 'Alvin Kamara':{gradeOff:54.5,gradeRun:58.5},
 'TreVeyon Henderson':{gradeOff:65.3,gradeRun:66.7},
@@ -1822,7 +1825,7 @@ const PFF_SKILL_GRADES_WK1 = {
 'Jordan Mason':{gradeOff:66.4,gradeRecv:null,gradeRun:65.8},
 'Cam Skattebo':{gradeOff:67.1,gradeRecv:null,gradeRun:67.4},
 'Brian Robinson':{gradeOff:64.2,gradeRecv:60.3,gradeRun:64.5},
-'Blake Corum':{gradeOff:70.8,gradeRecv:null,gradeRun:69.4},
+'Blake Corum':{gradeOff:74.6,gradeRecv:65.7,gradeRun:69.4},
 'Chris Rodriguez Jr.':{gradeOff:66.2,gradeRecv:null,gradeRun:67.7},
 'AJ Dillon':{gradeOff:65.0,gradeRecv:null,gradeRun:64.4},
 
@@ -1831,7 +1834,7 @@ const PFF_SKILL_GRADES_WK1 = {
 'Ladd McConkey':{gradeOff:83.8,gradeRecv:82.2,routes:18,yprr:4.56},'Omar Cooper Jr.':{gradeOff:91.9,gradeRecv:89.9},'Justin Jefferson':{gradeOff:83.9,gradeRecv:83.3,routes:30,yprr:3.07},'Josh Oliver':{gradeOff:66.2,gradeRecv:90.4},
 'Jalen Coker':{gradeOff:84.0,gradeRecv:85.9,routes:40,yprr:3.45},'Mike Gesicki':{gradeOff:74.4,gradeRecv:72.9,routes:37,yprr:2.11},'Josh Cameron':{gradeOff:78.7,gradeRecv:79.9},'Kalif Raymond':{gradeOff:80.5,gradeRecv:78.3,routes:54,yprr:2.3},
 'Javonte Williams':{gradeOff:84.1,gradeRecv:87.4,gradeRun:85.2,routes:34,yprr:1.5},'Christian Watson':{gradeOff:69.0,gradeRecv:71.4,routes:38,yprr:3.87},'Travis Etienne Jr.':{gradeOff:67.9,gradeRecv:82.0,gradeRun:64.4},'Bijan Robinson':{gradeOff:75.1,gradeRecv:77.3,gradeRun:70.1,routes:21,yprr:4.29},
-'Cooper Kupp':{gradeOff:77.7,gradeRecv:78.0,routes:35,yprr:1.57},'Isaiah Likely':{gradeOff:88.7,gradeRecv:82.8,routes:23,yprr:3.39},'De\'Von Achane':{gradeOff:75.9,gradeRecv:80.3,gradeRun:74.2},'Trey McBride':{gradeOff:80.6,gradeRecv:81.3,routes:59,yprr:2.31},
+'Cooper Kupp':{gradeOff:77.7,gradeRecv:78.0,routes:35,yprr:1.57},'Isaiah Likely':{gradeOff:83.1,gradeRecv:79.9,routes:23,yprr:3.39},'De\'Von Achane':{gradeOff:75.9,gradeRecv:80.3,gradeRun:74.2},'Trey McBride':{gradeOff:80.6,gradeRecv:81.3,routes:59,yprr:2.31},
 'Noah Fant':{gradeOff:72.1,gradeRecv:71.3,routes:28,yprr:1.18},'Chris Olave':{gradeOff:84.8,gradeRecv:85.1,routes:55,yprr:3.31},'Lan Larison':{gradeOff:67.5,gradeRecv:81.0},'Marlin Klein':{gradeOff:66.5,gradeRecv:73.2},
 'Mike Evans':{gradeOff:85.1,gradeRecv:84.1,routes:44,yprr:2.34},'Cole Kmet':{gradeOff:55.1,gradeRecv:68.7,routes:19,yprr:1.84},'Kendrick Bourne':{gradeOff:68.6,gradeRecv:66.9,routes:54,yprr:1.59},'Chris Moore':{gradeOff:65.8,gradeRecv:68.8,routes:7,yprr:7.57},
 'Jake Briningstool':{gradeOff:64.0,gradeRecv:67.4},'Ronnie Rivers':{gradeOff:67.7,gradeRecv:78.7,gradeRun:63.1},'Evan Engram':{gradeOff:74.2,gradeRecv:79.7,routes:35,yprr:1.71},'Dallas Goedert':{gradeOff:69.5,gradeRecv:72.3,routes:36,yprr:2.25},
@@ -1840,7 +1843,7 @@ const PFF_SKILL_GRADES_WK1 = {
 'Caleb Douglas':{gradeOff:70.5,gradeRecv:70.0,routes:55,yprr:2.05},'DeVonta Smith':{gradeOff:91.3,gradeRecv:90.8,routes:74,yprr:2.3},'Derrick Henry':{gradeOff:79.0,gradeRecv:83.8,gradeRun:74.4,routes:17,yprr:2.24},'Travis Hunter':{gradeOff:73.2,gradeRecv:73.9},
 'Tee Higgins':{gradeOff:83.8,gradeRecv:79.5,routes:31,yprr:1.9},'Khalil Shakir':{gradeOff:78.4,gradeRecv:76.3,routes:41,yprr:2.15},'Adonai Mitchell':{gradeOff:68.8,gradeRecv:73.0,routes:61,yprr:2.02},'David Njoku':{gradeOff:68.3,gradeRecv:66.6,routes:17,yprr:3.41},
 'Travis Kelce':{gradeOff:82.3,gradeRecv:84.8,routes:26,yprr:2.73},'Emeka Egbuka':{gradeOff:64.7,gradeRecv:64.8,routes:69,yprr:1.14},'Malik Nabers':{gradeOff:71.0,gradeRecv:69.7,routes:24,yprr:2.88},'Jalen Nailor':{gradeOff:61.0,gradeRecv:63.1},
-'Pat Bryant':{gradeOff:55.9,gradeRecv:62.1},'Jonnu Smith':{gradeOff:68.2,gradeRecv:68.4,routes:17,yprr:2.94},'Devin Singletary':{gradeOff:57.0,gradeRecv:71.7,gradeRun:48.4,routes:17,yprr:1.29},'Nico Collins':{gradeOff:70.9,gradeRecv:71.7,routes:37,yprr:2.03},
+'Pat Bryant':{gradeOff:55.9,gradeRecv:62.1},'Jonnu Smith':{gradeOff:68.2,gradeRecv:68.4,routes:17,yprr:2.94},'Devin Singletary':{gradeOff:58.3,gradeRecv:68.3,gradeRun:48.4,routes:17,yprr:1.29},'Nico Collins':{gradeOff:70.9,gradeRecv:71.7,routes:37,yprr:2.03},
 'Garrett Wilson':{gradeOff:74.1,gradeRecv:74.2,routes:64,yprr:2.13},'Brenton Strange':{gradeOff:63.6,gradeRecv:64.6},'Davis Allen':{gradeOff:64.9,gradeRecv:70.8},'Brian Thomas Jr.':{gradeOff:65.7,gradeRecv:65.1,routes:37,yprr:2.16},
 'Will Shipley':{gradeOff:66.6,gradeRecv:70.4,gradeRun:70.5},'Luke Schoonmaker':{gradeOff:57.1,gradeRecv:70.4},'Wan\'Dale Robinson':{gradeOff:66.1,gradeRecv:68.2},'Jack Bech':{gradeOff:70.4,gradeRecv:70.2,routes:34,yprr:1.41},
 'Juwan Johnson':{gradeOff:78.0,gradeRecv:75.7,routes:74,yprr:1.62},'Drake London':{gradeOff:80.6,gradeRecv:81.9,routes:46,yprr:1.74},'Michael Mayer':{gradeOff:68.1,gradeRecv:64.9},'Tommy Tremble':{gradeOff:75.8,gradeRecv:69.9},
@@ -1851,12 +1854,12 @@ const PFF_SKILL_GRADES_WK1 = {
 'Jonathan Mingo':{gradeOff:63.6,gradeRecv:63.1},'Drew Sample':{gradeOff:61.0,gradeRecv:68.2},'Breece Hall':{gradeOff:63.6,gradeRecv:77.1,gradeRun:58.8,routes:8,yprr:2.0},'Chuba Hubbard':{gradeOff:81.9,gradeRecv:74.8,gradeRun:79.4,routes:41,yprr:1.2},
 'Denzel Boston':{gradeOff:72.9,gradeRecv:74.3,routes:30,yprr:1.97},'Sam LaPorta':{gradeOff:72.8,gradeRecv:75.1,routes:74,yprr:1.35},'Deebo Samuel':{gradeOff:65.9,gradeRecv:65.0,routes:39,yprr:2.03},'CeeDee Lamb':{gradeOff:87.2,gradeRecv:87.4},
 'Raheim Sanders':{gradeOff:54.1,gradeRecv:64.3,gradeRun:49.6},'Mark Andrews':{gradeOff:76.5,gradeRecv:73.7,routes:51,yprr:1.92},'Quinshon Judkins':{gradeOff:62.8,gradeRecv:73.0,gradeRun:60.2,routes:25,yprr:1.76},'Kenneth Gainwell':{gradeOff:59.8,gradeRecv:66.4,gradeRun:66.2},
-'Ashton Jeanty':{gradeOff:54.4,gradeRecv:66.4,gradeRun:61.2,routes:43,yprr:1.4},'Harold Fannin Jr.':{gradeOff:68.2,gradeRecv:75.1,routes:53,yprr:1.42},'Davante Adams':{gradeOff:67.1,gradeRecv:66.1,routes:21,yprr:1.24},'Jakobi Meyers':{gradeOff:63.2,gradeRecv:62.9,routes:49,yprr:1.39},
+'Ashton Jeanty':{gradeOff:54.4,gradeRecv:66.4,gradeRun:61.2,routes:43,yprr:1.4},'Harold Fannin Jr.':{gradeOff:68.2,gradeRecv:75.1,routes:53,yprr:1.42},'Davante Adams':{gradeOff:92.2,gradeRecv:91.7,routes:21,yprr:1.24},'Jakobi Meyers':{gradeOff:63.2,gradeRecv:62.9,routes:49,yprr:1.39},
 'Josh Downs':{gradeOff:78.2,gradeRecv:79.6,routes:62,yprr:1.76},'Jared Wayne':{gradeOff:65.2,gradeRecv:65.2},'Devaughn Vele':{gradeOff:67.0,gradeRecv:68.3},'Amon-Ra St. Brown':{gradeOff:80.9,gradeRecv:81.1,routes:82,yprr:2.55},
 'Ameer Abdullah':{gradeOff:71.1,gradeRecv:67.6,gradeRun:68.6},'D\'Andre Swift':{gradeOff:67.7,gradeRecv:73.9,gradeRun:69.3,routes:28,yprr:2.29},'Dontayvion Wicks':{gradeOff:72.3,gradeRecv:73.9,routes:31,yprr:2.35},'Rome Odunze':{gradeOff:62.6,gradeRecv:66.0,routes:60,yprr:1.58},
 'Mitchell Evans':{gradeOff:64.7,gradeRecv:64.9},'T.J. Hockenson':{gradeOff:62.3,gradeRecv:65.3,routes:42,yprr:1.55},'Nate Boerkircher':{gradeOff:60.3,gradeRecv:64.6},'Chris Godwin':{gradeOff:71.5,gradeRecv:71.0,routes:69,yprr:1.25},
-'Luther Burden III':{gradeOff:59.4,gradeRecv:60.8,routes:57,yprr:1.67},'Rhamondre Stevenson':{gradeOff:59.8,gradeRecv:64.4,gradeRun:68.5,routes:39,yprr:1.21},'Darnell Mooney':{gradeOff:64.4,gradeRecv:63.9},'Stefon Diggs':{gradeOff:75.6,gradeRecv:77.0,routes:48,yprr:2.13},
-'Eli Raridon':{gradeOff:73.5,gradeRecv:79.4},'Bhayshul Tuten':{gradeOff:83.2,gradeRecv:66.8,gradeRun:81.5,routes:8,yprr:2.75},'Kyle Monangai':{gradeOff:70.2,gradeRecv:63.8,gradeRun:70.2,routes:20,yprr:1.75},'Kyren Williams':{gradeOff:65.5,gradeRecv:63.4,gradeRun:68.3,routes:20,yprr:1.2},
+'Luther Burden III':{gradeOff:59.4,gradeRecv:60.8,routes:57,yprr:1.67},'Rhamondre Stevenson':{gradeOff:59.8,gradeRecv:64.4,gradeRun:68.5,routes:39,yprr:1.21},'Darnell Mooney':{gradeOff:66.9,gradeRecv:66.7},'Stefon Diggs':{gradeOff:75.6,gradeRecv:77.0,routes:48,yprr:2.13},
+'Eli Raridon':{gradeOff:73.5,gradeRecv:79.4},'Bhayshul Tuten':{gradeOff:83.2,gradeRecv:66.8,gradeRun:81.5,routes:8,yprr:2.75},'Kyle Monangai':{gradeOff:70.2,gradeRecv:63.8,gradeRun:70.2,routes:20,yprr:1.75},'Kyren Williams':{gradeOff:70.5,gradeRecv:64.5,gradeRun:68.3,routes:20,yprr:1.2},
 'Michael Pittman Jr.':{gradeOff:60.3,gradeRecv:63.2,routes:39,yprr:1.49},'Sione Vaki':{gradeOff:62.2,gradeRecv:68.3,gradeRun:57.7},'Seth McGowan':{gradeOff:56.1,gradeRecv:62.7},'DeeJay Dallas':{gradeOff:62.5,gradeRecv:62.5},
 'Xavier Hutchinson':{gradeOff:64.3,gradeRecv:62.3},'Theo Johnson':{gradeOff:54.9,gradeRecv:62.0},'Bryce Lance':{gradeOff:62.5,gradeRecv:61.9},'KC Concepcion':{gradeOff:66.2,gradeRecv:64.4,routes:20,yprr:2.15},
 'Gunnar Helm':{gradeOff:62.3,gradeRecv:61.7},'Ja\'Kobi Lane':{gradeOff:61.7,gradeRecv:61.6},'Demario Douglas':{gradeOff:63.1,gradeRecv:61.3},'Dalton Schultz':{gradeOff:75.6,gradeRecv:77.7,routes:79,yprr:2.22},
@@ -2057,6 +2060,7 @@ const CB_LEAGUE_AVG_GRADE = 65.6; // real 2025 avg among qualifying starting cor
    projection math (same reasoning as the PFF grade badge: this measures the
    same real 2025 performance already reflected in the QB's baseline stats). */
 const QB_PRESSURE = {
+'Jameis Winston':{pressureRate:0.483,sackPct:6.9,timeToThrow:2.71,pressureToSackRate:14.3},
 'Deshaun Watson':{pressureRate:0.394,sackPct:10.6,timeToThrow:3.03,pressureToSackRate:26.9},
 'Kyler Murray':{pressureRate:0.571,sackPct:0.0,timeToThrow:3.27,pressureToSackRate:0.0},
 'Cooper Rush':{pressureRate:0.261,sackPct:10.9,timeToThrow:2.5,pressureToSackRate:41.7},
@@ -2084,10 +2088,10 @@ const QB_PRESSURE = {
 'Trevor Lawrence':{pressureRate:0.304,sackPct:5.4,timeToThrow:2.8,pressureToSackRate:17.6},
 'Patrick Mahomes':{pressureRate:0.286,sackPct:4.8,timeToThrow:2.59,pressureToSackRate:16.7},
 'Justin Herbert':{pressureRate:0.439,sackPct:9.1,timeToThrow:2.85,pressureToSackRate:20.7},
-'Matthew Stafford':{pressureRate:0.4,sackPct:0.0,timeToThrow:2.72,pressureToSackRate:0.0},
+'Matthew Stafford':{pressureRate:0.276,sackPct:1.7,timeToThrow:2.56,pressureToSackRate:6.3},
 'Drake Maye':{pressureRate:0.435,sackPct:8.7,timeToThrow:3.12,pressureToSackRate:20.0},
 'Tyler Shough':{pressureRate:0.333,sackPct:7.8,timeToThrow:2.75,pressureToSackRate:23.5},
-'Jaxson Dart':{pressureRate:0.294,sackPct:5.9,timeToThrow:2.64,pressureToSackRate:20.0},
+'Jaxson Dart':{pressureRate:0.333,sackPct:5.1,timeToThrow:2.61,pressureToSackRate:15.4},
 'Justin Fields':{pressureRate:0.446,sackPct:10.4,timeToThrow:3.09,pressureToSackRate:23.3},
 'Jalen Hurts':{pressureRate:0.364,sackPct:7.8,timeToThrow:3.47,pressureToSackRate:21.4},
 'Aaron Rodgers':{pressureRate:0.337,sackPct:7.0,timeToThrow:2.69,pressureToSackRate:20.7},
