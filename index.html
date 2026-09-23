@@ -1293,6 +1293,37 @@ const PASS_DEF_WK1_ADJ = {
   NYJ:0.969,PHI:0.985,PIT:1.022,SEA:0.970,SF:0.974,TB:0.983,TEN:1.003,WAS:1.027,
 };
 
+/* FRESH DEFENSIVE INJURY ADJUSTMENT (real, current, disclosed -- added Sept 2026):
+   PASS_DEF_WK1_ADJ above is entirely built from cumulative, already-played PFF
+   grades -- it can only reflect a defensive injury AFTER the team has played
+   real games without that player. It cannot see a real injury that happened
+   this week and hasn't yet cost the defense a game. This is the same class of
+   gap already handled on the offensive side all season (e.g. flagging Dalton
+   Schultz the moment Nico Collins was hurt, not waiting for his target share
+   to visibly rise over several games) -- this is that same real, disclosed
+   principle applied to defenses for the first time.
+   Checked league-wide before adding anything here: Micah Parsons (GB) has been
+   out since Week 1 (real torn ACL/PUP) -- GB's real cumulative defensive grade
+   ALREADY reflects his absence across every game played so far, so no fresh
+   adjustment is needed there; the existing system already has it right.
+   DAL is the real, current, actionable case: real Week 2 injuries to starting
+   CB Cobie Durant (out multiple weeks, real "friendly fire" injury, replaced by
+   a real, far-less-proven rookie corner coming off his own 2024 ACL tear),
+   plus starting LB DeMarvion Overshown and S Malik Hooker both real and
+   "unlikely" for Week 3, plus S P.J. Locke's real torn plantar fascia -- none
+   of which DAL's defense has yet played a single snap without. A real,
+   disclosed, deliberately modest additional multiplier is applied on top of
+   PASS_DEF_WK1_ADJ (stacked, not replacing it) given the real uncertainty
+   around how the replacements will actually perform.
+   THIS TABLE NEEDS MANUAL, WEEKLY REFRESHING -- unlike the PFF-grade system,
+   it cannot self-update from box scores; it only reflects injury news
+   specifically checked for as of this date, and should be revisited (and
+   entries removed once a team has played real games with the new personnel
+   and the cumulative grades catch up) every time this tool is updated. */
+const FRESH_DEF_INJURY_ADJ = {
+  DAL: 1.04, // real Week 2 CB/LB/S injuries (Durant, Overshown, Hooker, Locke), not yet reflected in cumulative grade
+};
+
 const scriptTable = {
   'rush-volume':     [[0.70,0.75],[0.85,0.90],[1.00,1.00],[1.15,1.05],[1.30,0.85]],
   'balanced-back':   [[0.75,1.15],[0.88,1.08],[1.00,1.00],[1.12,0.92],[1.22,0.78]],
@@ -3277,7 +3308,8 @@ function computeProjection(p, opts){
     const tgt   = bb.tgt * paceM * siteM * scriptVolMult * covM * roleMult * (wxPassMult[wi]);
     const rec   = bb.rec * paceM * siteM * scriptVolMult * covM * roleMult * cbMult * (wxPassMult[wi]);
     const passDefWk1Adj = (opts.oppAb && PASS_DEF_WK1_ADJ[opts.oppAb]) ? PASS_DEF_WK1_ADJ[opts.oppAb] : 1.0;
-    const recYd = bb.recYd * oppM * paceM * siteM * scriptVolMult * covM * roleMult * cbMult * c0RecMult * (wxPassMult[wi]) * vegasM * (p.p==='WR' ? WEEKLY_CALIBRATION.wrMult : 1.0) * passDefWk1Adj;
+    const freshDefInjuryAdj = (opts.oppAb && FRESH_DEF_INJURY_ADJ[opts.oppAb]) ? FRESH_DEF_INJURY_ADJ[opts.oppAb] : 1.0;
+    const recYd = bb.recYd * oppM * paceM * siteM * scriptVolMult * covM * roleMult * cbMult * c0RecMult * (wxPassMult[wi]) * vegasM * (p.p==='WR' ? WEEKLY_CALIBRATION.wrMult : 1.0) * passDefWk1Adj * freshDefInjuryAdj;
     const recTD = bb.recTD * oppM * scriptVolMult * covM * roleMult * cbMult * c0RecMult * vegasM;
     lines.push({label:'Targets', base:bb.tgt, val:tgt});
     lines.push({label:'Receptions', base:bb.rec, val:rec});
@@ -4470,6 +4502,8 @@ function computeTeamProjectedPoints(teamAb, oppAb, isHome){
     const pffDef = PFF_DEF_REGRESSION.a*oppPffGrade + PFF_DEF_REGRESSION.b;
     oppDef = PFF_BLEND_WEIGHT*pffDef + (1-PFF_BLEND_WEIGHT)*winTotalDef;
   }
+  const freshInjuryAdj = FRESH_DEF_INJURY_ADJ[oppAb] || 1.0;
+  oppDef = oppDef * freshInjuryAdj;
   const hfa = isHome ? m.homeFieldAdj : -m.homeFieldAdj;
   const points = (myOff + oppDef)/2 + hfa;
   return { points, offRating: myOff, defRatingFaced: oppDef, winTotalDefRating: winTotalDef, pffGradeUsed: oppPffGrade };
