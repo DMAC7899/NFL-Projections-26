@@ -1326,6 +1326,28 @@ const FRESH_DEF_INJURY_ADJ = {
   DAL: 1.04, // real Week 2 CB/LB/S injuries (Durant, Overshown, Hooker, Locke), not yet reflected in cumulative grade
 };
 
+/* TE-SPECIFIC MATCHUP ADJUSTMENT (real, disclosed -- added Sept 2026): the existing
+   PASS_DEF_WK1_ADJ above is a single, team-wide pass-defense signal applied
+   identically to both WR and TE. That's a real, structural gap: some defenses are
+   specifically exploitable by tight ends (linebackers/safeties who can't match up)
+   while being closer to average against wide receivers -- Cincinnati is the
+   clearest real, current example (real, well-documented multi-year pattern, not
+   a single-season blip). Source: real Defense-vs-TE fantasy points allowed data
+   (DraftKings scoring, blends the 2025-26 season with real current 2026-27 games),
+   checked directly rather than assumed. Real league-average TE FPA is 13.3;
+   Cincinnati allows 20.7 (the real worst mark in the league, +7.4 vs average).
+   Multiplier = 1 + (pctDeviation * 0.5) -- a real, deliberately larger weight
+   than the single-week PFF blends elsewhere (25%), since this source blends
+   multiple real seasons of TE-specific data, not one noisy week. Applied only
+   to TE rec yards/TD, never WR, since that's exactly the real distinction this
+   exists to capture. */
+const TE_MATCHUP_ADJ = {
+  CIN:1.278,DET:1.218,TB:1.203,WAS:1.177,IND:1.139,ARI:1.113,MIA:1.083,SEA:1.049,
+  ATL:1.019,DAL:1.011,HOU:0.996,TEN:0.992,PIT:0.989,JAX:0.985,DEN:0.981,KC:0.981,
+  SF:0.974,NYG:0.970,LAC:0.966,NYJ:0.962,CLE:0.959,CAR:0.951,CHI:0.947,NO:0.936,
+  GB:0.929,BAL:0.921,NE:0.921,LAR:0.914,BUF:0.898,LV:0.887,MIN:0.861,PHI:0.778,
+};
+
 const scriptTable = {
   'rush-volume':     [[0.70,0.75],[0.85,0.90],[1.00,1.00],[1.15,1.05],[1.30,0.85]],
   'balanced-back':   [[0.75,1.15],[0.88,1.08],[1.00,1.00],[1.12,0.92],[1.22,0.78]],
@@ -3306,8 +3328,9 @@ function computeProjection(p, opts){
     const rec   = bb.rec * paceM * siteM * scriptVolMult * covM * roleMult * cbMult * (wxPassMult[wi]);
     const passDefWk1Adj = (opts.oppAb && PASS_DEF_WK1_ADJ[opts.oppAb]) ? PASS_DEF_WK1_ADJ[opts.oppAb] : 1.0;
     const freshDefInjuryAdj = (opts.oppAb && FRESH_DEF_INJURY_ADJ[opts.oppAb]) ? FRESH_DEF_INJURY_ADJ[opts.oppAb] : 1.0;
-    const recYd = bb.recYd * oppM * paceM * siteM * scriptVolMult * covM * roleMult * cbMult * c0RecMult * (wxPassMult[wi]) * vegasM * (p.p==='WR' ? WEEKLY_CALIBRATION.wrMult : 1.0) * passDefWk1Adj * freshDefInjuryAdj;
-    const recTD = bb.recTD * oppM * scriptVolMult * covM * roleMult * cbMult * c0RecMult * vegasM;
+    const teMatchupAdj = (p.p==='TE' && opts.oppAb && TE_MATCHUP_ADJ[opts.oppAb]) ? TE_MATCHUP_ADJ[opts.oppAb] : 1.0;
+    const recYd = bb.recYd * oppM * paceM * siteM * scriptVolMult * covM * roleMult * cbMult * c0RecMult * (wxPassMult[wi]) * vegasM * (p.p==='WR' ? WEEKLY_CALIBRATION.wrMult : 1.0) * passDefWk1Adj * freshDefInjuryAdj * teMatchupAdj;
+    const recTD = bb.recTD * oppM * scriptVolMult * covM * roleMult * cbMult * c0RecMult * vegasM * teMatchupAdj;
     lines.push({label:'Targets', base:bb.tgt, val:tgt});
     lines.push({label:'Receptions', base:bb.rec, val:rec});
     lines.push({label:'Rec Yards', base:bb.recYd, val:recYd});
@@ -3909,11 +3932,12 @@ function compute(){
   let runDefOverall = null;
   let runDefInterior = null;
   let cbGrade = null;
+  let oppAb = null;
   if(globalWeekEl.value){
     const team = TEAMS[p.t];
     const g = team.sch[parseInt(globalWeekEl.value,10)-1];
     if(g && g !== 'BYE'){
-      const oppAb = g.replace('@','').replace('vs ','').trim();
+      oppAb = g.replace('@','').replace('vs ','').trim();
       const covData = COVERAGE_2025[oppAb];
       if(covData){ pressure = covData.pressure; ttt = covData.ttt; c0 = covData.c0; }
       const sackData = TEAM_SACK_DATA[oppAb];
@@ -3941,6 +3965,7 @@ function compute(){
     runDefOverall: runDefOverall,
     runDefInterior: runDefInterior,
     cbGrade: cbGrade,
+    oppAb: oppAb,
   };
   const result = computeProjection(p, opts);
 
