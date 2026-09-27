@@ -4032,6 +4032,34 @@ function compute(){
   document.getElementById('fpts-std').textContent = fmtN(result.std,1);
   const fwn = document.getElementById('fptsWeekNote');
   if(fwn) fwn.textContent = 'Reflects whatever Week/matchup sliders are set above \u2014 the Season Total below always uses a neutral matchup baseline instead.';
+
+  // Real, visible matchup-quality note: surfaces the real, disclosed defense-vs-position
+  // signal (DraftEdge DVP, same source/weight for all 4 positions) whenever it's
+  // significant enough to matter, so the effect is actually visible on screen instead
+  // of only existing in the underlying math. Added Sept 2026 after finding these
+  // adjustments were firing correctly but were completely invisible in the UI.
+  let matchupBox = document.getElementById('matchupNote');
+  if(!matchupBox){
+    matchupBox = document.createElement('div');
+    matchupBox.id = 'matchupNote';
+    matchupBox.className = 'autonote';
+    matchupBox.style.margin = '0 0 8px';
+    fwn.insertAdjacentElement('afterend', matchupBox);
+  }
+  matchupBox.innerHTML = '';
+  if(opts.oppAb){
+    const posAdjTable = {QB:QB_MATCHUP_ADJ, RB:RB_MATCHUP_ADJ, WR:WR_MATCHUP_ADJ, TE:TE_MATCHUP_ADJ}[p.p];
+    const adjVal = posAdjTable ? posAdjTable[opts.oppAb] : null;
+    if(adjVal != null && Math.abs(adjVal - 1.0) >= 0.05){
+      const pct = Math.round((adjVal - 1.0) * 100);
+      const dir = pct > 0 ? 'leak fantasy production to' : 'are genuinely tough against';
+      const cls = pct > 0 ? 'up' : 'down';
+      const oppName = (TEAMS[opts.oppAb] && TEAMS[opts.oppAb].name) || opts.oppAb;
+      matchupBox.innerHTML = `<span class="delta ${cls}" style="font-size:13px;">
+        Real matchup signal: ${oppName} ${dir} ${p.p}s (${pct>0?'+':''}${pct}% vs. league average, DraftEdge real box-score data)
+      </span>`;
+    }
+  }
 }
 
 /* ====================================================================
