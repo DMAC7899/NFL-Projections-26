@@ -3269,7 +3269,16 @@ function computeProjection(p, opts){
   // by any given opponent. Defaults to league average (no effect) if unavailable.
   const qbP2S = QB_PRESSURE[p.n] ? QB_PRESSURE[p.n].pressureToSackRate : QB_PRESSURE_LEAGUE_AVG.pressureToSackRate;
   const qbP2SVsAvg = (QB_PRESSURE_LEAGUE_AVG.pressureToSackRate - qbP2S) / QB_PRESSURE_LEAGUE_AVG.pressureToSackRate;
-  const qbSackSkillMult = 1 + qbP2SVsAvg * 0.15;
+  // Real, serious bug caught in a live Week 3 accuracy check (Sept 2026): this rate can
+  // range 0-100%, and a small real sample (a QB pressured only 1-2 times that game) can
+  // push it to a genuine extreme -- Sam Darnold's real 100% P2S rate drove this multiplier
+  // to 0.27, a ~73% cut to his ENTIRE passing yardage projection from one skill factor,
+  // while every other multiplier stayed within a few percent of neutral. Clamped to the
+  // same reasonable range the tool's other skill multipliers naturally fall in, so a real
+  // but small-sample outlier can meaningfully move the projection without being able to
+  // dominate it outright.
+  const qbSackSkillMultRaw = 1 + qbP2SVsAvg * 0.15;
+  const qbSackSkillMult = Math.max(0.85, Math.min(1.15, qbSackSkillMultRaw));
   // Real Cover-0 (all-out blitz, no deep safety) rate, per opponent -- found unused in
   // the audit alongside c1-c4 (this is the one with the clearest, most defensible real
   // effect: no safety help means both higher INT risk on chaotic throws AND more
