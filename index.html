@@ -3184,6 +3184,17 @@ function realQBCovMultFor(p, ci){
   return { yd:1.0, int:1.0, real:false };
 }
 
+/* QB 2025 GAMES PLAYED (for baseline blending ONLY). Root-cause fix, Sept 2026, found in a
+   live Week 3 accuracy check: getBlendedBaseline() weights each QB's 2025 baseline against
+   his 2024 baseline by games played, and it used PFF_QB[name].games as the 2025 count. But
+   the in-season PFF pulls overwrote that field with CURRENT-season games (1-2), so for every
+   QB the 2025 weight collapsed to 8-30 percent (should be roughly 60-70) and every QB baseline was
+   silently dragged toward 2024 -- Brissett's 240 yd/g blended to 155, Allen's raised 291 to 238.
+   The counts below are the original 2025 sample sizes (recovered from the Aug 26 version of
+   this file, before any in-season overwrite). PFF_QB.games now safely means 2026 games
+   played and is no longer read by the blend at all. */
+const QB_2025_GAMES = {'Aaron Rodgers':17, 'Baker Mayfield':17, 'Bo Nix':18, 'Brock Purdy':11, 'Bryce Young':17, 'C.J. Stroud':16, 'Caleb Williams':19, 'Cam Ward':17, 'Dak Prescott':17, 'Daniel Jones':13, 'Dillon Gabriel':10, 'Drake Maye':21, 'Jacoby Brissett':13, 'Jalen Hurts':17, 'Jared Goff':17, 'Jayden Daniels':7, 'Joe Burrow':8, 'Jordan Love':16, 'Josh Allen':18, 'Justin Fields':9, 'Justin Herbert':17, 'Kirk Cousins':10, 'Kyler Murray':5, 'Lamar Jackson':13, 'Malik Willis':4, 'Matthew Stafford':20, 'Michael Penix Jr.':9, 'Patrick Mahomes':14, 'Sam Darnold':20, 'Trevor Lawrence':18, 'Tyler Shough':11};
+
 // Blends a player's real 2025 baseline with real 2024 data where available, weighted
 // by games played in each season (more games = more signal) with a 1.5x recency bonus
 // on 2025 -- so a full healthy 2025 still dominates, but a thin 2025 sample (injury,
@@ -3197,7 +3208,7 @@ function getBlendedBaseline(p){
   else b24 = RECV_2024_BASELINE[p.n];
   if(!b24) return { blended: b25, games2025: null, games2024: null, w25pct: 100 };
 
-  const g25 = (PFF_QB[p.n] && PFF_QB[p.n].games) || (PFF_RECEIVING[p.n] && PFF_RECEIVING[p.n].games) || 6;
+  const g25 = (p.p==='QB' && QB_2025_GAMES[p.n]) || (PFF_RECEIVING[p.n] && PFF_RECEIVING[p.n].games) || 6;
   const g24 = b24.games;
   const wt25 = g25 * 1.5;
   const wt24 = g24 * 1.0;
