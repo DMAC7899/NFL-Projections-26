@@ -3229,7 +3229,37 @@ function getBlendedBaseline(p){
   return { blended, games2025: g25, games2024: g24, w25pct: Math.round(wt25/totalWt*100) };
 }
 
+/* MATCHUP DAMPING (added Sept 2026, evidence-based). A live Week 3 check against 160 real box-score
+   lines found the tool's opponent-dependent adjustments carry REAL signal but were roughly 2.4x too
+   strong: regressing actual-minus-baseline on the model's matchup effect gave a slope of 0.42 (+/- 0.22),
+   where a correctly scaled effect would be 1.0. Cause: the same underlying fact -- "this defense is
+   good/bad" -- reaches a projection through several separately-built multipliers (opponent tier,
+   coverage shell, CB grade, PFF pass-defense, position DVP, pressure/sack/time-to-throw, run-defense),
+   and multiplying them stacks correlated evidence (Davante Adams at DEN came out at 0.55x baseline;
+   he caught 7 for 137). Plain baselines with NO matchup adjustments actually scored a lower MAE (5.64)
+   than the undamped model (5.81). Fix: blend each projection toward its neutral-opponent version,
+   keeping MATCHUP_SHRINK of the effect. Tested on Week 3: MAE fell steadily to a strength of ~0.3-0.5;
+   0.6 is used as a deliberately conservative choice because one week is a small sample -- re-estimate
+   as more weeks accumulate (pool weeks; see the slope test in the Sept 2026 commit notes). Applies only
+   when a real schedule opponent is in play (opts.oppAb set); manual what-if sliders with no week
+   selected, and the neutral Season Total baseline, are untouched. */
+const MATCHUP_SHRINK = 0.6;
+const NEUTRAL_OPP_FIELDS = {oppTier:2, site:0, cov:1, cbShadow:false, pressure:null, sackConv:null, ttt:null, c0:null,
+                            runDefOverall:null, runDefInterior:null, cbGrade:null, oppAb:null};
 function computeProjection(p, opts){
+  const full = computeProjectionRaw(p, opts);
+  if(!opts || !opts.oppAb || MATCHUP_SHRINK >= 1) return full;
+  const neutral = computeProjectionRaw(p, {...opts, ...NEUTRAL_OPP_FIELDS});
+  const mix = (n, f) => n + MATCHUP_SHRINK * (f - n);
+  return {
+    lines: full.lines.map((ln, i) => ({...ln, val: mix(neutral.lines[i].val, ln.val)})),
+    ppr:  mix(neutral.ppr,  full.ppr),
+    half: mix(neutral.half, full.half),
+    std:  mix(neutral.std,  full.std),
+  };
+}
+
+function computeProjectionRaw(p, opts){
   // opts: {oppTier, script, cov, pace, site, wx, role, cbShadow, split}
   const oi = opts.oppTier, si = opts.script, ci = opts.cov, pai = opts.pace, hi = opts.site, wi = opts.wx;
   const roleMult = 1 + (opts.role/100);
@@ -4080,7 +4110,7 @@ function compute(){
       const cls = pct > 0 ? 'up' : 'down';
       const oppName = (TEAMS[opts.oppAb] && TEAMS[opts.oppAb].name) || opts.oppAb;
       matchupBox.innerHTML = `<span class="delta ${cls}" style="font-size:13px;">
-        Real matchup signal: ${oppName} ${dir} ${p.p}s (${pct>0?'+':''}${pct}% vs. league average, DraftEdge real box-score data)
+        Real matchup signal: ${oppName} ${dir} ${p.p}s (${pct>0?'+':''}${pct}% vs. league average, DraftEdge real box-score data; applied to the projection at ${Math.round(MATCHUP_SHRINK*100)}% strength)
       </span>`;
     }
   }
