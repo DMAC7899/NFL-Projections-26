@@ -869,8 +869,8 @@ WAS:{name:'Commanders',hc:'Dan Quinn',note:"Quinn retained. Added RB Rachaad Whi
 /* ============== PLAYERS ============== */
 const P = [
 // QB
-{n:'Kirk Cousins',p:'QB',t:'LV',b:{passYd:172.1,passTD:1.0,int:0.5,rushYd:0.5,rushTD:0},f:'Signed as veteran bridge starter over rookie Fernando Mendoza; small 10-game 2025 sample as Falcons backup-turned-starter',c:'balanced',s:'pass-neutral'},
-{n:'Jacoby Brissett',p:'QB',t:'ARI',b:{passYd:240.4,passTD:1.64,int:0.57,rushYd:12.0,rushTD:0.07},f:'QB competition in camp after Kyler Murray trade',c:'balanced',s:'pass-neutral'},
+{n:'Kirk Cousins',p:'QB',t:'LV',b:{passYd:234.8,passTD:1.86,int:0.85,rushYd:0.5,rushTD:0},f:'Signed as veteran bridge starter over rookie Fernando Mendoza; real, current: baseline rebuilt from his real PFF starts-only game logs across 4 seasons (2023 MIN 8st, 2024 ATL 14st, 2025 ATL 8st, 2026 ATL 3st), recency-weighted -- the earlier baseline used ALL appearances including partial/relief games, understating him (his 2025 starts-only rate alone is 205.5 yd/g vs the 172.1 that mixed in a benching)',c:'balanced',s:'pass-neutral'},
+{n:'Jacoby Brissett',p:'QB',t:'ARI',b:{passYd:228.0,passTD:1.39,int:0.45,rushYd:12.0,rushTD:0.07},f:'QB competition in camp after Kyler Murray trade; real, current: baseline rebuilt from his real PFF starts-only game logs across 3 seasons (2024 NE 5st, 2025 ARI 12st, 2026 ARI 3st), recency-weighted',c:'balanced',s:'pass-neutral'},
 {n:'Cooper Rush',p:'QB',t:'ATL',b:{passYd:143,passTD:1.0,int:2.0,rushYd:0,rushTD:0},f:'Real, current: CONFIRMED demoted to third string now that the Falcons have officially named Michael Penix Jr. the Week 3 starter -- real Week 2 line vs CAR was rough (10/17, 86 yd, 0 TD, 2 INT)',c:'balanced',s:'pass-neutral'},
 {n:'Tua Tagovailoa',p:'QB',t:'ATL',b:{passYd:190.0,passTD:1.43,int:1.07,rushYd:3.1,rushTD:0},f:'Real 2025 line (with Miami); signed with ATL as a free agent; real, current: CONFIRMED the real backup behind Michael Penix Jr. for Week 3 -- team has real, confirmed no plans to release him even once fully healthy from the oblique injury',c:'balanced',s:'pass-neutral'},
 {n:'Michael Penix Jr.',p:'QB',t:'ATL',b:{passYd:220.2,passTD:1.0,int:0.33,rushYd:7.8,rushTD:0.06},f:'Real, current: OFFICIALLY NAMED the real Week 3 starter by the team (announced Monday), his first appearance since the real ACL tear/surgery (Nov 2025, his 3rd ACL reconstruction) -- this is now the real, confirmed depth chart, not a projection',c:'balanced',s:'pass-neutral'},
@@ -878,16 +878,18 @@ const P = [
 {n:'Josh Allen',p:'QB',t:'BUF',b:{passYd:291.0,passTD:2.5,int:0,rushYd:34.1,rushTD:0.82},f:'Real, current: passing baseline raised significantly toward his real, confirmed 2-game result (582 yd, 5 TD, 0 INT, 125.8 rating) -- playing at an MVP-caliber level to open 2026',c:'balanced',s:'rush-heavy-qb'},
 {n:'Bryce Young',p:'QB',t:'CAR',b:{passYd:188.2,passTD:1.44,int:0.69,rushYd:13.5,rushTD:0.13},c:'balanced',s:'pass-neutral'},
 {n:'Caleb Williams',p:'QB',t:'CHI',b:{passYd:231.9,passTD:1.59,int:0.41,rushYd:22.8,rushTD:0.18},f:'Real, current: CONFIRMED ruled OUT for Week 3 vs PHI with the real hamstring injury suffered vs MIN in Week 2 -- avoided a major injury per MRI, but genuinely week-to-week beyond this game',c:'balanced',s:'rush-heavy-qb'},
+{n:'Case Keenum',p:'QB',t:'CHI',b:{passYd:166.5,passTD:1.00,int:1.00,rushYd:2.1,rushTD:0},f:'Real, current: CONFIRMED the Week 3 (MNF) starter with Caleb Williams out (hamstring) and Tyson Bagent held back as backup. Baseline built from his real PFF game logs across his two most recent multi-start seasons -- 2021 CLE (2 starts: 57/375/3 TD/1 INT) and 2023 HOU (2 starts: 53/291/1 TD/3 INT), 4 real starts combined since he has not started since 2023 and 2024-25 have no PFF pass-attempt data. First start in 3 years -- genuinely low-confidence.',c:'balanced',s:'pass-neutral'},
+{n:'Tyson Bagent',p:'QB',t:'CHI',b:{passYd:194.0,passTD:0.75,int:1.25,rushYd:21.8,rushTD:0},f:'Real, current: backup to Case Keenum for Week 3 (MNF) with Caleb Williams out (hamstring) -- cleared concussion protocol but held back as QB2. Baseline built from his real PFF 2023 season, his only meaningful sample (4 starts: 129/776/3 TD/5 INT); has not started since. Only relevant if Keenum is unable to finish a game -- genuinely low-confidence.',c:'balanced',s:'pass-neutral'},
 {n:'Joe Burrow',p:'QB',t:'CIN',b:{passYd:226.1,passTD:2.13,int:0.63,rushYd:5.1,rushTD:0},f:'Made only 8 starts in 2025 — health is the swing factor; real, current: confirmed healthy, no lingering concerns despite minor back tightness early in the season',c:'zone-beater',s:'pass-neutral'},
 {n:'Dillon Gabriel',p:'QB',t:'CLE',b:{passYd:93.7,passTD:0.7,int:0.2,rushYd:8.6,rushTD:0},f:'Real, current: CONFIRMED placed on Injured Reserve (designated to return) with a real back injury -- not active, Watson is the real, confirmed starter',c:'balanced',s:'pass-neutral'},
 {n:'Shedeur Sanders',p:'QB',t:'CLE',b:{passYd:175.0,passTD:0.88,int:1.25,rushYd:21.1,rushTD:0.12},f:'Real rookie-year 2025 sample (8 games); real, current: CONFIRMED the real backup behind Watson -- Monken chose the veteran for his experience and offense familiarity',c:'balanced',s:'pass-neutral'},
-{n:'Deshaun Watson',p:'QB',t:'CLE',b:{passYd:164.0,passTD:0.71,int:0.43,rushYd:18.7,rushTD:0.22},f:'Real 2025 sample limited to 7 games (injury); rushYd/rushTD use a league-average QB fallback; real, current: CONFIRMED the real Week 3 starter, having won the real QB1 job over Sanders in August -- real reporting notes an up-and-down start to the season',c:'balanced',s:'pass-neutral'},
+{n:'Deshaun Watson',p:'QB',t:'CLE',b:{passYd:183.0,passTD:1.29,int:0.37,rushYd:18.7,rushTD:0.22},f:'rushYd/rushTD use a league-average QB fallback; real, current: CONFIRMED the real Week 3 starter, having won the real QB1 job over Sanders in August. Baseline rebuilt from his real PFF starts-only logs: 2024 CLE (7st, his last action before a real season-ending 2025 Achilles tear -- 2025 skipped entirely, 0 games) blended with his real 2026 return (3st), recency-weighted, per user direction to treat him as a genuinely different, more mobile player post-injury',c:'balanced',s:'pass-neutral'},
 {n:'Dak Prescott',p:'QB',t:'DAL',b:{passYd:267.8,passTD:1.76,int:0.59,rushYd:10.4,rushTD:0.12},c:'zone-beater',s:'pass-neutral'},
 {n:'Bo Nix',p:'QB',t:'DEN',b:{passYd:231.2,passTD:1.47,int:0.65,rushYd:20.9,rushTD:0.29},c:'balanced',s:'rush-heavy-qb'},
 {n:'Jared Goff',p:'QB',t:'DET',b:{passYd:280.0,passTD:2.5,int:0.4,rushYd:2.6,rushTD:0},f:'Real, current: TD rate raised modestly -- real, confirmed 4-TD, 0-INT game (327 yd) vs Buffalo in Week 2',c:'zone-beater',s:'pass-neutral'},
 {n:'Jordan Love',p:'QB',t:'GB',b:{passYd:225.4,passTD:1.53,int:0.4,rushYd:13.3,rushTD:0},c:'balanced',s:'pass-neutral'},
 {n:'C.J. Stroud',p:'QB',t:'HOU',b:{passYd:217.2,passTD:1.36,int:0.57,rushYd:14.9,rushTD:0.07},c:'balanced',s:'pass-neutral'},
-{n:'Daniel Jones',p:'QB',t:'IND',b:{passYd:238.5,passTD:1.46,int:0.62,rushYd:12.6,rushTD:0.38},f:'Real, current: recovering from a real torn Achilles (Dec 2025 season-ending injury) -- as of 3 days ago said "I\u2019m 100%", cleared and confirmed for Week 1; this baseline reflects his real, efficient 13-game 2025 sample before the injury',c:'balanced',s:'rush-heavy-qb'},
+{n:'Daniel Jones',p:'QB',t:'IND',b:{passYd:217.6,passTD:1.12,int:0.78,rushYd:12.6,rushTD:0.38},f:'Real, current: recovered from a real torn Achilles (Dec 2025) and confirmed healthy. Baseline rebuilt from his real PFF starts-only game logs across 3 seasons (2024 NYG 10st, 2025 NYG 13st, 2026 IND 3st), recency-weighted -- the old baseline used only 2025 alone and did not reflect his real, current form with a new team',c:'balanced',s:'rush-heavy-qb'},
 {n:'Trevor Lawrence',p:'QB',t:'JAX',b:{passYd:235.7,passTD:1.71,int:0.71,rushYd:21.1,rushTD:0.53},c:'balanced',s:'rush-heavy-qb'},
 {n:'Patrick Mahomes',p:'QB',t:'KC',b:{passYd:256.2,passTD:1.57,int:0.79,rushYd:30.1,rushTD:0.36},c:'balanced',s:'pass-neutral'},
 {n:'Justin Herbert',p:'QB',t:'LAC',b:{passYd:232.9,passTD:1.63,int:0.81,rushYd:31.1,rushTD:0.13},c:'balanced',s:'pass-neutral'},
@@ -916,7 +918,7 @@ const P = [
 {n:'Chuba Hubbard',p:'RB',t:'CAR',b:{rushAtt:8.9,rushYd:34.1,rushTD:0.07,rec:2.0,recYd:14.9,recTD:0.2},f:'Real, current: the clear, unquestioned lead back now that Jonathan Brooks is confirmed out a minimum of six weeks (real surgery)',c:'man-beater',s:'balanced-back'},
 {n:'Jonathan Brooks',p:'RB',t:'CAR',b:{rushAtt:5.0,rushYd:19.0,rushTD:0.15,rec:1.0,recYd:7.0,recTD:0},f:'Real, current: CONFIRMED by NFL Network to undergo surgery, out a minimum of six weeks -- extends his real, checkered injury history (2 prior ACL tears, missed all of 2025); Hubbard now the clear, real lead back in his absence',c:'n/a',s:'rush-volume',partner:'Chuba Hubbard'},
 {n:"D'Andre Swift",p:'RB',t:'CHI',b:{rushAtt:15.5,rushYd:76.0,rushTD:0.8,rec:2.6,recYd:25.0,recTD:0.08},f:'Real, current: a confirmed workhorse through 2 games (20 touches and 116 total yd per game, 48.6% of team rush attempts, 8 of 11 RB red-zone carries) -- baseline blends his real 2025 rate with that usage; TD rate deliberately damped from the 1.5/game pace of a 2-game sample',c:'man-beater',s:'balanced-back',partner:"Kyle Monangai"},
-{n:'Kyle Monangai',p:'RB',t:'CHI',b:{rushAtt:10.0,rushYd:48.8,rushTD:0.4,rec:2.0,recYd:17.5,recTD:0.06},f:'LOW-CONFIDENCE baseline, built only from PFF data already in the tool: 2026 volume through Week 2 (20 carries and 20 routes in 2 games = 10 and 10 per game, PFF receiving yards per route run 1.75), with yards-per-carry, TD and yards-per-catch RATES borrowed from Swift\'s 2025 baseline because their PFF 2026 run grades are near-identical (Monangai 70.2, Swift 69.3). No 2025 rookie-season data loaded yet -- replace with his full PFF history when it can be pulled.',c:'n/a',s:'balanced-back',partner:"D'Andre Swift"},
+{n:'Kyle Monangai',p:'RB',t:'CHI',b:{rushAtt:10.0,rushYd:61.91,rushTD:0.41,rec:1.68,recYd:15.17,recTD:0.0},f:'Real, current: baseline now built from his full real PFF history (2025 rookie season: 190 att/846 yd/5 TD rushing, 34 tgt/23 rec/222 yd receiving over 19 games; 2026 through Wk2: 20 att/147 yd/1 TD, 4 rec/35 yd), weighted 1.5:1.0 toward 2026 -- his real 2026 efficiency (7.35 YPC) is well above his rookie rate, so this replaces the earlier placeholder that had borrowed rushing/TD rates from Swift.',c:'n/a',s:'balanced-back',partner:"D'Andre Swift"},
 {n:'Chase Brown',p:'RB',t:'CIN',b:{rushAtt:13.6,rushYd:59.9,rushTD:0.35,rec:4.1,recYd:25.7,recTD:0.29},c:'man-beater',s:'balanced-back'},
 {n:'Quinshon Judkins',p:'RB',t:'CLE',b:{rushAtt:16.4,rushYd:59.1,rushTD:0.5,rec:1.9,recYd:12.2,recTD:0},c:'n/a',s:'rush-volume'},
 {n:'Javonte Williams',p:'RB',t:'DAL',b:{rushAtt:15.8,rushYd:75.1,rushTD:0.69,rec:2.2,recYd:8.6,recTD:0.13},c:'n/a',s:'rush-volume'},
@@ -3485,7 +3487,10 @@ function availabilityOf(p){ return PLAYER_AVAILABILITY[p.n] || null; }
 // Games NOT yet played when the table was last updated: these statuses apply even though the week is before
 // AVAILABILITY_FROM_WEEK. Clear each entry in the next sweep once that game is history.
 const AVAILABILITY_WEEK_OVERRIDES = {
-  3: { 'Caleb Williams': {status:'OUT', note:'hamstring - ruled out for Monday night vs PHI (Case Keenum starts, Tyson Bagent backup)', replacement:'Case Keenum'} },
+  3: {
+    'Caleb Williams': {status:'OUT', note:'hamstring - ruled out for Monday night vs PHI (Case Keenum starts, Tyson Bagent backup)', replacement:'Case Keenum'},
+    'Tyson Bagent':   {status:'BACKUP', note:'held back as QB2 behind Keenum for Monday night vs PHI, despite clearing concussion protocol'},
+  },
 };
 function availabilityForWeek(p, wk){
   const ov = AVAILABILITY_WEEK_OVERRIDES[wk];
@@ -4831,7 +4836,13 @@ function renderBetting(){
     const sig = notCounted.filter(x => x.avail.status==='OUT' && x.ppr >= 10);
     const availNote = notCounted.length ? `<div style="margin-top:10px;font-size:12px;color:var(--text-dim);line-height:1.5;">
         <b>Not counted (out / not starting):</b> ${notCounted.sort((a,b)=>b.ppr-a.ppr).map(x=>`${x.p.n} <span style="color:var(--text-faint);">(${x.avail.status==='OUT'?'OUT':'BACKUP'} \u00b7 ${x.avail.note})</span>`).join('; ')}
-        ${notCounted.some(x=>x.avail.replacement) ? `<div style="margin-top:4px;"><b>Starting in his place:</b> ${notCounted.filter(x=>x.avail.replacement).map(x=>x.avail.replacement).join(', ')} <span style="color:var(--text-faint);">(no profile in the tool yet \u2014 no projection shown)</span></div>` : ''}
+        ${notCounted.filter(x=>x.avail.replacement).map(x=>{
+          const rp = P.find(pl=>pl.n===x.avail.replacement);
+          if(!rp) return `<div style="margin-top:4px;"><b>Starting in his place:</b> ${x.avail.replacement} <span style="color:var(--text-faint);">(no profile in the tool yet \u2014 no projection shown)</span></div>`;
+          const rOpts = neutralOptsFor(rp, wk).opts;
+          const rProj = rOpts ? computeProjection(rp, rOpts).ppr : null;
+          return `<div style="margin-top:4px;"><b>Starting in his place:</b> ${x.avail.replacement}${rProj!=null?` \u2014 ${fmtN(rProj,1)} PPR`:''}</div>`;
+        }).join('')}
         ${sig.length ? `<div style="margin-top:4px;color:var(--warn, #c9861a);">\u26a0 Team-points projection is not explicitly adjusted for ${sig.map(x=>x.p.n).join(', ')} (it is built from win totals + PFF team grades).</div>` : ''}
       </div>` : '';
     const rowFor = r => `<tr>
