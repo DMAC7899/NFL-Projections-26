@@ -3478,10 +3478,20 @@ const PLAYER_AVAILABILITY = {
   'Justin Jefferson': {status:'QUESTIONABLE', note:'ankle, left Week 3 early'},
   'Baker Mayfield':   {status:'QUESTIONABLE', note:'dislocated throwing thumb, MRI pending'},
   'Breece Hall':      {status:'QUESTIONABLE', note:'thigh, left Week 3'},
+  'Caleb Williams':   {status:'QUESTIONABLE', note:'hamstring, week-to-week - may miss multiple games (not on IR)'},
 };
 const AVAILABILITY_FROM_WEEK = 4;   // table reflects status going into Week 4; earlier weeks are history, and the season-average view has no week
 function availabilityOf(p){ return PLAYER_AVAILABILITY[p.n] || null; }
-function availabilityForWeek(p, wk){ return (wk && wk >= AVAILABILITY_FROM_WEEK) ? availabilityOf(p) : null; }
+// Games NOT yet played when the table was last updated: these statuses apply even though the week is before
+// AVAILABILITY_FROM_WEEK. Clear each entry in the next sweep once that game is history.
+const AVAILABILITY_WEEK_OVERRIDES = {
+  3: { 'Caleb Williams': {status:'OUT', note:'hamstring - ruled out for Monday night vs PHI (Case Keenum starts, Tyson Bagent backup)', replacement:'Case Keenum'} },
+};
+function availabilityForWeek(p, wk){
+  const ov = AVAILABILITY_WEEK_OVERRIDES[wk];
+  if(ov && ov[p.n]) return ov[p.n];
+  return (wk && wk >= AVAILABILITY_FROM_WEEK) ? availabilityOf(p) : null;
+}
 function unavailableFor(p, wk){ const a = availabilityForWeek(p, wk); return !!a && (a.status==='OUT' || a.status==='BACKUP'); }
 
 // Neutral opts used by Rankings/Compare — everything average except the real schedule-driven opponent/site
@@ -4143,7 +4153,8 @@ function compute(){
     availBox.style.margin = '0 0 6px';
     fwn.insertAdjacentElement('afterend', availBox);
   }
-  const av = availabilityOf(p);
+  const _wkSel = globalWeekEl.value ? parseInt(globalWeekEl.value,10) : null;
+  const av = _wkSel ? availabilityForWeek(p, _wkSel) : availabilityOf(p);
   if(av){
     const lead = av.status==='OUT' ? '\u26d4 OUT' : av.status==='BACKUP' ? 'BACKUP' : '\u26a0 Status uncertain';
     const tail = av.status==='OUT' ? 'The projection shown is what he would produce if healthy \u2014 he is not expected to play.'
@@ -4820,6 +4831,7 @@ function renderBetting(){
     const sig = notCounted.filter(x => x.avail.status==='OUT' && x.ppr >= 10);
     const availNote = notCounted.length ? `<div style="margin-top:10px;font-size:12px;color:var(--text-dim);line-height:1.5;">
         <b>Not counted (out / not starting):</b> ${notCounted.sort((a,b)=>b.ppr-a.ppr).map(x=>`${x.p.n} <span style="color:var(--text-faint);">(${x.avail.status==='OUT'?'OUT':'BACKUP'} \u00b7 ${x.avail.note})</span>`).join('; ')}
+        ${notCounted.some(x=>x.avail.replacement) ? `<div style="margin-top:4px;"><b>Starting in his place:</b> ${notCounted.filter(x=>x.avail.replacement).map(x=>x.avail.replacement).join(', ')} <span style="color:var(--text-faint);">(no profile in the tool yet \u2014 no projection shown)</span></div>` : ''}
         ${sig.length ? `<div style="margin-top:4px;color:var(--warn, #c9861a);">\u26a0 Team-points projection is not explicitly adjusted for ${sig.map(x=>x.p.n).join(', ')} (it is built from win totals + PFF team grades).</div>` : ''}
       </div>` : '';
     const rowFor = r => `<tr>
