@@ -3488,10 +3488,30 @@ function availabilityOf(p){ return PLAYER_AVAILABILITY[p.n] || null; }
 // AVAILABILITY_FROM_WEEK. Clear each entry in the next sweep once that game is history.
 const AVAILABILITY_WEEK_OVERRIDES = {
   3: {
-    'Caleb Williams': {status:'OUT', note:'hamstring - ruled out for Monday night vs PHI (Case Keenum starts, Tyson Bagent backup)', replacement:'Case Keenum'},
+    'Caleb Williams': {status:'OUT', note:'hamstring - ruled out for Monday night vs PHI (Case Keenum starts, Tyson Bagent backup)', replacement:'Case Keenum',
+      starterGradeOff:63.9, replacementGradeOff:57.4,
+      gradeSource:'real PFF offense grade: Williams 2026 (2 games) vs Keenum 2021 CLE (4 games, his most recent multi-start NFL season -- he has not started since 2023 and has no meaningful sample since)'},
     'Tyson Bagent':   {status:'BACKUP', note:'held back as QB2 behind Keenum for Monday night vs PHI, despite clearing concussion protocol'},
   },
 };
+// Real, PFF-grade-based estimate of how a confirmed QB change affects team offense. Only fires when the
+// override for that player names a real replacement AND both real PFF offense grades are recorded --
+// otherwise this returns null and the team-points projection is left exactly as it was (a disclosed
+// gap, not a guess). The ratio is applied to the OFFENSE side of computeTeamProjectedPoints only, at
+// full strength (not diluted by PFF_BLEND_WEIGHT, which is calibrated for gradual grade drift over a
+// season, not a sudden, confirmed roster change) -- opponent defense is unaffected by which QB a team has.
+function qbReplacementRatioForWeek(teamAb, wk){
+  const ov = AVAILABILITY_WEEK_OVERRIDES[wk];
+  if(!ov) return null;
+  for(const name in ov){
+    const a = ov[name];
+    const pl = P.find(x=>x.n===name);
+    if(pl && pl.t===teamAb && a.starterGradeOff!=null && a.replacementGradeOff!=null){
+      return { ratio: a.replacementGradeOff / a.starterGradeOff, starter: name, replacement: a.replacement, starterGradeOff: a.starterGradeOff, replacementGradeOff: a.replacementGradeOff, gradeSource: a.gradeSource };
+    }
+  }
+  return null;
+}
 function availabilityForWeek(p, wk){
   const ov = AVAILABILITY_WEEK_OVERRIDES[wk];
   if(ov && ov[p.n]) return ov[p.n];
@@ -4715,7 +4735,7 @@ function getRealGamesForWeek(wk){
   return games;
 }
 
-function computeTeamProjectedPoints(teamAb, oppAb, isHome){
+function computeTeamProjectedPoints(teamAb, oppAb, isHome, wk){
   const m = WIN_TOTAL_SCORING_MODEL;
   const myWins = (TEAMS[teamAb] && TEAMS[teamAb].vegasWinTotal);
   const oppWins = (TEAMS[oppAb] && TEAMS[oppAb].vegasWinTotal);
@@ -4736,9 +4756,11 @@ function computeTeamProjectedPoints(teamAb, oppAb, isHome){
   }
   const freshInjuryAdj = FRESH_DEF_INJURY_ADJ[oppAb] || 1.0;
   oppDef = oppDef * freshInjuryAdj;
+  const qbRep = wk ? qbReplacementRatioForWeek(teamAb, wk) : null;
+  if(qbRep) myOff = myOff * qbRep.ratio;
   const hfa = isHome ? m.homeFieldAdj : -m.homeFieldAdj;
   const points = (myOff + oppDef)/2 + hfa;
-  return { points, offRating: myOff, defRatingFaced: oppDef, winTotalDefRating: winTotalDef, pffGradeUsed: oppPffGrade };
+  return { points, offRating: myOff, defRatingFaced: oppDef, winTotalDefRating: winTotalDef, pffGradeUsed: oppPffGrade, qbRep };
 }
 
 function renderBetting(){
@@ -4776,8 +4798,8 @@ function renderBetting(){
   const favTeam = favEl.value;
   const dogTeam = favTeam === away ? home : away;
 
-  const awayProj = computeTeamProjectedPoints(away, home, false);
-  const homeProj = computeTeamProjectedPoints(home, away, true);
+  const awayProj = computeTeamProjectedPoints(away, home, false, wk);
+  const homeProj = computeTeamProjectedPoints(home, away, true, wk);
   const ourTotal = awayProj.points + homeProj.points;
   const favPoints = favTeam === away ? awayProj.points : homeProj.points;
   const dogPoints = favTeam === away ? homeProj.points : awayProj.points;
@@ -4827,7 +4849,7 @@ function renderBetting(){
       return `${rec?fmtN(rec.val,1):'--'} rec, ${recy?fmtN(recy.val,0):'--'} rec yd`;
     }
   }
-  function teamBlock(teamAb, label, ourPts){
+  function teamBlock(teamAb, label, ourPts, qbRep){
     const vegasWinTotal = (TEAMS[teamAb] && TEAMS[teamAb].vegasWinTotal);
     const { core, other, notCounted } = topPlayersFor(teamAb);
     // Players excluded because they are out / not starting, so it is visible WHY someone familiar is missing.
@@ -4843,7 +4865,8 @@ function renderBetting(){
           const rProj = rOpts ? computeProjection(rp, rOpts).ppr : null;
           return `<div style="margin-top:4px;"><b>Starting in his place:</b> ${x.avail.replacement}${rProj!=null?` \u2014 ${fmtN(rProj,1)} PPR`:''}</div>`;
         }).join('')}
-        ${sig.length ? `<div style="margin-top:4px;color:var(--warn, #c9861a);">\u26a0 Team-points projection is not explicitly adjusted for ${sig.map(x=>x.p.n).join(', ')} (it is built from win totals + PFF team grades).</div>` : ''}
+        ${qbRep ? `<div style="margin-top:4px;">\u26a0 Team-points projection above already reflects real, current PFF offense grades: ${qbRep.replacement} ${qbRep.replacementGradeOff} vs ${qbRep.starter} ${qbRep.starterGradeOff} (${qbRep.gradeSource}) \u2014 offense scaled ${fmtN(qbRep.ratio*100,0)}%.</div>`
+        : sig.length ? `<div style="margin-top:4px;color:var(--warn, #c9861a);">\u26a0 Team-points projection is not explicitly adjusted for ${sig.map(x=>x.p.n).join(', ')} (it is built from win totals + PFF team grades).</div>` : ''}
       </div>` : '';
     const rowFor = r => `<tr>
         <td class="nm" title="${r.avail?r.avail.note:''}">${r.p.n}${(r.avail&&r.avail.status==='QUESTIONABLE')?' <span style="color:var(--text-faint);" title="'+r.avail.note+'">(?)</span>':''}</td><td>${r.p.p}</td>
@@ -4864,8 +4887,8 @@ function renderBetting(){
   }
 
   let html = `<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px;">
-    ${teamBlock(away,'Away', awayProj.points)}
-    ${teamBlock(home,'Home', homeProj.points)}
+    ${teamBlock(away,'Away', awayProj.points, awayProj.qbRep)}
+    ${teamBlock(home,'Home', homeProj.points, homeProj.qbRep)}
   </div>`;
 
   const hasTotal = vegasTotalVal !== '' && !isNaN(parseFloat(vegasTotalVal));
