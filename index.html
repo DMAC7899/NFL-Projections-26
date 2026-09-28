@@ -3440,9 +3440,55 @@ function computeProjectionRaw(p, opts){
   return {lines, ppr, half, std};
 }
 
+/* PLAYER AVAILABILITY (added Sept 2026). Root cause of injured players showing up on the Betting tab
+   and in rankings: injury status lived only in free-text flags (f:'...'), so nothing that builds a list
+   of players could tell who is actually available -- an IR player with the highest healthy-baseline
+   projection at his position was simply picked as the team's "core" player, and a backup QB could
+   outrank his own starter. This table is the structured source of truth that neutralOptsFor() reads:
+     OUT          -> cannot play (IR / PUP / exempt list / ruled out): excluded from lists, shown as OUT
+     BACKUP       -> healthy but not starting: excluded from lists, shown as BACKUP
+     QUESTIONABLE -> latest verified report is uncertain: still counted, shown with a ? badge
+   MUST be refreshed in each week's injury sweep (verified news only). As of: end of Week 3 (Sept 28, 2026). */
+const PLAYER_AVAILABILITY = {
+  'Jonathan Brooks':  {status:'OUT', note:'IR - core-muscle surgery, out 6+ weeks'},
+  'Alec Pierce':      {status:'OUT', note:'IR - heel'},
+  'A.J. Brown':       {status:'OUT', note:'IR - high-ankle sprain (~6 weeks)'},
+  'Isiah Pacheco':    {status:'OUT', note:'IR - back, out through at least Week 4'},
+  'Jerome Ford':      {status:'OUT', note:'IR - hamstring'},
+  'Jordyn Tyson':     {status:'OUT', note:'IR - hamstring (~2 months)'},
+  'Jordan Mason':     {status:'OUT', note:'IR - thumb'},
+  'Dillon Gabriel':   {status:'OUT', note:'IR - back'},
+  'Josh Jacobs':      {status:'OUT', note:"Commissioner's Exempt List"},
+  'Zach Charbonnet':  {status:'OUT', note:'PUP - ACL'},
+  'David Njoku':      {status:'OUT', note:'IR - fibula (4-game minimum)'},
+  'Jayden Reed':      {status:'OUT', note:'neck injury (carted off Week 2), no timeline'},
+  "De'Von Achane":    {status:'OUT', note:'non-contact knee injury in Week 3, MRI pending - treat as out'},
+  'Drew Lock':        {status:'BACKUP', note:'backup to Sam Darnold'},
+  'Tua Tagovailoa':   {status:'BACKUP', note:'backup to Michael Penix Jr.'},
+  'Cooper Rush':      {status:'BACKUP', note:'third string'},
+  'Shedeur Sanders':  {status:'BACKUP', note:'backup to Deshaun Watson'},
+  'Justin Fields':    {status:'BACKUP', note:'backup to Patrick Mahomes'},
+  'Nico Collins':     {status:'QUESTIONABLE', note:'hamstring, missed Weeks 2-3; Week 4 status not yet reported'},
+  'Jayden Daniels':   {status:'QUESTIONABLE', note:'elbow dislocation, missed Week 3; week-to-week'},
+  'Puka Nacua':       {status:'QUESTIONABLE', note:'hip, inactive Week 3'},
+  'Rico Dowdle':      {status:'QUESTIONABLE', note:'toe, out Week 3'},
+  'Jaylen Wright':    {status:'QUESTIONABLE', note:'stinger, inactive Week 3'},
+  'Travis Etienne':   {status:'QUESTIONABLE', note:'left Week 3 and did not return'},
+  'Mike Evans':       {status:'QUESTIONABLE', note:'rib strain, left Week 3'},
+  'Justin Jefferson': {status:'QUESTIONABLE', note:'ankle, left Week 3 early'},
+  'Baker Mayfield':   {status:'QUESTIONABLE', note:'dislocated throwing thumb, MRI pending'},
+  'Breece Hall':      {status:'QUESTIONABLE', note:'thigh, left Week 3'},
+};
+const AVAILABILITY_FROM_WEEK = 4;   // table reflects status going into Week 4; earlier weeks are history, and the season-average view has no week
+function availabilityOf(p){ return PLAYER_AVAILABILITY[p.n] || null; }
+function availabilityForWeek(p, wk){ return (wk && wk >= AVAILABILITY_FROM_WEEK) ? availabilityOf(p) : null; }
+function unavailableFor(p, wk){ const a = availabilityForWeek(p, wk); return !!a && (a.status==='OUT' || a.status==='BACKUP'); }
+
 // Neutral opts used by Rankings/Compare — everything average except the real schedule-driven opponent/site
 function neutralOptsFor(p, wk){
   const team = TEAMS[p.t];
+  const avail = availabilityForWeek(p, wk);
+  const isOut = unavailableFor(p, wk);
   let oppTier = 2, site = 0, isBye = false, oppAb = null, pressure = null, sackConv = null, ttt = null, c0 = null, runDefOverall = null, runDefInterior = null, cov = 1, cbGrade = null, cbShadow = 0;
   if(wk){
     const g = team.sch[wk-1];
@@ -3474,7 +3520,7 @@ function neutralOptsFor(p, wk){
       }
     }
   }
-  return { opts:{oppTier, script:2, cov, pace:1, site, wx:0, role:0, cbShadow, split:0, pressure, sackConv, ttt, c0, runDefOverall, runDefInterior, cbGrade, oppAb}, isBye, oppAb };
+  return { opts:{oppTier, script:2, cov, pace:1, site, wx:0, role:0, cbShadow, split:0, pressure, sackConv, ttt, c0, runDefOverall, runDefInterior, cbGrade, oppAb}, isBye, oppAb, isOut, avail };
 }
 
 function fmtN(n, d=1){ return n.toFixed(d); }
@@ -4087,6 +4133,27 @@ function compute(){
   const fwn = document.getElementById('fptsWeekNote');
   if(fwn) fwn.textContent = 'Reflects whatever Week/matchup sliders are set above \u2014 the Season Total below always uses a neutral matchup baseline instead.';
 
+  // Availability banner (Sept 2026): the number above is always "if he plays / starts". Say so out loud when
+  // the player is out, a backup, or of uncertain status, so a projection is never mistaken for an expectation.
+  let availBox = document.getElementById('availNote');
+  if(!availBox){
+    availBox = document.createElement('div');
+    availBox.id = 'availNote';
+    availBox.className = 'autonote';
+    availBox.style.margin = '0 0 6px';
+    fwn.insertAdjacentElement('afterend', availBox);
+  }
+  const av = availabilityOf(p);
+  if(av){
+    const lead = av.status==='OUT' ? '\u26d4 OUT' : av.status==='BACKUP' ? 'BACKUP' : '\u26a0 Status uncertain';
+    const tail = av.status==='OUT' ? 'The projection shown is what he would produce if healthy \u2014 he is not expected to play.'
+               : av.status==='BACKUP' ? 'The projection shown is his baseline if he were starting \u2014 only relevant if the starter misses time.'
+               : 'Counted as playing; check the latest report before relying on this number.';
+    availBox.innerHTML = `<b style="color:var(--warn,#c9861a);">${lead}</b> \u2014 ${av.note}. ${tail}`;
+  } else {
+    availBox.innerHTML = '';
+  }
+
   // Real, visible matchup-quality note: surfaces the real, disclosed defense-vs-position
   // signal (DraftEdge DVP, same source/weight for all 4 positions) whenever it's
   // significant enough to matter, so the effect is actually visible on screen instead
@@ -4223,10 +4290,11 @@ document.getElementById('scoreToggle').querySelectorAll('button').forEach(btn=>{
 // between the two views (one calculation, not two copies that could drift).
 function computeRankedList(pos, wk, fmt){
   const rows = P.filter(p=>p.p===pos).map(p=>{
-    const {opts, isBye, oppAb} = neutralOptsFor(p, wk);
+    const {opts, isBye, oppAb, isOut, avail} = neutralOptsFor(p, wk);
     if(isBye) return {p, isBye:true, pts:-1, oppAb:null};
+    if(isOut) return {p, isBye:false, isOut:true, avail, pts:-1, oppAb};
     const result = computeProjection(p, opts);
-    return {p, isBye:false, pts:result[fmt], oppAb};
+    return {p, isBye:false, pts:result[fmt], oppAb, avail};
   });
   rows.sort((a,b)=> b.pts - a.pts);
   return rows;
@@ -4246,7 +4314,7 @@ function renderRankings(){
   let rows = computeRankedList(rankPos, wk, rankFmt);
   if(teamF) rows = rows.filter(r=>r.p.t===teamF);
   rows = rows.map(r=>{
-    if(r.isBye) return r;
+    if(r.isBye || r.isOut) return r;
     const result = computeProjection(r.p, neutralOptsFor(r.p, wk).opts);
     const statVals = cols.map(([label])=>{
       const line = result.lines.find(l=>l.label===label);
@@ -4259,17 +4327,17 @@ function renderRankings(){
   tbody.innerHTML = '';
   rows.forEach((r,i)=>{
     const tr = document.createElement('tr');
-    if(r.isBye) tr.className = 'byerow';
-    const oppText = r.isBye ? 'BYE' : (r.oppAb ? ((TEAMS[r.p.t].sch[wk-1].startsWith('@')?'@':'vs ')+r.oppAb) : '\u2014');
-    const statCells = r.isBye
+    if(r.isBye || r.isOut) tr.className = 'byerow';
+    const oppText = r.isBye ? 'BYE' : r.isOut ? r.avail.status : (r.oppAb ? ((TEAMS[r.p.t].sch[wk-1].startsWith('@')?'@':'vs ')+r.oppAb) : '\u2014');
+    const statCells = (r.isBye || r.isOut)
       ? cols.map(()=>'<td style="text-align:right;">\u2014</td>').join('')
       : r.statVals.map(v=>`<td style="text-align:right;font-family:'IBM Plex Mono',monospace;">${v}</td>`).join('');
     tr.innerHTML = `<td class="rk">${i+1}</td>
-      <td class="nm">${r.p.n}${r.p.f?' \u26a0':''}</td>
+      <td class="nm" title="${r.avail?r.avail.note:''}">${r.p.n}${r.p.f?' \u26a0':''}${(r.avail&&r.avail.status==='QUESTIONABLE')?' ?':''}</td>
       <td class="tm">${r.p.t}</td>
-      <td class="oppcell">${oppText}</td>
+      <td class="oppcell" title="${r.avail?r.avail.note:''}">${oppText}</td>
       ${statCells}
-      <td class="pts">${r.isBye?'\u2014':fmtN(r.pts,1)}</td>
+      <td class="pts">${(r.isBye||r.isOut)?'\u2014':fmtN(r.pts,1)}</td>
       <td><button class="addbtn ${compareSet.has(r.p.n)?'on':''}" data-nm="${r.p.n}">${compareSet.has(r.p.n)?'Added':'+ Compare'}</button></td>`;
     tbody.appendChild(tr);
   });
@@ -4484,8 +4552,8 @@ function renderAdvantages(){
 
   const rows = [];
   pool.forEach(p=>{
-    const {opts, isBye, oppAb} = neutralOptsFor(p, wk);
-    if(isBye) return;
+    const {opts, isBye, oppAb, isOut} = neutralOptsFor(p, wk);
+    if(isBye || isOut) return;
     const baselineOpts = {oppTier:2, script:2, cov:1, pace:1, site:0, wx:0, role:0, cbShadow:0, split:0, pressure:null, cbGrade:null};
     const weekly = computeProjection(p, opts);
     const baseline = computeProjection(p, baselineOpts);
@@ -4584,7 +4652,7 @@ function renderBigBoard(){
   const grid = document.getElementById('bbGrid');
   grid.innerHTML = '';
   POSITIONS_ORDER.forEach(pos=>{
-    const rows = computeRankedList(pos, wk, bbFmt).filter(r=>!r.isBye);
+    const rows = computeRankedList(pos, wk, bbFmt).filter(r=>!r.isBye && !r.isOut);
     const col = document.createElement('div');
     col.className = 'bb-column';
     col.dataset.pos = pos;
@@ -4705,11 +4773,13 @@ function renderBetting(){
 
   const neutral = {oppTier:2, script:2, cov:1, pace:1, site:0, wx:0, role:0, cbShadow:0, split:0, pressure:null, sackConv:null, ttt:null, c0:null, runDefOverall:null, runDefInterior:null, cbGrade:null};
   function topPlayersFor(teamAb){
+    const notCounted = [];
     const all = P.filter(p=>p.t===teamAb).map(p=>{
-      const {opts, isBye} = neutralOptsFor(p, wk);
+      const {opts, isBye, isOut, avail} = neutralOptsFor(p, wk);
       if(isBye) return null;
       const result = computeProjection(p, opts || neutral);
-      return { p, ppr: result.ppr, lines: result.lines };
+      if(isOut){ notCounted.push({ p, avail, ppr: result.ppr }); return null; }
+      return { p, ppr: result.ppr, lines: result.lines, avail };
     }).filter(Boolean).sort((a,b)=>b.ppr-a.ppr);
 
     // Exactly one per position for the core group -- only one QB will ever
@@ -4726,7 +4796,7 @@ function renderBetting(){
     });
     const coreNames = new Set(core.map(r=>r.p.n));
     const other = all.filter(r => !coreNames.has(r.p.n)).slice(0,3);
-    return { core, other };
+    return { core, other, notCounted };
   }
   function keyLineFor(row){
     const { p, lines } = row;
@@ -4743,9 +4813,17 @@ function renderBetting(){
   }
   function teamBlock(teamAb, label, ourPts){
     const vegasWinTotal = (TEAMS[teamAb] && TEAMS[teamAb].vegasWinTotal);
-    const { core, other } = topPlayersFor(teamAb);
+    const { core, other, notCounted } = topPlayersFor(teamAb);
+    // Players excluded because they are out / not starting, so it is visible WHY someone familiar is missing.
+    // Absences of players with real weight (healthy projection >= 10 PPR) also flag that the team-points
+    // projection above is NOT yet adjusted for them (it is built from win totals + PFF team grades only).
+    const sig = notCounted.filter(x => x.avail.status==='OUT' && x.ppr >= 10);
+    const availNote = notCounted.length ? `<div style="margin-top:10px;font-size:12px;color:var(--text-dim);line-height:1.5;">
+        <b>Not counted (out / not starting):</b> ${notCounted.sort((a,b)=>b.ppr-a.ppr).map(x=>`${x.p.n} <span style="color:var(--text-faint);">(${x.avail.status==='OUT'?'OUT':'BACKUP'} \u00b7 ${x.avail.note})</span>`).join('; ')}
+        ${sig.length ? `<div style="margin-top:4px;color:var(--warn, #c9861a);">\u26a0 Team-points projection is not explicitly adjusted for ${sig.map(x=>x.p.n).join(', ')} (it is built from win totals + PFF team grades).</div>` : ''}
+      </div>` : '';
     const rowFor = r => `<tr>
-        <td class="nm">${r.p.n}</td><td>${r.p.p}</td>
+        <td class="nm" title="${r.avail?r.avail.note:''}">${r.p.n}${(r.avail&&r.avail.status==='QUESTIONABLE')?' <span style="color:var(--text-faint);" title="'+r.avail.note+'">(?)</span>':''}</td><td>${r.p.p}</td>
         <td style="font-family:'IBM Plex Mono',monospace;font-size:12px;">${keyLineFor(r)}</td>
         <td style="text-align:right;" class="pts">${fmtN(r.ppr,1)}</td>
       </tr>`;
@@ -4758,6 +4836,7 @@ function renderBetting(){
         <thead><tr><th>Player</th><th>Pos</th><th>Real Proj. Line</th><th style="text-align:right;">PPR</th></tr></thead>
         <tbody>${coreRows}${otherRows}</tbody>
       </table>
+      ${availNote}
     </div>`;
   }
 
@@ -4881,8 +4960,8 @@ function renderSlate(){
     [g.away, g.home].forEach(teamAb=>{
       const teamPlayers = P.filter(p=>p.t===teamAb && (slatePos==='ALL' || p.p===slatePos) && (!searchQ || p.n.toLowerCase().includes(searchQ)));
       const rows = teamPlayers.map(p=>{
-        const {opts, isBye} = neutralOptsFor(p, wk);
-        if(isBye) return null;
+        const {opts, isBye, isOut} = neutralOptsFor(p, wk);
+        if(isBye || isOut) return null;
         const real = computeProjection(p, opts);
         const base = computeProjection(p, neutral);
         const delta = real.ppr - base.ppr;
