@@ -3483,6 +3483,7 @@ const PLAYER_AVAILABILITY = {
   'Breece Hall':      {status:'QUESTIONABLE', note:'thigh, left Week 3'},
   'Caleb Williams':   {status:'QUESTIONABLE', note:'hamstring, week-to-week - may miss multiple games (not on IR)'},
 };
+const AVAILABILITY_LAST_VERIFIED = 'Sept 28, 2026';  // real, current date this table (and its Week 3+ overrides) was last checked against actual injury reports -- shown on the Betting tab itself, not just in this comment, since this is manually maintained and WILL go stale
 const AVAILABILITY_FROM_WEEK = 4;   // table reflects status going into Week 4; earlier weeks are history, and the season-average view has no week
 function availabilityOf(p){ return PLAYER_AVAILABILITY[p.n] || null; }
 // Games NOT yet played when the table was last updated: these statuses apply even though the week is before
@@ -4767,6 +4768,15 @@ function computeTeamProjectedPoints(teamAb, oppAb, isHome, wk){
 }
 
 function renderBetting(){
+  let verifiedNote = document.getElementById('availVerifiedNote');
+  if(!verifiedNote){
+    verifiedNote = document.createElement('div');
+    verifiedNote.id = 'availVerifiedNote';
+    verifiedNote.style.cssText = 'font-size:12px;color:var(--text-dim);margin-bottom:10px;padding:6px 10px;border:1px solid var(--border,#333);border-radius:6px;';
+    const bettingRoot = document.getElementById('bettingResults');
+    if(bettingRoot && bettingRoot.parentElement) bettingRoot.parentElement.insertBefore(verifiedNote, bettingRoot);
+  }
+  verifiedNote.innerHTML = `Player OUT/BACKUP/QUESTIONABLE statuses below last checked against real injury reports on <b>${AVAILABILITY_LAST_VERIFIED}</b>. This is manually maintained and can go stale \u2014 verify anyone you're relying on for a real decision against the current injury report before using it.`;
   const wk = globalWeekEl.value ? parseInt(globalWeekEl.value,10) : null;
   const gameFilterEl = document.getElementById('bettingGameFilter');
   const noGameEl = document.getElementById('bettingNoGame');
