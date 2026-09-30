@@ -1349,8 +1349,19 @@ const FRESH_DEF_INJURY_ADJ = {
    multiple real seasons of TE-specific data, not one noisy week. Applied only
    to TE rec yards/TD, never WR, since that's exactly the real distinction this
    exists to capture. */
+/* WEEKLY GAP CHECKLIST UPDATE (through Week 3, real DraftEdge DVP data cross-checked against
+   real box scores/reporting before applying -- see the 3-week checklist run this update came from):
+   DET raised 1.218 -> 1.333. This is a real, confirmed, escalating 3-game pattern, not a single-game
+   outlier -- Detroit's real TE yards allowed rose each week (53 -> 52 -> 164, the last including 2 TDs
+   to Jets tight ends), and direct reporting confirms it explicitly: "tight ends have 29 catches for
+   351 yards and six touchdowns against Detroit in three games." Two other real candidate changes were
+   found and deliberately NOT applied: LV and NO both showed a similar-looking jump, but both trace to
+   the same single Week 3 game between them (one shared outlier inflating both sides, not two
+   independent patterns) -- holding until a second, independent game confirms either one. TB showed
+   real DVP improvement, but real reporting says they'd allowed the most catches/yards/TDs to TEs of
+   any team through Week 2 -- genuinely conflicting evidence, left unchanged pending clarity. */
 const TE_MATCHUP_ADJ = {
-  CIN:1.278,DET:1.218,TB:1.203,WAS:1.177,IND:1.139,ARI:1.113,MIA:1.083,SEA:1.049,
+  CIN:1.278,DET:1.333,TB:1.203,WAS:1.177,IND:1.139,ARI:1.113,MIA:1.083,SEA:1.049,
   ATL:1.019,DAL:1.011,HOU:0.996,TEN:0.992,PIT:0.989,JAX:0.985,DEN:0.981,KC:0.981,
   SF:0.974,NYG:0.970,LAC:0.966,NYJ:0.962,CLE:0.959,CAR:0.951,CHI:0.947,NO:0.936,
   GB:0.929,BAL:0.921,NE:0.921,LAR:0.914,BUF:0.898,LV:0.887,MIN:0.861,PHI:0.778,
