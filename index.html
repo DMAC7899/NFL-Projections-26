@@ -1383,25 +1383,39 @@ const TE_MATCHUP_ADJ = {
    by whichever view calls computeProjection, or these silently no-op. Verified
    this works through the real UI (not just the neutralOptsFor code path) before
    calling this done -- see the Sept 2026 oppAb fix commit for the root cause. */
+/* WEEKLY GAP CHECKLIST UPDATE (through Week 3): full refresh from real, current DraftEdge DVP
+   data, same source and same 50% damping methodology used when these tables were first built.
+   Real, confirmed shared-game contamination caught and held out of this update: WAS/SEA played
+   each other in Week 3 and both teams' real QB and WR values moved softer together in that one
+   game (one shootout inflating both sides at once, not two independent patterns) -- same real
+   finding for PIT/CIN, who also played each other in Week 3. All four (WAS, SEA, PIT, CIN) are
+   held at their prior QB/WR values pending a second, independent game. RB showed no matching
+   contamination for either pair and was refreshed normally for all 32 teams. NYJ's real RB
+   increase (1.048->1.127) reflects a real, confirmed, one-sided
+   cause: Detroit's real, currently-best rushing offense exposed a real, previously-quiet Jets
+   run-defense weakness in Week 3 specifically (direct reporting: "quietly showing signs of
+   vulnerability... the Lions exposed those problems") -- Detroit's own RB value moved the
+   OPPOSITE direction in that same game, confirming this is a real one-sided outcome, not shared
+   contamination. */
 const QB_MATCHUP_ADJ = {
-  ARI:1.026,ATL:1.032,BAL:1.006,BUF:1.006,CAR:0.969,CHI:1.08,CIN:1.017,CLE:0.944,
-  DAL:1.19,DEN:0.927,DET:1.201,GB:0.964,HOU:1.032,IND:1.136,JAX:0.955,KC:0.896,
-  LAC:0.933,LAR:0.944,LV:0.947,MIA:1.074,MIN:0.865,NE:0.885,NO:0.913,NYG:1.068,
-  NYJ:1.012,PHI:0.969,PIT:0.964,SEA:0.873,SF:0.933,TB:1.082,TEN:1.015,WAS:1.145,
+  ARI:1.071,ATL:1.026,BAL:1.004,BUF:0.984,CAR:0.979,CHI:1.043,CIN:1.017,CLE:0.937,
+  DAL:1.166,DEN:0.965,DET:1.216,GB:0.959,HOU:0.995,IND:1.088,JAX:0.92,KC:0.883,
+  LAC:0.948,LAR:0.976,LV:0.987,MIA:1.054,MIN:0.858,NE:0.909,NO:0.939,NYG:1.023,
+  NYJ:1.009,PHI:0.995,PIT:0.964,SEA:0.873,SF:0.97,TB:1.04,TEN:0.962,WAS:1.145,
 };
 
 const RB_MATCHUP_ADJ = {
-  ARI:1.028,ATL:0.889,BAL:0.994,BUF:1.088,CAR:1.171,CHI:1.012,CIN:1.054,CLE:0.981,
-  DAL:1.07,DEN:0.99,DET:0.987,GB:1.095,HOU:0.891,IND:1.088,JAX:0.907,KC:0.945,
-  LAC:0.898,LAR:0.954,LV:0.976,MIA:1.124,MIN:0.907,NE:0.909,NO:1.043,NYG:1.083,
-  NYJ:1.048,PHI:0.992,PIT:1.016,SEA:0.902,SF:1.007,TB:0.978,TEN:0.981,WAS:0.992,
+  ARI:1.036,ATL:0.895,BAL:0.998,BUF:1.084,CAR:1.145,CHI:0.982,CIN:1.059,CLE:0.975,
+  DAL:1.079,DEN:1.007,DET:0.968,GB:1.104,HOU:0.875,IND:1.064,JAX:0.9,KC:0.939,
+  LAC:0.952,LAR:0.957,LV:0.975,MIA:1.123,MIN:0.889,NE:0.952,NO:1.048,NYG:1.054,
+  NYJ:1.127,PHI:0.973,PIT:0.986,SEA:0.904,SF:1.029,TB:0.964,TEN:0.979,WAS:0.977,
 };
 
 const WR_MATCHUP_ADJ = {
-  ARI:1.045,ATL:1.096,BAL:1.053,BUF:1.007,CAR:0.956,CHI:1.037,CIN:0.888,CLE:0.977,
-  DAL:1.083,DEN:0.904,DET:1.13,GB:1.044,HOU:1.017,IND:1.13,JAX:0.994,KC:0.913,
-  LAC:1.015,LAR:1.028,LV:0.956,MIA:0.958,MIN:0.961,NE:0.963,NO:0.963,NYG:1.052,
-  NYJ:0.972,PHI:0.937,PIT:0.951,SEA:0.847,SF:0.969,TB:0.958,TEN:1.11,WAS:1.087,
+  ARI:1.059,ATL:1.091,BAL:1.084,BUF:1.001,CAR:0.909,CHI:1.01,CIN:0.888,CLE:0.972,
+  DAL:1.059,DEN:0.939,DET:1.116,GB:1.039,HOU:1.015,IND:1.08,JAX:0.996,KC:0.911,
+  LAC:0.98,LAR:1.018,LV:0.955,MIA:0.947,MIN:0.957,NE:0.988,NO:0.933,NYG:1.042,
+  NYJ:0.969,PHI:0.982,PIT:0.951,SEA:0.847,SF:0.982,TB:0.949,TEN:1.056,WAS:1.087,
 };
 
 const scriptTable = {
