@@ -790,20 +790,18 @@ TEN:{primary:'#D36A7B',secondary:'#30445C'}, WAS:{primary:'#C8A047',secondary:'#
    one-directional correction like the pass-block side. Same conservative 25%
    blend weight for the same reason -- one real week, not yet a stable read. */
 const TEAMS = {
-/* SACKSALLOWED CORRECTION (Sept 2026): the original sacksAllowed field (from
-   line_pass_blocking_efficiency.csv) was confirmed wrong for every team checked --
-   e.g. KC showed 17 vs. a real 2025 total of 47, LV showed 47 vs. a real 64. That
-   source file's own totals don't reconcile with a real single season (league-wide
-   sum was ~668, well under the real ~1200-1400 total sacks per season) and its
-   game counts varied 17-21 across teams, inconsistent with a clean 17-game season.
-   Rebuilt sacksAllowed for all 32 teams from real Pro-Football-Reference 2025
-   individual QB sack data (every QB who played for each team that season, summed --
-   e.g. KC's 47 = Mahomes' real 34 in 14 games plus backup-QB sacks after his injury).
-   NOTE: sacksAllowed is display-only (shown in the O-line note text) -- it was never
-   used in the actual projection math, which relies on olPassMult/olRunMult (derived
-   from pbe, a rate stat). Those multipliers were NOT touched here; only the raw
-   sacksAllowed count shown to users was corrected. Real league total now 1283,
-   consistent with a real season. */
+/* SACKSALLOWED CORRECTION (Sept 2026, updated): originally rebuilt from Pro-Football-Reference,
+   now replaced with real ESPN team offense passing stats (espn.com/nfl/stats/team, full 2025
+   season, SACK column -- sacks taken by each team's own offense). PFR is no longer an approved
+   source -- everything in this tool must come from PFF or ESPN only (exception: the separate
+   win-total/Pythagorean system). Real, strong cross-source agreement found before replacing:
+   29 of 32 teams matched the prior PFR-sourced count exactly, the other 3 differed by just 1
+   sack each (DEN, DET, NE, WAS -- real, minor charting differences between sources on
+   borderline plays). Real league total now 1287 (was 1283 under PFR) -- consistent with a
+   real season either way.
+   NOTE: sacksAllowed is display-only (shown in the O-line note text) -- it was never used in
+   the actual projection math, which relies on olPassMult/olRunMult (derived from pbe, a rate
+   stat, already PFF-sourced and untouched here). */
 ARI:{name:'Cardinals',hc:'Mike LaFleur',note:"New HC (ex-Rams OC) after Jonathan Gannon's firing. Offense being rebuilt from scratch after trading Kyler Murray to Minnesota — QB competition ongoing.",newHC:true,passD:3,rushD:3,cb:'Garrett Williams',cbGrade:64.2,vegasWinTotal:4.5,vegasMult:0.8824,olPassMult:0.9468,olRunMult:0.9762,olPbe:79.71,olRunGrade:62.0,sacksAllowed:59,
  sch:['@LAC','vs SEA','@SF','@NYG','vs DET','@LAR','vs DEN','@DAL','@SEA','vs LAR','@KC','vs WAS','vs PHI','BYE','vs NYJ','@NO','vs LV','vs SF']},
 ATL:{name:'Falcons',hc:'Kevin Stefanski',note:"New HC (ex-Browns) after Raheem Morris's firing. Zone-heavy run scheme historically fed a lead back hard — good scheme fit for a run-first offense, but new play-caller relationship.",newHC:true,passD:1,rushD:3,cb:'Mike Hughes',cbGrade:59.8,vegasWinTotal:7.5,vegasMult:0.9706,olPassMult:0.9777,olRunMult:0.986,olPbe:82.61,olRunGrade:63.6,sacksAllowed:26,
@@ -822,9 +820,9 @@ CLE:{name:'Browns',hc:'Todd Monken',note:"New HC (ex-Ravens OC) after Kevin Stef
  sch:['@JAX','@TB','vs CAR','vs PIT','@NYJ','vs BAL','@TEN','@PIT','@NO','vs HOU','BYE','vs LV','vs CIN','vs ATL','@NYG','@BAL','vs IND','@CIN']},
 DAL:{name:'Cowboys',hc:'Brian Schottenheimer',note:"Schottenheimer enters year two. Balanced West Coast-branch scheme with heavy use of 12-personnel.",newHC:false,passD:4,rushD:4,cb:'Cobie Durant',cbGrade:64.6,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:0.9446,olRunMult:0.9939,olPbe:79.51,olRunGrade:64.9,sacksAllowed:31,
  sch:['@NYG','vs WAS','vs BAL','@HOU','vs TB','@GB','@PHI','vs ARI','@IND','vs SF','vs TEN','vs PHI','@SEA','BYE','@LAR','vs JAX','vs NYG','@WAS']},
-DEN:{name:'Broncos',hc:'Sean Payton',note:"Payton retained; new OC Davis Webb calls plays (promoted from QB coach). Payton's system leans on pre-snap movement, quick game, and a heavy dose of RPOs for Bo Nix.",newHC:false,passD:1,rushD:0,cb:'Ja\'Quan McMillian',cbGrade:78.9,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:0.9927,olRunMult:1.0347,olPbe:84.02,olRunGrade:71.6,sacksAllowed:22,
+DEN:{name:'Broncos',hc:'Sean Payton',note:"Payton retained; new OC Davis Webb calls plays (promoted from QB coach). Payton's system leans on pre-snap movement, quick game, and a heavy dose of RPOs for Bo Nix.",newHC:false,passD:1,rushD:0,cb:'Ja\'Quan McMillian',cbGrade:78.9,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:0.9927,olRunMult:1.0347,olPbe:84.02,olRunGrade:71.6,sacksAllowed:23,
  sch:['@KC','vs JAX','vs LAR','@SF','@LAC','vs SEA','@ARI','vs KC','@CAR','BYE','vs LV','@PIT','vs MIA','@NYJ','@LV','vs BUF','@NE','vs LAC']},
-DET:{name:'Lions',hc:'Dan Campbell',note:"Campbell retained. Aggressive, gap/power-and-zone hybrid attack — one of the league's most efficient offenses. David Montgomery traded to Houston, opening up more early-down work.",newHC:false,passD:2,rushD:1,cb:'Rock Ya-Sin',cbGrade:64.9,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:0.9526,olRunMult:1.0177,olPbe:80.26,olRunGrade:68.8,sacksAllowed:38,
+DET:{name:'Lions',hc:'Dan Campbell',note:"Campbell retained. Aggressive, gap/power-and-zone hybrid attack — one of the league's most efficient offenses. David Montgomery traded to Houston, opening up more early-down work.",newHC:false,passD:2,rushD:1,cb:'Rock Ya-Sin',cbGrade:64.9,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:0.9526,olRunMult:1.0177,olPbe:80.26,olRunGrade:68.8,sacksAllowed:39,
  sch:['vs NO','@BUF','vs NYJ','@CAR','@ARI','BYE','vs GB','vs MIN','@MIA','vs NE','vs TB','vs CHI','@ATL','vs TEN','@MIN','vs NYG','@CHI','@GB']},
 GB:{name:'Packers',hc:'Matt LaFleur',note:"LaFleur retained. Outside-zone-based scheme with heavy misdirection and play-action; Romeo Doubs traded to New England thins the receiver room.",newHC:false,passD:1,rushD:1,cb:'Keisean Nixon',cbGrade:68.7,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:0.9418,olRunMult:0.9428,olPbe:79.25,olRunGrade:56.5,sacksAllowed:29,
  sch:['@MIN','@NYJ','vs ATL','@TB','vs CHI','vs DAL','@DET','vs CAR','@NE','vs MIN','BYE','@LAR','@NO','vs BUF','vs MIA','@CHI','vs HOU','vs DET']},
@@ -846,7 +844,7 @@ MIA:{name:'Dolphins',hc:'Jeff Hafley',note:"New HC (ex-Packers DC) after Mike Mc
  sch:['@LV','@SF','vs KC','@MIN','vs CIN','BYE','@NYJ','vs NE','vs DET','@IND','@BUF','vs NYJ','@DEN','vs CHI','@GB','vs LAC','vs BUF','@NE']},
 MIN:{name:'Vikings',hc:'Kevin O\u2019Connell',note:"O'Connell retained. Traded for QB Kyler Murray from Arizona — a major offensive-identity swing alongside Justin Jefferson. Zone-run/play-action scheme.",newHC:false,passD:0,rushD:1,cb:'Isaiah Rodgers',cbGrade:74.1,vegasWinTotal:8.5,vegasMult:1.0,olPassMult:0.9611,olRunMult:0.9738,olPbe:81.05,olRunGrade:61.6,sacksAllowed:60,
  sch:['vs GB','@CHI','@TB','vs MIA','@NO','BYE','vs IND','@DET','vs BUF','@GB','@SF','vs ATL','vs CAR','@NE','vs DET','vs WAS','@NYJ','vs CHI']},
-NE:{name:'Patriots',hc:'Mike Vrabel',note:"Vrabel enters year two. Efficient, aggressive downfield passing game; added WR Romeo Doubs via trade to pair with Stefon Diggs.",newHC:false,passD:1,rushD:1,cb:'Christian Gonzalez',cbGrade:76.9,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:0.9796,olRunMult:0.9915,olPbe:82.79,olRunGrade:64.5,sacksAllowed:47,
+NE:{name:'Patriots',hc:'Mike Vrabel',note:"Vrabel enters year two. Efficient, aggressive downfield passing game; added WR Romeo Doubs via trade to pair with Stefon Diggs.",newHC:false,passD:1,rushD:1,cb:'Christian Gonzalez',cbGrade:76.9,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:0.9796,olRunMult:0.9915,olPbe:82.79,olRunGrade:64.5,sacksAllowed:48,
  sch:['@SEA','vs PIT','@JAX','@BUF','vs LV','vs NYJ','@CHI','@MIA','vs GB','@DET','BYE','@LAC','vs BUF','vs MIN','@KC','@NYJ','vs DEN','vs MIA']},
 NO:{name:'Saints',hc:'Kellen Moore',note:"Moore's system leans on quick-rhythm passing. Added lead back Travis Etienne via trade from Jacksonville — expected to take over the backfield.",newHC:false,passD:0,rushD:3,cb:'Kool-Aid McKinstry',cbGrade:71.4,vegasWinTotal:8.5,vegasMult:1.0,olPassMult:0.9627,olRunMult:0.9507,olPbe:81.2,olRunGrade:57.8,sacksAllowed:49,
  sch:['@DET','@BAL','vs LV','vs ATL','vs MIN','@NYG','vs PIT','BYE','vs CLE','vs CAR','@CHI','@CIN','vs GB','@CAR','@TB','vs ARI','@ATL','vs TB']},
@@ -866,7 +864,7 @@ TB:{name:'Buccaneers',hc:'Todd Bowles',note:"Bowles retained. Traded away Mike E
  sch:['@CIN','vs CLE','vs MIN','vs GB','@DAL','vs PIT','@CAR','vs ATL','@CHI','BYE','@DET','vs CAR','vs LAC','@BAL','vs NO','@ATL','vs LAR','@NO']},
 TEN:{name:'Titans',hc:'Robert Saleh',note:"New HC after Brian Callahan's in-season firing. Added WR Wan'Dale Robinson via trade from the Giants.",newHC:true,passD:3,rushD:3,cb:'Alontae Taylor',cbGrade:66.8,vegasWinTotal:6.5,vegasMult:0.9412,olPassMult:0.9728,olRunMult:0.9653,olPbe:82.15,olRunGrade:60.2,sacksAllowed:56,
  sch:['vs NYJ','vs PHI','@NYG','@BAL','vs HOU','@IND','vs CLE','@CIN','BYE','vs JAX','@DAL','@JAX','vs WAS','@DET','vs IND','@LV','vs PIT','@HOU']},
-WAS:{name:'Commanders',hc:'Dan Quinn',note:"Quinn retained. Added RB Rachaad White via trade from Tampa Bay as a receiving-down complement.",newHC:false,passD:4,rushD:4,cb:'Trey Amos',cbGrade:58.8,vegasWinTotal:7.5,vegasMult:0.9706,olPassMult:0.9883,olRunMult:0.9988,olPbe:83.6,olRunGrade:65.7,sacksAllowed:36,
+WAS:{name:'Commanders',hc:'Dan Quinn',note:"Quinn retained. Added RB Rachaad White via trade from Tampa Bay as a receiving-down complement.",newHC:false,passD:4,rushD:4,cb:'Trey Amos',cbGrade:58.8,vegasWinTotal:7.5,vegasMult:0.9706,olPassMult:0.9883,olRunMult:0.9988,olPbe:83.6,olRunGrade:65.7,sacksAllowed:37,
  sch:['@PHI','@DAL','vs SEA','vs IND','vs NYG','@SF','BYE','vs PHI','vs LAR','@NYG','vs CIN','@ARI','@TEN','vs HOU','vs ATL','@MIN','@JAX','vs DAL']}
 };
 
