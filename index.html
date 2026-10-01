@@ -203,6 +203,7 @@
       <div class="modetab" data-mode="bigboard">Big Board</div>
       <div class="modetab" data-mode="slate">Weekly Slate</div>
       <div class="modetab" data-mode="defprofile">Defensive Profile</div>
+      <div class="modetab" data-mode="dvp">Defense v Position</div>
       <div class="modetab" data-mode="betting">Betting</div>
     </div>
     <div class="globalweek">
@@ -586,6 +587,35 @@
       </table>
     </div>
     <button type="button" class="save-btn" id="defProfileMoreColsBtn" style="margin-top:12px;background:var(--bg-panel);color:var(--text-dim);border:1px solid var(--line);">Show more columns</button>
+  </div>
+
+  <div id="dvpView" style="display:none;">
+    <button type="button" class="controls-toggle" id="dvpMethodToggle" style="padding:10px 0;">
+      <span style="font-size:15px;">Data &amp; methodology</span>
+      <span class="chev" id="dvpMethodChev">▸ Tap to expand</span>
+    </button>
+    <div class="controls-body collapsed" id="dvpMethodBody" style="padding:8px 0 14px;border-top:none;">
+      <div class="methodology" style="margin:0;">
+        Real, PFF-sourced proxy -- PFF and ESPN don't publish a direct "yards allowed by
+        offensive position" stat. Built from PFF's Defense Coverage report (full 2025 season,
+        894 real defenders), summed by team and by DEFENDER position, divided by 17 real games:
+        cornerback coverage yards stand in for WR, safety coverage yards for TE, linebacker
+        coverage yards for RB -- real NFL defensive assignments, but not a precise isolation
+        (a defender's own position doesn't always match who he's covering on a given play).
+        Tap a team to jump to its roster.
+      </div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="rank-table" id="dvpTable">
+        <thead><tr>
+          <th>Team</th>
+          <th style="text-align:right;">WR Rank</th><th style="text-align:right;">WR Yds/G</th>
+          <th style="text-align:right;">TE Rank</th><th style="text-align:right;">TE Yds/G</th>
+          <th style="text-align:right;">RB Rank</th><th style="text-align:right;">RB Yds/G</th>
+        </tr></thead>
+        <tbody id="dvpBody"></tbody>
+      </table>
+    </div>
   </div>
 
   <div id="bettingView" style="display:none;">
@@ -3658,6 +3688,7 @@ const modeTabsEl = document.getElementById('modeTabs');
     document.getElementById('bigBoardView').style.display = appMode==='bigboard' ? '' : 'none';
     document.getElementById('slateView').style.display = appMode==='slate' ? '' : 'none';
     document.getElementById('defProfileView').style.display = appMode==='defprofile' ? '' : 'none';
+    document.getElementById('dvpView').style.display = appMode==='dvp' ? '' : 'none';
     document.getElementById('bettingView').style.display = appMode==='betting' ? '' : 'none';
     if(appMode==='rankings') renderRankings();
     if(appMode==='compare') renderCompareGrid();
@@ -3665,6 +3696,7 @@ const modeTabsEl = document.getElementById('modeTabs');
     if(appMode==='bigboard') renderBigBoard();
     if(appMode==='slate') renderSlate();
     if(appMode==='defprofile') renderDefProfile();
+    if(appMode==='dvp') renderDvP();
     if(appMode==='betting') renderBetting();
   };
 });
@@ -4734,6 +4766,13 @@ defProfileMethodToggle.onclick = ()=>{
   const collapsed = defProfileMethodBody.classList.toggle('collapsed');
   defProfileMethodChev.textContent = collapsed ? '\u25b8 Tap to expand' : '\u25be Tap to collapse';
 };
+const dvpMethodToggle = document.getElementById('dvpMethodToggle');
+const dvpMethodBody = document.getElementById('dvpMethodBody');
+const dvpMethodChev = document.getElementById('dvpMethodChev');
+dvpMethodToggle.onclick = ()=>{
+  const collapsed = dvpMethodBody.classList.toggle('collapsed');
+  dvpMethodChev.textContent = collapsed ? '\u25b8 Tap to expand' : '\u25be Tap to collapse';
+};
 let defProfileColsShown = false;
 document.getElementById('defProfileMoreColsBtn').onclick = (e)=>{
   defProfileColsShown = !defProfileColsShown;
@@ -5022,6 +5061,28 @@ function renderBetting(){
   resultsEl.innerHTML = html;
 }
 
+/* DEFENSE VS POSITION (real, PFF-sourced proxy). PFF and ESPN do not publish a direct
+   "yards allowed by offensive position" stat, so this is built from real defender-position
+   coverage data instead: PFF's Defense Coverage report (premium.pff.com/nfl/positions/2025/
+   REGPO/defense-coverage), full 2025 season, 894 real defenders league-wide, summed by team
+   and by DEFENDER position, divided by 17 real games.
+   This is a real, reasonable proxy, not a precise isolation: cornerbacks primarily cover WRs,
+   safeties primarily cover TEs, linebackers primarily cover RBs in real NFL schemes, but a
+   defender's own position doesn't always match the offensive position he's covering on a given
+   play (nickel corners sometimes travel with TEs, linebackers sometimes spy receiving backs).
+   wr = real yards/game via CB coverage. te = real yards/game via Safety coverage.
+   rb = real yards/game via LB coverage. */
+const DVP_PROXY = {
+  ARI:{wr:104.6,te:53.5,rb:66.5}, ATL:{wr:117.7,te:41.8,rb:49.2}, BAL:{wr:119.4,te:75.7,rb:51.3}, BUF:{wr:76.4,te:56.8,rb:61.4},
+  CAR:{wr:98.4,te:61.8,rb:66.6}, CHI:{wr:130.8,te:74.2,rb:69.4}, CIN:{wr:91.5,te:44.3,rb:90.1}, CLE:{wr:96.2,te:50.5,rb:45.9},
+  DAL:{wr:105.6,te:47.7,rb:84.9}, DEN:{wr:130.1,te:34.8,rb:52.4}, DET:{wr:122.4,te:35.8,rb:68.2}, GB:{wr:95.2,te:58.2,rb:87.2},
+  HOU:{wr:85.4,te:69.5,rb:68.8}, IND:{wr:140.3,te:54.5,rb:67.3}, JAX:{wr:108.3,te:54.2,rb:77.9}, KC:{wr:68.8,te:65.8,rb:62.6},
+  LAC:{wr:90.4,te:37.5,rb:64.4}, LAR:{wr:132.2,te:98.4,rb:58.1}, LV:{wr:82.6,te:48.9,rb:69.3}, MIA:{wr:73.7,te:52.2,rb:81.4},
+  MIN:{wr:67.5,te:42.0,rb:48.4}, NE:{wr:114.5,te:37.1,rb:87.4}, NO:{wr:107.6,te:26.5,rb:45.8}, NYG:{wr:124.6,te:48.3,rb:45.7},
+  NYJ:{wr:82.4,te:54.2,rb:74.6}, PHI:{wr:129.1,te:50.1,rb:47.5}, PIT:{wr:91.4,te:74.5,rb:84.1}, SEA:{wr:102.9,te:73.8,rb:76.0},
+  SF:{wr:107.4,te:60.2,rb:88.8}, TB:{wr:113.2,te:46.2,rb:73.5}, TEN:{wr:115.5,te:64.6,rb:69.8}, WAS:{wr:120.9,te:60.4,rb:65.5},
+};
+
 function renderDefProfile(){
   const body = document.getElementById('defProfileBody');
   body.innerHTML = '';
@@ -5049,6 +5110,33 @@ function renderDefProfile(){
       <td class="dp-adv-col" style="text-align:right;font-family:'IBM Plex Mono',monospace;display:none;">${cov?fmtN(cov.zone*100,1)+'%':'\u2014'}</td>
       <td class="dp-adv-col" style="text-align:right;font-family:'IBM Plex Mono',monospace;display:none;">${cov?fmtN(cov.c0*100,1)+'%':'\u2014'}</td>
       <td class="dp-adv-col" style="text-align:right;font-family:'IBM Plex Mono',monospace;display:none;">${sack?sack.sackConvPct+'%':'\u2014'}</td>`;
+    body.appendChild(tr);
+  });
+}
+
+function renderDvP(){
+  const body = document.getElementById('dvpBody');
+  body.innerHTML = '';
+  const teams = Object.keys(DVP_PROXY);
+  const rankOf = (key) => {
+    const sorted = [...teams].sort((a,b) => DVP_PROXY[b][key] - DVP_PROXY[a][key]);
+    const ranks = {};
+    sorted.forEach((t,i) => ranks[t] = i+1);
+    return ranks;
+  };
+  const wrRank = rankOf('wr'), teRank = rankOf('te'), rbRank = rankOf('rb');
+  const pillClass = (rank) => rank <= 10 ? 't4' : (rank >= 23 ? 't0' : 't2');
+  [...teams].sort((a,b)=>TEAMS[a].name.localeCompare(TEAMS[b].name)).forEach(t => {
+    const d = DVP_PROXY[t];
+    const team = TEAMS[t];
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td class="tm" style="cursor:pointer;color:var(--amber);" onclick="jumpToTeamRoster('${t}')">${team.name} (${t})</td>
+      <td style="text-align:right;"><span class="glog-pill ${pillClass(wrRank[t])}">#${wrRank[t]}</span></td>
+      <td style="text-align:right;font-family:'IBM Plex Mono',monospace;">${d.wr}</td>
+      <td style="text-align:right;"><span class="glog-pill ${pillClass(teRank[t])}">#${teRank[t]}</span></td>
+      <td style="text-align:right;font-family:'IBM Plex Mono',monospace;">${d.te}</td>
+      <td style="text-align:right;"><span class="glog-pill ${pillClass(rbRank[t])}">#${rbRank[t]}</span></td>
+      <td style="text-align:right;font-family:'IBM Plex Mono',monospace;">${d.rb}</td>`;
     body.appendChild(tr);
   });
 }
