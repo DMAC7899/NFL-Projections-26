@@ -253,7 +253,7 @@
         <div class="field">
           <label>Coverage Shell <b id="lbl-cov">Balanced</b></label>
           <input type="range" id="cov" min="0" max="2" step="1" value="1">
-          <div class="autonote" id="covNote">Select a Week to auto-fill from the opponent's real 2025 man/zone rates (FTN charting via nflverse).</div>
+          <div class="autonote" id="covNote">Select a Week to auto-fill from the opponent's real 2025 man/zone rates (PFF Defense Coverage Scheme).</div>
         </div>
         <div class="field" id="cbField" style="display:none;">
           <label>Elite CB Shadow <b id="lbl-cb">Off</b></label>
@@ -423,10 +423,10 @@
           a projection input.
         </div>
         <div class="methodology" style="margin-top:-4px;">
-          Coverage and pressure data charted by
-          <a href="https://ftndata.com" style="color:var(--amber);" target="_blank">FTN Data</a>, distributed via
-          <a href="https://nflverse.com" style="color:var(--amber);" target="_blank">nflverse</a> under
-          CC-BY-SA 4.0 — team rates for 2025, player splits 2023–2025 (minimum 30 targets or 60
+          Team man/zone rates from PFF's Defense Coverage Scheme report (2025 season, snap-weighted
+          across every real defender who logged a coverage snap). Pressure rate and time-to-throw
+          still sourced from FTN Data via nflverse pending their own rebuild. Player splits 2023-2025
+          (minimum 30 targets or 60
           attempts per coverage type). QB grades, pressure metrics, route and efficiency data, red-zone
           shares, and O-line grades via PFF Premium Stats (2025, minimum 6 games played). Win-total and
           red-zone data current as of early August 2026.
@@ -657,8 +657,10 @@
     on 2025, matching the same weighting already used for player baselines) after finding the 2025-only tier
     moved 20 of 32 teams once 2024 was properly incorporated — a real, meaningful shift, not noise (e.g. New
     Orleans and Carolina's real, historically poor 2024 run defense was invisible in a 2025-only view).
-    <b>Coverage shell &amp; pressure rate:</b> real 2025 per-play charting data from FTN Data via
-    nflverse (CC-BY-SA 4.0) — actual man/zone rates and pressure rates per defense, not estimates.
+    <b>Coverage shell:</b> real 2025 man/zone rates from PFF's Defense Coverage Scheme report,
+    snap-weighted across every real defender (replaces an earlier FTN/nflverse-sourced table that
+    was found to systematically overstate man rate by an average of 7.5 points league-wide).
+    <b>Pressure rate:</b> still FTN Data via nflverse (CC-BY-SA 4.0), pending its own PFF/ESPN rebuild.
     <b>Rankings/Compare</b> auto-apply the real schedule-driven opponent, defense tier, coverage shell and
     pressure rate for a selected week (game script and pace stay neutral) — open a player in Browse mode to
     fine-tune further. <b>Best Matchups</b> ranks every player by how much their real matchup this week beats
@@ -1442,7 +1444,10 @@ const wxLabels = ['Dome / Clear','Wind / Rain / Snow'];
 const wxPassMult = [1.00, 0.90];
 const wxRushMult = [1.00, 1.07];
 
-/* Real defense coverage-scheme data: FTN Data via nflverse (load_participation()), 2025 season. */
+/* Real defense coverage-scheme data (man/zone): PFF Defense Coverage Scheme report, 2025 season,
+   snap-weighted across all real defenders. Replaces the original FTN Data via nflverse source --
+   see the REAL DATA SOURCE CORRECTION comment further below for the full real evidence and
+   before/after for all 32 teams. */
 /* LAR OVERRIDE (Aug 2026): pressure raised from the real 2025 value (0.320) to 0.328.
    This affects every QB's pressure/INT math when facing the Rams (pressurePassMult,
    pressureIntMult), the piece the run-D-only fix above didn't touch. Computed
@@ -1459,48 +1464,69 @@ const wxRushMult = [1.00, 1.07];
    Every step above is a stated, auditable assumption or a real number -- not silently
    blended in as if it were 2025 measured data like the other 31 teams. Revisit once
    real 2026 game data exists for LAR with Donald active. */
-/* Man/zone rate blended across two independent real sources and years: FTN Data via
-   nflverse (2025 season, per-play charted) and PFF Defense Coverage Scheme (2024
-   season, aggregated from individual defenders' real man/zone snap counts) --
-   straight average, not snap-weighted between sources (different underlying
-   methodologies, so a precise weight isn't defensible either way). Pressure/time-
-   to-throw/Cover-0-4 shell rates remain 2025-only (FTN via nflverse) -- no second
-   real source for those yet. */
+/* SUPERSEDED (kept for history): this comment described an earlier FTN+PFF blend. The man/zone
+   values below are now sourced from PFF's Defense Coverage Scheme report alone (2025 season,
+   snap-weighted) -- see the REAL DATA SOURCE CORRECTION comment above. Pressure/time-to-throw/
+   Cover-0-4 shell rates are still FTN via nflverse, pending their own rebuild as part of the
+   same wider project. */
+/* REAL DATA SOURCE CORRECTION (this replaces FTN Data via nflverse, which is no longer an
+   approved source -- everything in this tool must come from PFF or ESPN only, with the sole
+   exception of the separate win-total/Pythagorean scoring system).
+   man/zone rebuilt for all 32 teams from PFF's real "Defense Coverage Scheme" report
+   (premium.pff.com/nfl/positions/2025/REGPO/defense-coverage-scheme), full 2025 season,
+   snap-weighted across every real CB/S/LB who logged a coverage snap (560 real players
+   league-wide, 32 teams, verified team-by-team).
+   Real, confirmed finding before applying this: checked Seattle and Cleveland's real man rate
+   across 2024, 2025 and the current 2026 partial season. Cleveland was stable (39.3% -> 37.1%,
+   close to its old FTN figure of 42.0%) -- a normal, small drift. Seattle showed a real, genuine,
+   consistent 3-year decline (27.3% -> 17.0% -> 5.3% partial 2026), nowhere close to its old FTN
+   figure of 31.1% -- confirming that FTN figure had simply gone stale, not that the two sources
+   measure something fundamentally different.
+   Once checked across all 32 teams: every team except IND showed the SAME direction of error
+   (FTN reading higher than real PFF), averaging +7.5 percentage points league-wide -- a real,
+   systematic bias in the old source, not isolated drift. Full before/after, all 32 teams:
+   SEA +14.10, JAX +12.84, WAS +12.17, LV +12.05, KC +11.68, DEN +10.95, NE +10.39, NO +10.05,
+   DET +9.95, PHI +9.89, CAR +9.15, ATL +8.67, TEN +8.51, HOU +8.46, LAC +7.88, ARI +7.82,
+   LAR +7.72, NYJ +7.41, CIN +6.92, SF +6.28, DAL +5.82, BAL +5.48, MIA +5.27, CLE +4.91,
+   CHI +4.88, BUF +4.68, GB +4.22, PIT +3.59, MIN +2.56, NYG +2.29, TB +1.79, IND -0.84.
+   pressure/ttt/dom/domPct/c0-c4 (coverage shell rates) are UNTOUCHED here -- they were not part
+   of this specific investigation and still need their own real PFF/ESPN-sourced rebuild as part
+   of the same wider project (everything besides Pythagorean is one project, per direct instruction). */
 const COVERAGE_2025 = {
-ARI:{man:0.2639,zone:0.7361,pressure:0.256,ttt:2.72,dom:'Cover 3',domPct:0.261,c0:0.036,c1:0.183,c2:0.202,c3:0.261,c4:0.129},
-ATL:{man:0.2862,zone:0.7138,pressure:0.313,ttt:2.68,dom:'Cover 1',domPct:0.287,c0:0.023,c1:0.287,c2:0.158,c3:0.248,c4:0.156},
-BAL:{man:0.3594,zone:0.6406,pressure:0.282,ttt:2.66,dom:'Cover 3',domPct:0.314,c0:0.063,c1:0.249,c2:0.183,c3:0.314,c4:0.076},
-BUF:{man:0.2824,zone:0.7176,pressure:0.342,ttt:2.76,dom:'Cover 2',domPct:0.266,c0:0.031,c1:0.185,c2:0.266,c3:0.221,c4:0.106},
-CAR:{man:0.2396,zone:0.7604,pressure:0.213,ttt:2.72,dom:'Cover 3',domPct:0.323,c0:0.024,c1:0.178,c2:0.224,c3:0.323,c4:0.144},
-CHI:{man:0.2993,zone:0.7007,pressure:0.287,ttt:2.7,dom:'Cover 1',domPct:0.328,c0:0.048,c1:0.328,c2:0.25,c3:0.214,c4:0.05},
-CIN:{man:0.3311,zone:0.6689,pressure:0.293,ttt:2.84,dom:'Cover 3',domPct:0.317,c0:0.064,c1:0.256,c2:0.201,c3:0.317,c4:0.033},
-CLE:{man:0.4202,zone:0.5798,pressure:0.3408,ttt:2.6,dom:'Cover 1',domPct:0.348,c0:0.044,c1:0.348,c2:0.199,c3:0.269,c4:0.064},
-DAL:{man:0.2825,zone:0.7175,pressure:0.318,ttt:2.75,dom:'Cover 3',domPct:0.283,c0:0.032,c1:0.222,c2:0.239,c3:0.283,c4:0.133},
-DEN:{man:0.4014,zone:0.5986,pressure:0.337,ttt:2.7,dom:'Cover 1',domPct:0.307,c0:0.066,c1:0.307,c2:0.152,c3:0.249,c4:0.083},
-DET:{man:0.455,zone:0.545,pressure:0.318,ttt:2.83,dom:'Cover 1',domPct:0.286,c0:0.028,c1:0.286,c2:0.165,c3:0.27,c4:0.074},
-GB:{man:0.2165,zone:0.7835,pressure:0.307,ttt:2.81,dom:'Cover 3',domPct:0.319,c0:0.019,c1:0.185,c2:0.288,c3:0.319,c4:0.093},
-HOU:{man:0.3009,zone:0.6991,pressure:0.306,ttt:2.65,dom:'Cover 1',domPct:0.285,c0:0.018,c1:0.285,c2:0.223,c3:0.231,c4:0.122},
-IND:{man:0.2661,zone:0.7339,pressure:0.296,ttt:2.79,dom:'Cover 3',domPct:0.258,c0:0.057,c1:0.251,c2:0.236,c3:0.258,c4:0.074},
-JAX:{man:0.3231,zone:0.6769,pressure:0.279,ttt:2.62,dom:'Cover 3',domPct:0.291,c0:0.043,c1:0.178,c2:0.262,c3:0.291,c4:0.095},
-KC:{man:0.3517,zone:0.6483,pressure:0.335,ttt:2.67,dom:'Cover 2',domPct:0.247,c0:0.073,c1:0.219,c2:0.247,c3:0.203,c4:0.122},
-LAC:{man:0.2356,zone:0.7644,pressure:0.304,ttt:2.68,dom:'Cover 3',domPct:0.299,c0:0.042,c1:0.138,c2:0.253,c3:0.299,c4:0.119},
-LAR:{man:0.2638,zone:0.7362,pressure:0.3372,ttt:2.72,dom:'Cover 3',domPct:0.267,c0:0.029,c1:0.185,c2:0.239,c3:0.267,c4:0.105},
-LV:{man:0.2681,zone:0.7319,pressure:0.278,ttt:2.73,dom:'Cover 3',domPct:0.374,c0:0.048,c1:0.148,c2:0.215,c3:0.374,c4:0.111},
-MIA:{man:0.2771,zone:0.7229,pressure:0.271,ttt:2.7,dom:'Cover 2',domPct:0.346,c0:0.024,c1:0.209,c2:0.346,c3:0.233,c4:0.072},
-MIN:{man:0.2104,zone:0.7896,pressure:0.34,ttt:2.66,dom:'Cover 2',domPct:0.365,c0:0.051,c1:0.08,c2:0.365,c3:0.241,c4:0.116},
-NE:{man:0.3979,zone:0.6021,pressure:0.297,ttt:2.74,dom:'Cover 3',domPct:0.276,c0:0.04,c1:0.261,c2:0.257,c3:0.276,c4:0.098},
-NO:{man:0.2712,zone:0.7288,pressure:0.282,ttt:2.8,dom:'Cover 3',domPct:0.403,c0:0.03,c1:0.169,c2:0.153,c3:0.403,c4:0.094},
-NYG:{man:0.377,zone:0.623,pressure:0.301,ttt:2.67,dom:'Cover 1',domPct:0.313,c0:0.034,c1:0.313,c2:0.146,c3:0.258,c4:0.148},
-NYJ:{man:0.3821,zone:0.6179,pressure:0.247,ttt:2.63,dom:'Cover 1',domPct:0.283,c0:0.052,c1:0.283,c2:0.26,c3:0.224,c4:0.068},
-PHI:{man:0.3687,zone:0.6313,pressure:0.327,ttt:2.72,dom:'Cover 1',domPct:0.351,c0:0.03,c1:0.351,c2:0.171,c3:0.218,c4:0.079},
-PIT:{man:0.3592,zone:0.6408,pressure:0.295,ttt:2.63,dom:'Cover 3',domPct:0.281,c0:0.042,c1:0.259,c2:0.202,c3:0.281,c4:0.088},
-SEA:{man:0.3113,zone:0.6887,pressure:0.331,ttt:2.76,dom:'Cover 2',domPct:0.31,c0:0.031,c1:0.188,c2:0.31,c3:0.215,c4:0.072},
-SF:{man:0.2607,zone:0.7393,pressure:0.232,ttt:2.75,dom:'Cover 3',domPct:0.31,c0:0.028,c1:0.218,c2:0.17,c3:0.31,c4:0.142},
-TB:{man:0.2333,zone:0.7667,pressure:0.341,ttt:2.64,dom:'Cover 3',domPct:0.306,c0:0.049,c1:0.18,c2:0.215,c3:0.306,c4:0.108},
-TEN:{man:0.2722,zone:0.7278,pressure:0.295,ttt:2.73,dom:'Cover 2',domPct:0.288,c0:0.033,c1:0.199,c2:0.288,c3:0.258,c4:0.096},
-WAS:{man:0.3473,zone:0.6527,pressure:0.313,ttt:2.81,dom:'Cover 1',domPct:0.252,c0:0.03,c1:0.252,c2:0.193,c3:0.235,c4:0.147},
+ARI:{man:0.1857,zone:0.8143,pressure:0.256,ttt:2.72,dom:'Cover 3',domPct:0.261,c0:0.036,c1:0.183,c2:0.202,c3:0.261,c4:0.129},
+ATL:{man:0.1995,zone:0.8005,pressure:0.313,ttt:2.68,dom:'Cover 1',domPct:0.287,c0:0.023,c1:0.287,c2:0.158,c3:0.248,c4:0.156},
+BAL:{man:0.3046,zone:0.6954,pressure:0.282,ttt:2.66,dom:'Cover 3',domPct:0.314,c0:0.063,c1:0.249,c2:0.183,c3:0.314,c4:0.076},
+BUF:{man:0.2356,zone:0.7644,pressure:0.342,ttt:2.76,dom:'Cover 2',domPct:0.266,c0:0.031,c1:0.185,c2:0.266,c3:0.221,c4:0.106},
+CAR:{man:0.1481,zone:0.8519,pressure:0.213,ttt:2.72,dom:'Cover 3',domPct:0.323,c0:0.024,c1:0.178,c2:0.224,c3:0.323,c4:0.144},
+CHI:{man:0.2505,zone:0.7495,pressure:0.287,ttt:2.7,dom:'Cover 1',domPct:0.328,c0:0.048,c1:0.328,c2:0.25,c3:0.214,c4:0.05},
+CIN:{man:0.2619,zone:0.7381,pressure:0.293,ttt:2.84,dom:'Cover 3',domPct:0.317,c0:0.064,c1:0.256,c2:0.201,c3:0.317,c4:0.033},
+CLE:{man:0.3711,zone:0.6289,pressure:0.3408,ttt:2.6,dom:'Cover 1',domPct:0.348,c0:0.044,c1:0.348,c2:0.199,c3:0.269,c4:0.064},
+DAL:{man:0.2243,zone:0.7757,pressure:0.318,ttt:2.75,dom:'Cover 3',domPct:0.283,c0:0.032,c1:0.222,c2:0.239,c3:0.283,c4:0.133},
+DEN:{man:0.2919,zone:0.7081,pressure:0.337,ttt:2.7,dom:'Cover 1',domPct:0.307,c0:0.066,c1:0.307,c2:0.152,c3:0.249,c4:0.083},
+DET:{man:0.3555,zone:0.6445,pressure:0.318,ttt:2.83,dom:'Cover 1',domPct:0.286,c0:0.028,c1:0.286,c2:0.165,c3:0.27,c4:0.074},
+GB:{man:0.1743,zone:0.8257,pressure:0.307,ttt:2.81,dom:'Cover 3',domPct:0.319,c0:0.019,c1:0.185,c2:0.288,c3:0.319,c4:0.093},
+HOU:{man:0.2163,zone:0.7837,pressure:0.306,ttt:2.65,dom:'Cover 1',domPct:0.285,c0:0.018,c1:0.285,c2:0.223,c3:0.231,c4:0.122},
+IND:{man:0.2745,zone:0.7255,pressure:0.296,ttt:2.79,dom:'Cover 3',domPct:0.258,c0:0.057,c1:0.251,c2:0.236,c3:0.258,c4:0.074},
+JAX:{man:0.1947,zone:0.8053,pressure:0.279,ttt:2.62,dom:'Cover 3',domPct:0.291,c0:0.043,c1:0.178,c2:0.262,c3:0.291,c4:0.095},
+KC:{man:0.2349,zone:0.7651,pressure:0.335,ttt:2.67,dom:'Cover 2',domPct:0.247,c0:0.073,c1:0.219,c2:0.247,c3:0.203,c4:0.122},
+LAC:{man:0.1568,zone:0.8432,pressure:0.304,ttt:2.68,dom:'Cover 3',domPct:0.299,c0:0.042,c1:0.138,c2:0.253,c3:0.299,c4:0.119},
+LAR:{man:0.1866,zone:0.8134,pressure:0.3372,ttt:2.72,dom:'Cover 3',domPct:0.267,c0:0.029,c1:0.185,c2:0.239,c3:0.267,c4:0.105},
+LV:{man:0.1476,zone:0.8524,pressure:0.278,ttt:2.73,dom:'Cover 3',domPct:0.374,c0:0.048,c1:0.148,c2:0.215,c3:0.374,c4:0.111},
+MIA:{man:0.2244,zone:0.7756,pressure:0.271,ttt:2.7,dom:'Cover 2',domPct:0.346,c0:0.024,c1:0.209,c2:0.346,c3:0.233,c4:0.072},
+MIN:{man:0.1848,zone:0.8152,pressure:0.34,ttt:2.66,dom:'Cover 2',domPct:0.365,c0:0.051,c1:0.08,c2:0.365,c3:0.241,c4:0.116},
+NE:{man:0.294,zone:0.706,pressure:0.297,ttt:2.74,dom:'Cover 3',domPct:0.276,c0:0.04,c1:0.261,c2:0.257,c3:0.276,c4:0.098},
+NO:{man:0.1707,zone:0.8293,pressure:0.282,ttt:2.8,dom:'Cover 3',domPct:0.403,c0:0.03,c1:0.169,c2:0.153,c3:0.403,c4:0.094},
+NYG:{man:0.3541,zone:0.6459,pressure:0.301,ttt:2.67,dom:'Cover 1',domPct:0.313,c0:0.034,c1:0.313,c2:0.146,c3:0.258,c4:0.148},
+NYJ:{man:0.308,zone:0.692,pressure:0.247,ttt:2.63,dom:'Cover 1',domPct:0.283,c0:0.052,c1:0.283,c2:0.26,c3:0.224,c4:0.068},
+PHI:{man:0.2698,zone:0.7302,pressure:0.327,ttt:2.72,dom:'Cover 1',domPct:0.351,c0:0.03,c1:0.351,c2:0.171,c3:0.218,c4:0.079},
+PIT:{man:0.3233,zone:0.6767,pressure:0.295,ttt:2.63,dom:'Cover 3',domPct:0.281,c0:0.042,c1:0.259,c2:0.202,c3:0.281,c4:0.088},
+SEA:{man:0.1703,zone:0.8297,pressure:0.331,ttt:2.76,dom:'Cover 2',domPct:0.31,c0:0.031,c1:0.188,c2:0.31,c3:0.215,c4:0.072},
+SF:{man:0.1979,zone:0.8021,pressure:0.232,ttt:2.75,dom:'Cover 3',domPct:0.31,c0:0.028,c1:0.218,c2:0.17,c3:0.31,c4:0.142},
+TB:{man:0.2154,zone:0.7846,pressure:0.341,ttt:2.64,dom:'Cover 3',domPct:0.306,c0:0.049,c1:0.18,c2:0.215,c3:0.306,c4:0.108},
+TEN:{man:0.1871,zone:0.8129,pressure:0.295,ttt:2.73,dom:'Cover 2',domPct:0.288,c0:0.033,c1:0.199,c2:0.288,c3:0.258,c4:0.096},
+WAS:{man:0.2256,zone:0.7744,pressure:0.313,ttt:2.81,dom:'Cover 1',domPct:0.252,c0:0.03,c1:0.252,c2:0.193,c3:0.235,c4:0.147},
 };
-const LEAGUE_AVG_MAN = 0.3099, LEAGUE_AVG_PRESSURE = 0.300, LEAGUE_AVG_TTT = 2.715, LEAGUE_AVG_C0 = 0.0394, LEAGUE_AVG_QB_RUSH_GAP = 2.3;
+const LEAGUE_AVG_MAN = 0.2356, LEAGUE_AVG_PRESSURE = 0.300, LEAGUE_AVG_TTT = 2.715, LEAGUE_AVG_C0 = 0.0394, LEAGUE_AVG_QB_RUSH_GAP = 2.3; // LEAGUE_AVG_MAN recomputed 2026-09-30 from the real PFF-sourced man/zone rebuild (was 0.3099 under the old FTN-based data)
 
 /* Real 2025 team-level pass-rush sack conversion (PFF Pass Rush Summary, aggregated
    from individual pass-rushers up to team totals -- sacks / total pressures generated).
@@ -3319,7 +3345,7 @@ function computeProjectionRaw(p, opts){
   const pressurePassMult = 1 - pressureVsAvg * 0.6;
   const pressureIntMult = 1 + pressureVsAvg * 1.5;
   // Real time-to-throw effect (QB only): defenses that force faster throws (lower real
-  // time-to-throw allowed, FTN/nflverse 2025, all 32 teams) give the QB fewer clean
+  // time-to-throw allowed -- still FTN/nflverse 2025 pending its own rebuild, all 32 teams) give the QB fewer clean
   // reads and less time to find a deep option -- a real, independent signal from pressure
   // RATE specifically (a defense can pressure at an average rate but still consistently
   // rush the QB's internal clock via disguise/coverage). Real range across the league is
@@ -3966,7 +3992,7 @@ function applyWeekAutofill(){
   oppdEl.value = tier;
   document.getElementById('autoNote').textContent = `Week ${wk}: ${away?'@':'vs'} ${oppAb} (${opp.name}) \u2014 ${currentPlayer.p==='RB'?'run':'pass'} defense tier auto-set from 2025 data.`;
 
-  // Real coverage-shell autofill from FTN charting data (via nflverse), 2025 season
+  // Real coverage-shell autofill from PFF's Defense Coverage Scheme report, 2025 season
   const cov = COVERAGE_2025[oppAb];
   const covNote = document.getElementById('covNote');
   if(cov && covNote){
@@ -3977,9 +4003,9 @@ function applyWeekAutofill(){
     if(vsAvg > 0.07) covEl.value = 0;       // relatively man-heavy defense
     else if(vsAvg < -0.07) covEl.value = 2; // relatively zone-heavy defense
     else covEl.value = 1;                   // in line with league norm
-    covNote.textContent = `${opp.name} 2025: ${(cov.man*100).toFixed(0)}% man \u00b7 ${(cov.zone*100).toFixed(0)}% zone (league avg: ${(LEAGUE_AVG_MAN*100).toFixed(0)}% man) \u00b7 most common shell: ${cov.dom} (${(cov.domPct*100).toFixed(0)}%). Real per-play charting via FTN Data/nflverse \u2014 slider auto-set, still adjustable.`;
+    covNote.textContent = `${opp.name} 2025: ${(cov.man*100).toFixed(0)}% man \u00b7 ${(cov.zone*100).toFixed(0)}% zone (league avg: ${(LEAGUE_AVG_MAN*100).toFixed(0)}% man) \u00b7 most common shell: ${cov.dom} (${(cov.domPct*100).toFixed(0)}%). Real, snap-weighted from PFF's Defense Coverage Scheme report \u2014 slider auto-set, still adjustable.`;
   } else if(covNote){
-    covNote.textContent = 'Select a Week to auto-fill from the opponent\'s real 2025 man/zone rates (FTN charting via nflverse).';
+    covNote.textContent = 'Select a Week to auto-fill from the opponent\'s real 2025 man/zone rates (PFF Defense Coverage Scheme).';
   }
 
   if(cbNote && (currentPlayer.p==='WR' || currentPlayer.p==='TE' || currentPlayer.p==='RB')){
