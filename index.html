@@ -593,6 +593,10 @@
   </div>
 
   <div id="dvpView" style="display:none;">
+    <div class="filter-field" style="max-width:260px;margin-bottom:12px;">
+      <label>Team</label>
+      <select id="dvpTeamFilter"><option value="">All teams</option></select>
+    </div>
     <button type="button" class="controls-toggle" id="dvpMethodToggle" style="padding:10px 0;">
       <span style="font-size:15px;">Data &amp; methodology</span>
       <span class="chev" id="dvpMethodChev">▸ Tap to expand</span>
@@ -3790,6 +3794,12 @@ Object.keys(TEAMS).sort().forEach(ab=>{
   teamFilterEl.appendChild(o);
 });
 teamFilterEl.onchange = renderGrid;
+const dvpTeamFilterEl = document.getElementById('dvpTeamFilter');
+Object.keys(TEAMS).sort().forEach(ab=>{
+  const o = document.createElement('option'); o.value=ab; o.textContent = ab+' — '+TEAMS[ab].name;
+  dvpTeamFilterEl.appendChild(o);
+});
+dvpTeamFilterEl.onchange = renderDvP;
 searchEl.oninput = renderGrid;
 
 function headline(p){
@@ -5154,6 +5164,10 @@ function renderDvP(){
     sortedTeams.sort((a,b) => DVP_PROXY[b][dvpSortCol] - DVP_PROXY[a][dvpSortCol]);
   }
   if(dvpSortDir === 'desc') sortedTeams.reverse();
+
+  const dvpTeamFilterEl = document.getElementById('dvpTeamFilter');
+  const selectedTeam = dvpTeamFilterEl ? dvpTeamFilterEl.value : '';
+  if(selectedTeam) sortedTeams = sortedTeams.filter(t => t === selectedTeam);
 
   sortedTeams.forEach(t => {
     const d = DVP_PROXY[t];
