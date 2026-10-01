@@ -185,6 +185,9 @@
   .cmp-table td.best{color:var(--green);font-weight:600;}
   .cmp-table .rowlbl{color:var(--text-dim);font-family:'IBM Plex Mono';font-size:11px;}
   .cmp-namehead{font-family:'Teko',sans-serif;font-size:22px;color:var(--amber);}
+  .dvp-sortable:hover{color:var(--amber);}
+  .dvp-sortable.dvp-sort-active{color:var(--amber);}
+  .dvp-sort-arrow{display:inline-block;width:12px;margin-left:2px;}
 </style>
 </head>
 <body>
@@ -607,11 +610,14 @@
     </div>
     <div style="overflow-x:auto;">
       <table class="rank-table" id="dvpTable">
-        <thead><tr>
-          <th>Team</th>
-          <th style="text-align:right;">WR Rank</th><th style="text-align:right;">WR Yds/G</th>
-          <th style="text-align:right;">TE Rank</th><th style="text-align:right;">TE Yds/G</th>
-          <th style="text-align:right;">RB Rank</th><th style="text-align:right;">RB Yds/G</th>
+        <thead><tr id="dvpHeaderRow">
+          <th class="dvp-sortable" data-sort="team" style="cursor:pointer;">Team<span class="dvp-sort-arrow"></span></th>
+          <th class="dvp-sortable" data-sort="wr" style="text-align:right;cursor:pointer;">WR Rank<span class="dvp-sort-arrow"></span></th>
+          <th style="text-align:right;">WR Yds/G</th>
+          <th class="dvp-sortable" data-sort="te" style="text-align:right;cursor:pointer;">TE Rank<span class="dvp-sort-arrow"></span></th>
+          <th style="text-align:right;">TE Yds/G</th>
+          <th class="dvp-sortable" data-sort="rb" style="text-align:right;cursor:pointer;">RB Rank<span class="dvp-sort-arrow"></span></th>
+          <th style="text-align:right;">RB Yds/G</th>
         </tr></thead>
         <tbody id="dvpBody"></tbody>
       </table>
@@ -5114,6 +5120,9 @@ function renderDefProfile(){
   });
 }
 
+// Sort state persists across re-renders (e.g. switching tabs away and back) so the
+// person's chosen view isn't lost. Default: Team name, A-Z -- the original order.
+let dvpSortCol = 'team', dvpSortDir = 'asc';
 function renderDvP(){
   const body = document.getElementById('dvpBody');
   body.innerHTML = '';
@@ -5126,7 +5135,27 @@ function renderDvP(){
   };
   const wrRank = rankOf('wr'), teRank = rankOf('te'), rbRank = rankOf('rb');
   const pillClass = (rank) => rank <= 10 ? 't4' : (rank >= 23 ? 't0' : 't2');
-  [...teams].sort((a,b)=>TEAMS[a].name.localeCompare(TEAMS[b].name)).forEach(t => {
+
+  // Update header arrows/active state to reflect the current sort
+  document.querySelectorAll('#dvpHeaderRow .dvp-sortable').forEach(th => {
+    const col = th.dataset.sort;
+    const arrow = th.querySelector('.dvp-sort-arrow');
+    const isActive = col === dvpSortCol;
+    th.classList.toggle('dvp-sort-active', isActive);
+    arrow.textContent = isActive ? (dvpSortDir === 'asc' ? '\u25b2' : '\u25bc') : '';
+  });
+
+  // Team sorts alphabetically; WR/TE/RB sort by real yards/game (rank 1 = highest yards,
+  // i.e. the most exploitable matchup) -- "first to last" means worst defense first by default.
+  let sortedTeams = [...teams];
+  if(dvpSortCol === 'team'){
+    sortedTeams.sort((a,b) => TEAMS[a].name.localeCompare(TEAMS[b].name));
+  } else {
+    sortedTeams.sort((a,b) => DVP_PROXY[b][dvpSortCol] - DVP_PROXY[a][dvpSortCol]);
+  }
+  if(dvpSortDir === 'desc') sortedTeams.reverse();
+
+  sortedTeams.forEach(t => {
     const d = DVP_PROXY[t];
     const team = TEAMS[t];
     const tr = document.createElement('tr');
@@ -5140,6 +5169,14 @@ function renderDvP(){
     body.appendChild(tr);
   });
 }
+document.querySelectorAll('#dvpHeaderRow .dvp-sortable').forEach(th => {
+  th.onclick = () => {
+    const col = th.dataset.sort;
+    if(dvpSortCol === col){ dvpSortDir = dvpSortDir === 'asc' ? 'desc' : 'asc'; }
+    else { dvpSortCol = col; dvpSortDir = 'asc'; }
+    renderDvP();
+  };
+});
 
 function jumpToTeamRoster(teamAb){
   const browseTab = [...modeTabsEl.children].find(t=>t.dataset.mode==='browse');
