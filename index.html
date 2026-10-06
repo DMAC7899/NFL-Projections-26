@@ -1212,11 +1212,16 @@ const scriptLabels = ['Trailing Big','Trailing','Neutral','Leading','Leading Big
    across a 3rd week, confidence in that number should grow; if QB's sign flips
    again, that's real evidence the position is just noisy at this damping level
    and may not be worth calibrating at all. */
+/* WEEKLY CALIBRATION refreshed Oct 7, 2026: Week 4 added as a clean out-of-sample check (old engine, before the Oct 7 rebaseline, so the
+   Week 4 box scores were NOT in the baselines). Residual PPR bias on players who played, after the existing multipliers:
+   QB +0.89 (n=31, mean proj 16.0), RB -2.03 (n=42, 12.5), WR -0.35 (n=56, 12.4). Each multiplier moved by the same 20% damping as before, scaled
+   by Week 4's share of the pooled sample (QB 37%, RB 37%, WR 38%): QB 0.9834->0.9794, RB 0.9715->0.9831, WR 0.9681->0.9701. Week 3 box scores
+   were not pulled, so weeksOfData counts Weeks 1, 2 and 4. */
 const WEEKLY_CALIBRATION = {
-  weeksOfData: 2,
-  qbMult: 0.9834, // 20% damping of combined -1.19 PPR bias on real 14.4pt avg QB score (n=52)
-  wrMult: 0.9681, // 20% damping of combined -1.62 PPR bias on real 10.1pt avg WR score (n=90)
-  rbMult: 0.9715, // 20% damping of combined -1.47 PPR bias on real 10.3pt avg RB score (n=73) -- new
+  weeksOfData: 3,
+  qbMult: 0.9794, // was 0.9834
+  wrMult: 0.9701, // was 0.9681
+  rbMult: 0.9831, // was 0.9715
 };
 
 /* BETTING TAB SUPPORT DATA (real, disclosed):
