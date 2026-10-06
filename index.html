@@ -603,12 +603,10 @@
     </button>
     <div class="controls-body collapsed" id="dvpMethodBody" style="padding:8px 0 14px;border-top:none;">
       <div class="methodology" style="margin:0;">
-        Real, PFF-sourced proxy -- PFF and ESPN don't publish a direct "yards allowed by
-        offensive position" stat. Built from PFF's Defense Coverage report (full 2025 season,
-        894 real defenders), summed by team and by DEFENDER position, divided by 17 real games:
-        cornerback coverage yards stand in for WR, safety coverage yards for TE, linebacker
-        coverage yards for RB -- real NFL defensive assignments, but not a precise isolation
-        (a defender's own position doesn't always match who he's covering on a given play).
+        Real yards allowed, from ESPN box scores for 2026 Weeks 1-4. Every receiver's and runner's
+        yards in each game are credited to the opposing defense by the player's ESPN position:
+        WR and TE = receiving yards per game; RB = rushing + receiving yards per game. Rank 1 gives up
+        the most. Four games is a small sample -- one shootout can swing a team a long way.
         Tap a team to jump to its roster.
       </div>
     </div>
@@ -920,8 +918,8 @@ const P = [
 {n:'Josh Allen',p:'QB',t:'BUF',b:{passYd:291.0,passTD:2.5,int:0,rushYd:34.1,rushTD:0.82},f:'Real, current: passing baseline raised significantly toward his real, confirmed 2-game result (582 yd, 5 TD, 0 INT, 125.8 rating) -- playing at an MVP-caliber level to open 2026',c:'balanced',s:'rush-heavy-qb'},
 {n:'Bryce Young',p:'QB',t:'CAR',b:{passYd:188.2,passTD:1.44,int:0.69,rushYd:13.5,rushTD:0.13},c:'balanced',s:'pass-neutral'},
 {n:'Caleb Williams',p:'QB',t:'CHI',b:{passYd:231.9,passTD:1.59,int:0.41,rushYd:22.8,rushTD:0.18},f:'Real, current: CONFIRMED ruled OUT for Week 3 vs PHI with the real hamstring injury suffered vs MIN in Week 2 -- avoided a major injury per MRI, but genuinely week-to-week beyond this game',c:'balanced',s:'rush-heavy-qb'},
-{n:'Case Keenum',p:'QB',t:'CHI',b:{passYd:166.5,passTD:1.00,int:1.00,rushYd:2.1,rushTD:0},f:'Real, current: CONFIRMED the Week 3 (MNF) starter with Caleb Williams out (hamstring) and Tyson Bagent held back as backup. Baseline built from his real PFF game logs across his two most recent multi-start seasons -- 2021 CLE (2 starts: 57/375/3 TD/1 INT) and 2023 HOU (2 starts: 53/291/1 TD/3 INT), 4 real starts combined since he has not started since 2023 and 2024-25 have no PFF pass-attempt data. First start in 3 years -- genuinely low-confidence.',c:'balanced',s:'pass-neutral'},
-{n:'Tyson Bagent',p:'QB',t:'CHI',b:{passYd:194.0,passTD:0.75,int:1.25,rushYd:21.8,rushTD:0},f:'Real, current: backup to Case Keenum for Week 3 (MNF) with Caleb Williams out (hamstring) -- cleared concussion protocol but held back as QB2. Baseline built from his real PFF 2023 season, his only meaningful sample (4 starts: 129/776/3 TD/5 INT); has not started since. Only relevant if Keenum is unable to finish a game -- genuinely low-confidence.',c:'balanced',s:'pass-neutral'},
+{n:'Case Keenum',p:'QB',t:'CHI',b:{passYd:166.5,passTD:1.00,int:1.00,rushYd:2.1,rushTD:0},f:'Real, current (Oct 7): did not play in Week 4; QB2 behind Tyson Bagent for Week 5. Baseline still built from his 4 real starts (2021 CLE, 2023 HOU) -- he has not started since 2023.',c:'balanced',s:'pass-neutral'},
+{n:'Tyson Bagent',p:'QB',t:'CHI',b:{passYd:208.8,passTD:0.60,int:1.20,rushYd:17.6,rushTD:0},f:'Real, current (Oct 7): the Bears\' Week 4 starter (25/34, 268 yd, 0 TD, 1 INT) and the expected Week 5 starter at GB with Caleb Williams ruled out (hamstring, return Week 6). Baseline now blends his real PFF 2023 season (4 starts: 129/776/3 TD/5 INT) with that one real 2026 start, 4:1 by starts. Low-confidence: 5 career starts.',c:'balanced',s:'pass-neutral'},
 {n:'Joe Burrow',p:'QB',t:'CIN',b:{passYd:226.1,passTD:2.13,int:0.63,rushYd:5.1,rushTD:0},f:'Made only 8 starts in 2025 — health is the swing factor; real, current: confirmed healthy, no lingering concerns despite minor back tightness early in the season',c:'zone-beater',s:'pass-neutral'},
 {n:'Dillon Gabriel',p:'QB',t:'CLE',b:{passYd:93.7,passTD:0.7,int:0.2,rushYd:8.6,rushTD:0},f:'Real, current: CONFIRMED placed on Injured Reserve (designated to return) with a real back injury -- not active, Watson is the real, confirmed starter',c:'balanced',s:'pass-neutral'},
 {n:'Shedeur Sanders',p:'QB',t:'CLE',b:{passYd:175.0,passTD:0.88,int:1.25,rushYd:21.1,rushTD:0.12},f:'Real rookie-year 2025 sample (8 games); real, current: CONFIRMED the real backup behind Watson -- Monken chose the veteran for his experience and offense familiarity',c:'balanced',s:'pass-neutral'},
@@ -957,22 +955,22 @@ const P = [
 {n:'Bijan Robinson',p:'RB',t:'ATL',b:{rushAtt:16.9,rushYd:86.9,rushTD:0.41,rec:4.6,recYd:48.2,recTD:0.24},c:'man-beater',s:'balanced-back'},
 {n:'Derrick Henry',p:'RB',t:'BAL',b:{rushAtt:18.1,rushYd:93.8,rushTD:0.94,rec:0.1,recYd:0.5,recTD:0},f:'New coaching staff adds scheme uncertainty',c:'n/a',s:'rush-volume'},
 {n:'James Cook',p:'RB',t:'BUF',b:{rushAtt:18.2,rushYd:95.4,rushTD:0.71,rec:1.9,recYd:17.1,recTD:0.12},c:'n/a',s:'rush-volume',partner:'Ray Davis'},
-{n:'Chuba Hubbard',p:'RB',t:'CAR',b:{rushAtt:8.9,rushYd:34.1,rushTD:0.07,rec:2.0,recYd:14.9,recTD:0.2},f:'Real, current: the clear, unquestioned lead back now that Jonathan Brooks is confirmed out a minimum of six weeks (real surgery)',c:'man-beater',s:'balanced-back'},
+{n:'Chuba Hubbard',p:'RB',t:'CAR',b:{rushAtt:12.1,rushYd:46.4,rushTD:0.1,rec:2,recYd:14.9,recTD:0.2},f:'Real, current: the clear, unquestioned lead back now that Jonathan Brooks is confirmed out a minimum of six weeks (real surgery) Oct 7 role update: real ESPN 2026 Wk1-4 box scores show 15.3 carries/game over 4 games vs the prior baseline of 8.9; rush volume and yardage blended 50/50 (x1.36).',c:'man-beater',s:'balanced-back'},
 {n:'Jonathan Brooks',p:'RB',t:'CAR',b:{rushAtt:5.0,rushYd:19.0,rushTD:0.15,rec:1.0,recYd:7.0,recTD:0},f:'Real, current: CONFIRMED by NFL Network to undergo surgery, out a minimum of six weeks -- extends his real, checkered injury history (2 prior ACL tears, missed all of 2025); Hubbard now the clear, real lead back in his absence',c:'n/a',s:'rush-volume',partner:'Chuba Hubbard'},
 {n:"D'Andre Swift",p:'RB',t:'CHI',b:{rushAtt:15.5,rushYd:76.0,rushTD:0.8,rec:2.6,recYd:25.0,recTD:0.08},f:'Real, current: a confirmed workhorse through 2 games (20 touches and 116 total yd per game, 48.6% of team rush attempts, 8 of 11 RB red-zone carries) -- baseline blends his real 2025 rate with that usage; TD rate deliberately damped from the 1.5/game pace of a 2-game sample',c:'man-beater',s:'balanced-back',partner:"Kyle Monangai"},
-{n:'Kyle Monangai',p:'RB',t:'CHI',b:{rushAtt:10.0,rushYd:61.91,rushTD:0.41,rec:1.68,recYd:15.17,recTD:0.0},f:'Real, current: baseline now built from his full real PFF history (2025 rookie season: 190 att/846 yd/5 TD rushing, 34 tgt/23 rec/222 yd receiving over 19 games; 2026 through Wk2: 20 att/147 yd/1 TD, 4 rec/35 yd), weighted 1.5:1.0 toward 2026 -- his real 2026 efficiency (7.35 YPC) is well above his rookie rate, so this replaces the earlier placeholder that had borrowed rushing/TD rates from Swift.',c:'n/a',s:'balanced-back',partner:"D'Andre Swift"},
+{n:'Kyle Monangai',p:'RB',t:'CHI',b:{rushAtt:12.5,rushYd:77.4,rushTD:0.51,rec:1.68,recYd:15.17,recTD:0},f:'Real, current: baseline now built from his full real PFF history (2025 rookie season: 190 att/846 yd/5 TD rushing, 34 tgt/23 rec/222 yd receiving over 19 games; 2026 through Wk2: 20 att/147 yd/1 TD, 4 rec/35 yd), weighted 1.5:1.0 toward 2026 -- his real 2026 efficiency (7.35 YPC) is well above his rookie rate, so this replaces the earlier placeholder that had borrowed rushing/TD rates from Swift. Oct 7 role update: real ESPN 2026 Wk1-4 box scores show 15 carries/game over 4 games vs the prior baseline of 10; rush volume and yardage blended 50/50 (x1.25).',c:'n/a',s:'balanced-back',partner:"D'Andre Swift"},
 {n:'Chase Brown',p:'RB',t:'CIN',b:{rushAtt:13.6,rushYd:59.9,rushTD:0.35,rec:4.1,recYd:25.7,recTD:0.29},c:'man-beater',s:'balanced-back'},
 {n:'Quinshon Judkins',p:'RB',t:'CLE',b:{rushAtt:16.4,rushYd:59.1,rushTD:0.5,rec:1.9,recYd:12.2,recTD:0},c:'n/a',s:'rush-volume'},
 {n:'Javonte Williams',p:'RB',t:'DAL',b:{rushAtt:15.8,rushYd:75.1,rushTD:0.69,rec:2.2,recYd:8.6,recTD:0.13},c:'n/a',s:'rush-volume'},
-{n:'RJ Harvey',p:'RB',t:'DEN',b:{rushAtt:8.6,rushYd:31.8,rushTD:0.41,rec:2.8,recYd:20.9,recTD:0.29},f:'Real, current: missed Week 2 entirely with a real hamstring injury (Wk1: 41 scrimmage yd on 7 touches) -- now cleared to full practice participant with no Week 3 game status; real, genuine 3-way committee with Dobbins (also hamstring, also cleared) and rookie Coleman (ankle, ruled OUT Week 3)',c:'man-beater',s:'balanced-back',partner:'J.K. Dobbins'},
-{n:'Jahmyr Gibbs',p:'RB',t:'DET',b:{rushAtt:14.3,rushYd:71.9,rushTD:0.76,rec:4.5,recYd:36.2,recTD:0.29},f:'David Montgomery traded away; real news (Sept 1) has backup Pacheco on IR for at least the first 4 games -- real reporting projects Gibbs at 80-85% of DET rushing snaps to open the season',c:'man-beater',s:'balanced-back'},
+{n:'RJ Harvey',p:'RB',t:'DEN',b:{rushAtt:6.3,rushYd:23.3,rushTD:0.3,rec:2.8,recYd:20.9,recTD:0.29},f:'Real, current: missed Week 2 entirely with a real hamstring injury (Wk1: 41 scrimmage yd on 7 touches) -- now cleared to full practice participant with no Week 3 game status; real, genuine 3-way committee with Dobbins (also hamstring, also cleared) and rookie Coleman (ankle, ruled OUT Week 3) Oct 7 role update: real ESPN 2026 Wk1-4 box scores show 4 carries/game over 3 games vs the prior baseline of 8.6; rush volume and yardage blended 50/50 (x0.73).',c:'man-beater',s:'balanced-back',partner:'J.K. Dobbins'},
+{n:'Jahmyr Gibbs',p:'RB',t:'DET',b:{rushAtt:17.2,rushYd:86.2,rushTD:0.91,rec:4.5,recYd:36.2,recTD:0.29},f:'David Montgomery traded away; real news (Sept 1) has backup Pacheco on IR for at least the first 4 games -- real reporting projects Gibbs at 80-85% of DET rushing snaps to open the season Oct 7 role update: real ESPN 2026 Wk1-4 box scores show 20 carries/game over 4 games vs the prior baseline of 14.3; rush volume and yardage blended 50/50 (x1.2).',c:'man-beater',s:'balanced-back'},
 {n:'Isiah Pacheco',p:'RB',t:'DET',b:{rushAtt:9.1,rushYd:35.5,rushTD:0.15,rec:0.7,recYd:7.8,recTD:0},f:'Real, current (Sept 1): placed on IR with a back injury, out at least Weeks 1-4 -- this baseline reflects his real skill/role when healthy, not his real Week 1 unavailability',c:'n/a',s:'rush-volume',partner:'Jahmyr Gibbs'},
 {n:'Jeremiyah Love',p:'RB',t:'ARI',b:{rushAtt:11.0,rushYd:52.0,rushTD:0.4,rec:2.0,recYd:16.0,recTD:0.1},f:'2026 rookie — No.3 overall pick, highest-drafted RB since Saquon Barkley; real high-ankle sprain from Aug 13 preseason game, real Week 1 status ~50-50 per NFL Network as of Sept 1 (no surgery needed); if he sits, Allgeier is the real expected Week 1 beneficiary, not Conner',c:'man-beater',s:'balanced-back',partner:'James Conner'},
 {n:'Josh Jacobs',p:'RB',t:'GB',b:{rushAtt:15.6,rushYd:61.9,rushTD:0.87,rec:2.4,recYd:18.8,recTD:0.07},f:'Real, current, severe: on the NFL Commissioner\u2019s Exempt List (cannot practice or attend games) facing domestic-violence misdemeanor charges; court date not until November -- completely unavailable for the foreseeable future, not just Week 1; GB already traded for Kaleb Johnson as his real replacement',c:'n/a',s:'rush-volume'},
 {n:'MarShawn Lloyd',p:'RB',t:'GB',b:{rushAtt:9.5,rushYd:29.0,rushTD:0.2,rec:0.7,recYd:5.0,recTD:0.02},f:'Real, current: a genuine 3-way committee with Brooks and Johnson while Jacobs remains on the Exempt List -- real 2-game carry share is Lloyd 50% / Brooks 29% / Johnson 21% (19, 11, 8 of 38 total), and this baseline is weighted to that real split rather than treating him as the clear lead back',c:'n/a',s:'rush-volume',partner:'Chris Brooks'},
 {n:'Chris Brooks',p:'RB',t:'GB',b:{rushAtt:5.5,rushYd:19.0,rushTD:0.05,rec:1.2,recYd:8.0,recTD:0},f:'Real, current: a genuine 3-way committee with Lloyd and Johnson while Jacobs remains on the Exempt List -- real 2-game carry share is Lloyd 50% / Brooks 29% / Johnson 21%, and this baseline is weighted to that real split; real career receiving involvement (13 rec over 2025) still supports a modest receiving-down role',c:'n/a',s:'rush-volume',partner:'MarShawn Lloyd'},
 {n:'Kaleb Johnson',p:'RB',t:'GB',b:{rushAtt:4.0,rushYd:13.0,rushTD:0.05,rec:0.4,recYd:2.5,recTD:0},f:'Real, current: genuinely involved now, not third-string -- led the real GB backfield in carries in Week 2 (8) after zero in Week 1, making this a real, ongoing 3-way committee with Lloyd/Brooks while Jacobs remains on the Exempt List; baseline weighted to his real 21% 2-game carry share',c:'n/a',s:'rush-volume'},
-{n:'Woody Marks',p:'RB',t:'HOU',b:{rushAtt:12.3,rushYd:43.9,rushTD:0.13,rec:1.5,recYd:13.0,recTD:0.19},f:'Real, current Week 1 depth chart has Montgomery as RB1, Marks RB2 -- this baseline reflects Marks\u2019 real 2025 run as HOU\u2019s lead back (Weeks 10-18), a role he does not currently hold',c:'man-beater',s:'balanced-back',partner:'David Montgomery'},
+{n:'Woody Marks',p:'RB',t:'HOU',b:{rushAtt:9.7,rushYd:34.4,rushTD:0.1,rec:1.5,recYd:13,recTD:0.19},f:'Real, current Week 1 depth chart has Montgomery as RB1, Marks RB2 -- this baseline reflects Marks\u2019 real 2025 run as HOU\u2019s lead back (Weeks 10-18), a role he does not currently hold Oct 7 role update: real ESPN 2026 Wk1-4 box scores show 7 carries/game over 4 games vs the prior baseline of 12.3; rush volume and yardage blended 50/50 (x0.78).',c:'man-beater',s:'balanced-back',partner:'David Montgomery'},
 {n:'Jonathan Taylor',p:'RB',t:'IND',b:{rushAtt:19.0,rushYd:93.2,rushTD:1.06,rec:2.7,recYd:22.2,recTD:0.12},c:'n/a',s:'rush-volume'},
 {n:'Bhayshul Tuten',p:'RB',t:'JAX',b:{rushAtt:14.0,rushYd:65.5,rushTD:0.5,rec:1.5,recYd:9.5,recTD:0},f:'Etienne left as a free agent (not traded); real, current: has clearly resolved as the real lead back (28 att, 131 yd, 1 TD through 2 games, PFF grade 85.2, 2nd among all RBs), not the co-starter role initially expected',c:'n/a',s:'rush-volume',partner:'Chris Rodriguez'},
 {n:'Chris Rodriguez',p:'RB',t:'JAX',b:{rushAtt:6.0,rushYd:18.0,rushTD:0.2,rec:0.2,recYd:2.3,recTD:0},f:'Real 2025 line (with Washington); signed with JAX as a free agent; real, current: clearly the real backup, not a co-starter -- only 12 carries for 36 yards through 2 games while Tuten has taken over the clear lead role',c:'n/a',s:'rush-volume',partner:'Bhayshul Tuten'},
@@ -996,7 +994,7 @@ const P = [
 {n:'George Holani',p:'RB',t:'SEA',b:{rushAtt:4.5,rushYd:16.0,rushTD:0.35,rec:2.8,recYd:22.0,recTD:0.06},f:'Real, current, specific role reporting: gets real 3rd-down (receiving/pass-block) and short-yardage/goal-line work while Price handles early downs -- real 2025 usage (22 carries, 11 games) was buried behind Walker/Charbonnet and does not reflect this new, real, elevated role; TD rate here is deliberately high relative to his carry share given the real goal-line role; projection is speculative given the small real sample',c:'man-beater',s:'balanced-back',partner:'Jadarian Price'},
 {n:'Bucky Irving',p:'RB',t:'TB',b:{rushAtt:17.3,rushYd:58.8,rushTD:0.1,rec:3.0,recYd:27.7,recTD:0.3},f:'Missed time in 2025 — injury history; real, current reporting has his 2026 shoulder recovery fully resolved and healthy for Week 1; Kenneth Gainwell added as a free agent, not a trade',c:'man-beater',s:'balanced-back',partner:'Kenneth Gainwell'},
 {n:'Tony Pollard',p:'RB',t:'TEN',b:{rushAtt:14.2,rushYd:63.6,rushTD:0.29,rec:1.9,recYd:12.1,recTD:0},c:'n/a',s:'rush-volume'},
-{n:'Jacory Croskey-Merritt',p:'RB',t:'WAS',b:{rushAtt:10.3,rushYd:47.4,rushTD:0.47,rec:0,recYd:0,recTD:0},f:'Real, current Week 1 depth chart confirms him as RB1; Rachaad White signed as a free agent (not a trade) as the receiving-down complement',c:'n/a',s:'rush-volume',partner:'Rachaad White'},
+{n:'Jacory Croskey-Merritt',p:'RB',t:'WAS',b:{rushAtt:12.2,rushYd:55.9,rushTD:0.55,rec:0,recYd:0,recTD:0},f:'Real, current Week 1 depth chart confirms him as RB1; Rachaad White signed as a free agent (not a trade) as the receiving-down complement Oct 7 role update: real ESPN 2026 Wk1-4 box scores show 14 carries/game over 4 games vs the prior baseline of 10.3; rush volume and yardage blended 50/50 (x1.18).',c:'n/a',s:'rush-volume',partner:'Rachaad White'},
 
 // RB2 — committee / timeshare backs (approximate shares; lower confidence than RB1 lines)
 {n:'Tyler Allgeier',p:'RB',t:'ARI',b:{rushAtt:6.8,rushYd:26.9,rushTD:0.29,rec:0.6,recYd:4.1,recTD:0},f:'Real, current: multiple sources (as of Sept 1) name him the expected real Week 1 starter if rookie Jeremiyah Love (real high-ankle sprain, ~50-50) does not go — this baseline still reflects only his real backup-role 2025 ATL rate, not that upside',c:'n/a',s:'rush-volume',partner:'Jeremiyah Love'},
@@ -1012,53 +1010,53 @@ const P = [
 {n:'Jaylen Wright',p:'RB',t:'MIA',b:{rushAtt:5.6,rushYd:23.8,rushTD:0.13,rec:0.8,recYd:5.9,recTD:0},f:'Real, current: inactive for Week 3 with a stinger (he also missed the start of the season with a leg injury); Ollie Gordon II is the active fill-in behind Achane',c:'n/a',s:'rush-volume',partner:"De'Von Achane"},
 {n:'Ollie Gordon II',p:'RB',t:'MIA',b:{rushAtt:13.0,rushYd:48.0,rushTD:0.35,rec:2.5,recYd:15.0,recTD:0.05},f:'Real, current: the fill-in lead back with Achane out (non-contact knee) and Jaylen Wright out with a stinger -- real Week 3: 17 att/41 yd/1 TD, 3 rec/14 yd (briefly left with cramps); modest baseline given a small NFL sample on a weak MIA offense',c:'n/a',s:'rush-volume',partner:'De\'Von Achane'},
 {n:'Jordan Mason',p:'RB',t:'MIN',b:{rushAtt:9.9,rushYd:47.4,rushTD:0.38,rec:0.6,recYd:3.9,recTD:0},f:'Real, current: CONFIRMED placed on IR with a real thumb injury -- out for the foreseeable future, Aaron Jones now the clear real lead back',c:'n/a',s:'rush-volume'},
-{n:'Rhamondre Stevenson',p:'RB',t:'NE',b:{rushAtt:7.6,rushYd:35.5,rushTD:0.41,rec:1.4,recYd:10.2,recTD:0.06},f:'Real 2025 line; real, current: with Henderson back from injury, his real Week 2 role shrank sharply (6 att, 43 yd) compared to Henderson\'s 16 att -- genuine real uncertainty on the go-forward split, baseline kept at his real established rate pending more games',c:'man-beater',s:'balanced-back',partner:'TreVeyon Henderson'},
-{n:'Tyrone Tracy Jr.',p:'RB',t:'NYG',b:{rushAtt:9.8,rushYd:39.2,rushTD:0.2,rec:1.8,recYd:13.1,recTD:0.07},f:'Committee backup — approximate share',c:'man-beater',s:'balanced-back',partner:'Cam Skattebo'},
+{n:'Rhamondre Stevenson',p:'RB',t:'NE',b:{rushAtt:9.3,rushYd:43.4,rushTD:0.5,rec:1.4,recYd:10.2,recTD:0.06},f:'Real 2025 line; real, current: with Henderson back from injury, his real Week 2 role shrank sharply (6 att, 43 yd) compared to Henderson\'s 16 att -- genuine real uncertainty on the go-forward split, baseline kept at his real established rate pending more games Oct 7 role update: real ESPN 2026 Wk1-4 box scores show 11 carries/game over 4 games vs the prior baseline of 7.6; rush volume and yardage blended 50/50 (x1.22).',c:'man-beater',s:'balanced-back',partner:'TreVeyon Henderson'},
+{n:'Tyrone Tracy Jr.',p:'RB',t:'NYG',b:{rushAtt:5.9,rushYd:23.5,rushTD:0.12,rec:1.8,recYd:13.1,recTD:0.07},f:'Committee backup — approximate share Oct 7 role update: real ESPN 2026 Wk1-4 box scores show 1.3 carries/game over 3 games vs the prior baseline of 9.8; rush volume and yardage blended 50/50 (x0.6).',c:'man-beater',s:'balanced-back',partner:'Cam Skattebo'},
 {n:'Rico Dowdle',p:'RB',t:'PIT',b:{rushAtt:13.9,rushYd:63.3,rushTD:0.35,rec:1.1,recYd:7.8,recTD:0},f:'Real 2025 line (with Carolina); signed with Pittsburgh as a free agent -- real, current: OUT for Week 3 with a real toe injury -- Warren the clear, real bell-cow in his absence',c:'man-beater',s:'balanced-back'},
 {n:'Kenneth Gainwell',p:'RB',t:'TB',b:{rushAtt:6.7,rushYd:31.6,rushTD:0.29,rec:4.3,recYd:28.6,recTD:0.18},f:'Real 2025 line (with Pittsburgh); signed with Tampa Bay as a free agent, real RB2/receiving-down role behind a healthy Irving',c:'man-beater',s:'balanced-back',partner:'Bucky Irving'},
 {n:'Rachaad White',p:'RB',t:'WAS',b:{rushAtt:7.8,rushYd:33.6,rushTD:0.24,rec:2.6,recYd:12.8,recTD:0},f:'Real 2025 line (with Tampa Bay); signed with Washington as a free agent as the real receiving-down complement to Croskey-Merritt',c:'man-beater',s:'balanced-back',partner:'Jacory Croskey-Merritt'},
 
 // WR
-{n:'Michael Wilson',p:'WR',t:'ARI',b:{tgt:7.4,rec:4.6,recYd:59.2,recTD:0.41},c:'man-beater',s:'target-stable'},
-{n:'Marvin Harrison Jr.',p:'WR',t:'ARI',b:{tgt:6.1,rec:3.4,recYd:50.7,recTD:0.33},f:'12-game 2025 sample; QB situation in flux',c:'zone-beater',s:'target-volatile'},
-{n:'Drake London',p:'WR',t:'ATL',b:{tgt:10.2,rec:6.3,recYd:86.0,recTD:0.58},f:'Real, current: baseline set from his real, QB-specific split with Michael Penix Jr. specifically (10+ targets, 6+ receptions, 86 yd/g across the 8 full 2025 games Penix started), not his blended full-season average across multiple QBs -- real, relevant now that Penix is the confirmed 2026 starter; real, quantified context: London averaged 20.4 PPR pts/g with Penix vs. 13.9 without him across 2024-25',c:'zone-beater',s:'target-stable'},
+{n:'Michael Wilson',p:'WR',t:'ARI',b:{tgt:9.2,rec:5.7,recYd:73.6,recTD:0.51},c:'man-beater',s:'target-stable'},
+{n:'Marvin Harrison Jr.',p:'WR',t:'ARI',b:{tgt:4.7,rec:2.6,recYd:39.1,recTD:0.25},f:'12-game 2025 sample; QB situation in flux Oct 7 role update: real ESPN 2026 Wk1-4 box scores show 3.3 targets/game over 4 games vs the prior baseline of 6.1; target volume and yardage blended 50/50 (x0.77).',c:'zone-beater',s:'target-volatile'},
+{n:'Drake London',p:'WR',t:'ATL',b:{tgt:8.4,rec:5.2,recYd:70.4,recTD:0.47},f:'Real, current: baseline set from his real, QB-specific split with Michael Penix Jr. specifically (10+ targets, 6+ receptions, 86 yd/g across the 8 full 2025 games Penix started), not his blended full-season average across multiple QBs -- real, relevant now that Penix is the confirmed 2026 starter; real, quantified context: London averaged 20.4 PPR pts/g with Penix vs. 13.9 without him across 2024-25 Oct 7 role update: real ESPN 2026 Wk1-4 box scores show 6.5 targets/game over 4 games vs the prior baseline of 10.2; target volume and yardage blended 50/50 (x0.82).',c:'zone-beater',s:'target-stable'},
 
 {n:'Zay Flowers',p:'WR',t:'BAL',b:{tgt:6.9,rec:5.1,recYd:71.2,recTD:0.29},f:'New offensive system under HC Minter; real, current: real Week 1 breakout (5 rec, 150 yd, 1 TD) cut short by the same hamstring injury that kept him out all of Week 2 -- officially QUESTIONABLE for Week 3, missed Wed/Thu practice, limited Friday; even if active, real reporting indicates a likely pitch count',c:'man-beater',s:'target-stable'},
-{n:'Rashod Bateman',p:'WR',t:'BAL',b:{tgt:7.5,rec:7.0,recYd:88.0,recTD:0.5},f:'Real, current: baseline set directly from his real Week 2 stat line (7 rec, 88 yd, 1 TD) with Flowers out -- the actual, real result of the redistribution, not an estimate',c:'zone-beater',s:'target-volatile'},
+{n:'Rashod Bateman',p:'WR',t:'BAL',b:{tgt:5.7,rec:5.3,recYd:66.3,recTD:0.38},f:'Real, current: baseline set directly from his real Week 2 stat line (7 rec, 88 yd, 1 TD) with Flowers out -- the actual, real result of the redistribution, not an estimate Oct 7 role update: real ESPN 2026 Wk1-4 box scores show 3.8 targets/game over 4 games vs the prior baseline of 7.5; target volume and yardage blended 50/50 (x0.75).',c:'zone-beater',s:'target-volatile'},
 {n:'Khalil Shakir',p:'WR',t:'BUF',b:{tgt:5.9,rec:4.5,recYd:44.9,recTD:0.25},c:'man-beater',s:'target-stable'},
 {n:'D.J. Moore',p:'WR',t:'BUF',b:{tgt:5.0,rec:2.9,recYd:40.1,recTD:0.35},f:'Traded from Chicago — likely elevates to WR1 role; real, current: suffered a real AC joint sprain (shoulder) during the real Week 2 win over DET -- genuinely uncertain for Week 3 vs LAC',c:'zone-beater',s:'target-stable'},
 {n:'Keon Coleman',p:'WR',t:'BUF',b:{tgt:4.6,rec:2.9,recYd:31.1,recTD:0.31},f:'Real 2025 line (13 games); real BUF WR2 alongside Moore',c:'zone-beater',s:'target-volatile'},
 {n:'Tetairoa McMillan',p:'WR',t:'CAR',b:{tgt:8.0,rec:5.0,recYd:70.5,recTD:0.38},f:'AP Offensive Rookie of the Year — clear WR1',c:'zone-beater',s:'target-stable'},
 {n:'Xavier Legette',p:'WR',t:'CAR',b:{tgt:4.3,rec:2.3,recYd:24.2,recTD:0.2},c:'zone-beater',s:'target-volatile'},
-{n:'Jalen Coker',p:'WR',t:'CAR',b:{tgt:3.9,rec:3.0,recYd:35.8,recTD:0.27},f:'11-game sample',c:'man-beater',s:'target-volatile'},
+{n:'Jalen Coker',p:'WR',t:'CAR',b:{tgt:5.6,rec:4.3,recYd:51.4,recTD:0.39},f:'11-game sample Oct 7 role update: real ESPN 2026 Wk1-4 box scores show 7.3 targets/game over 3 games vs the prior baseline of 3.9; target volume and yardage blended 50/50 (x1.44).',c:'man-beater',s:'target-volatile'},
 {n:'Rome Odunze',p:'WR',t:'CHI',b:{tgt:7.5,rec:3.7,recYd:55.1,recTD:0.5},f:'12-game sample; DJ Moore traded away, clears WR1 target share',c:'zone-beater',s:'target-stable'},
-{n:'Luther Burden III',p:'WR',t:'CHI',b:{tgt:4.0,rec:3.1,recYd:43.5,recTD:0.13},f:'Rookie-year sample',c:'man-beater',s:'target-volatile'},
+{n:'Luther Burden III',p:'WR',t:'CHI',b:{tgt:5.7,rec:4.4,recYd:61.4,recTD:0.18},f:'Rookie-year sample Oct 7 role update: real ESPN 2026 Wk1-4 box scores show 7.3 targets/game over 4 games vs the prior baseline of 4; target volume and yardage blended 50/50 (x1.41).',c:'man-beater',s:'target-volatile'},
 {n:"Ja'Marr Chase",p:'WR',t:'CIN',b:{tgt:11.6,rec:7.8,recYd:88.3,recTD:0.5},f:'Led NFL in targets in 2025; real, current: an August knee scare resolved with no missed time; quiet Week 1 (2 rec/12 yd) as Burrow spread the ball around, then a real Week 3 of 9 rec on 12 targets for 98 yd and a TD -- baseline is his real full-2025 rate, deliberately not the slow start',c:'man-beater',s:'target-stable'},
-{n:'Tee Higgins',p:'WR',t:'CIN',b:{tgt:6.5,rec:3.9,recYd:56.4,recTD:0.73},f:'15-game sample; real, current: hamstring "tweak" has him genuinely doubtful for Week 1, limited/absent in practice',c:'zone-beater',s:'target-stable'},
+{n:'Tee Higgins',p:'WR',t:'CIN',b:{tgt:8.2,rec:4.9,recYd:70.7,recTD:0.92},f:'15-game sample; real, current: hamstring "tweak" has him genuinely doubtful for Week 1, limited/absent in practice Oct 7 role update: real ESPN 2026 Wk1-4 box scores show 9.8 targets/game over 4 games vs the prior baseline of 6.5; target volume and yardage blended 50/50 (x1.25).',c:'zone-beater',s:'target-stable'},
 {n:'Jerry Jeudy',p:'WR',t:'CLE',b:{tgt:1.7,rec:0.7,recYd:8.7,recTD:0},f:'Real, current: role has collapsed since camp -- rookies Denzel Boston and KC Concepcion have taken over as the real top targets. Real snap share has fallen each week (59% -> 51% -> 60.6%, third among CLE WRs every game) and he has just 5 total real targets through 3 games (4, 1, 0). HC Monken: "Jerry\'s opportunities will come," but real, current usage says otherwise -- genuinely marginal fantasy relevance right now.',c:'man-beater',s:'target-volatile'},
 {n:'Denzel Boston',p:'WR',t:'CLE',b:{tgt:5.5,rec:3.5,recYd:68.0,recTD:0.5},f:'Real, current: the Browns\' real top WR by usage, not Jeudy -- a real, confirmed 91.1% snap rate through 3 games (team-high), highest-graded CLE offensive player by PFF in multiple real games. Baseline built from his 2 most precisely real-sourced games (Wk1: 7 tgt/5 rec/95 yd/1 TD; Wk2: 4 tgt/2 rec/41 yd) -- real Wk3 was also productive (2 rec including a 28-yd gain) but exact totals weren\'t confirmed precisely enough to include.',c:'man-beater',s:'target-stable'},
 {n:'KC Concepcion',p:'WR',t:'CLE',b:{tgt:7.5,rec:4.0,recYd:18.5,recTD:0},f:'Real, current: 2026 first-round rookie (24th overall), real snap share rising each week (66% -> 86% -> 95%), running 62% of his real routes from the slot. Real target volume is already high (6 tgt Wk1, 9 tgt Wk2) but real efficiency has been poor so far (ADOT just 4.6, many real incompletions) -- a real, live target hog whose yardage hasn\'t caught up yet.',c:'zone-beater',s:'target-volatile'},
 {n:'Cedric Tillman',p:'WR',t:'NO',b:{tgt:5.5,rec:3.1,recYd:38.2,recTD:0.24},f:'WR2 role — approximate, lower confidence',c:'zone-beater',s:'target-volatile'},
-{n:'CeeDee Lamb',p:'WR',t:'DAL',b:{tgt:8.5,rec:6.5,recYd:98.5,recTD:0.75},f:'14-game 2025 sample; real, current: playing like a real, different, healthier version of himself in 2026 -- 13 rec, 197 yd, 3 TD on 17 targets through 2 games (already matching his real full 2025 TD total in just 2 games), including a real 153-yd, 2-TD explosion vs WAS',c:'balanced',s:'target-stable'},
+{n:'CeeDee Lamb',p:'WR',t:'DAL',b:{tgt:10,rec:7.6,recYd:115.9,recTD:0.88},f:'14-game 2025 sample; real, current: playing like a real, different, healthier version of himself in 2026 -- 13 rec, 197 yd, 3 TD on 17 targets through 2 games (already matching his real full 2025 TD total in just 2 games), including a real 153-yd, 2-TD explosion vs WAS Oct 7 role update: real ESPN 2026 Wk1-4 box scores show 11.5 targets/game over 4 games vs the prior baseline of 8.5; target volume and yardage blended 50/50 (x1.18).',c:'balanced',s:'target-stable'},
 {n:'George Pickens',p:'WR',t:'DAL',b:{tgt:8.1,rec:5.5,recYd:84.1,recTD:0.53},c:'zone-beater',s:'target-stable'},
 {n:'Courtland Sutton',p:'WR',t:'DEN',b:{tgt:7.3,rec:4.4,recYd:59.8,recTD:0.41},c:'zone-beater',s:'target-stable'},
 {n:'Jaylen Waddle',p:'WR',t:'DEN',b:{tgt:9.0,rec:6.0,recYd:89.0,recTD:0.375},f:'Traded from Miami — new pairing with Bo Nix; real, current: baseline raised significantly -- real, confirmed 8 rec on a real huge Week 2 game (138 yd), the real clear top target in this offense',c:'man-beater',s:'target-stable'},
-{n:'Troy Franklin',p:'WR',t:'DEN',b:{tgt:6.1,rec:3.8,recYd:41.7,recTD:0.35},f:'WR3 role now behind Sutton/Waddle — approximate',c:'zone-beater',s:'target-volatile'},
+{n:'Troy Franklin',p:'WR',t:'DEN',b:{tgt:3.7,rec:2.3,recYd:25.3,recTD:0.21},f:'WR3 role now behind Sutton/Waddle — approximate Oct 7 role update: real ESPN 2026 Wk1-4 box scores show 1.3 targets/game over 3 games vs the prior baseline of 6.1; target volume and yardage blended 50/50 (x0.61).',c:'zone-beater',s:'target-volatile'},
 {n:'Amon-Ra St. Brown',p:'WR',t:'DET',b:{tgt:10.1,rec:6.9,recYd:82.4,recTD:0.65},c:'man-beater',s:'target-stable'},
 {n:'Jameson Williams',p:'WR',t:'DET',b:{tgt:6.0,rec:3.8,recYd:65.7,recTD:0.41},c:'zone-beater',s:'target-volatile'},
 {n:'Christian Watson',p:'WR',t:'GB',b:{tgt:9.3,rec:5.7,recYd:94.7,recTD:1.0},f:'10-game sample; injury history; real, current: baseline raised substantially -- real, confirmed 17 rec on 28 targets for 284 yd and 4 TD through 3 games, a genuine team-leading role and clear favorite target in the red zone with Tucker Kraft still working back to full health',c:'zone-beater',s:'target-volatile'},
 {n:'Matthew Golden',p:'WR',t:'GB',b:{tgt:9.0,rec:6.0,recYd:70.0,recTD:0.2},f:'Rookie-year sample; real, current: baseline raised substantially -- real, confirmed 18 targets through 2 games (2nd-most on the team), now the real, clear top target with Reed out (neck injury)',c:'man-beater',s:'target-volatile'},{n:'Jayden Reed',p:'WR',t:'GB',b:{tgt:5.5,rec:3.8,recYd:48.0,recTD:0.4},f:'Real, current, serious: carted off on a stretcher with a real neck injury in Week 2 (just 2 snaps, 1 catch for 4 yd before exiting) -- genuinely no timeline, HC LaFleur says \'way too early\' to know, real reporting says season-ending is \'still in play\'; real, current beneficiaries in his absence are Golden and Christian Watson',c:'zone-beater',s:'target-volatile'},
 
-{n:'Dontayvion Wicks',p:'WR',t:'PHI',b:{tgt:2.7,rec:1.8,recYd:19.5,recTD:0.12},f:'WR3/depth role — approximate, lower confidence',c:'man-beater',s:'target-volatile'},
+{n:'Dontayvion Wicks',p:'WR',t:'PHI',b:{tgt:3.9,rec:2.6,recYd:27.8,recTD:0.17},f:'WR3/depth role — approximate, lower confidence Oct 7 role update: real ESPN 2026 Wk1-4 box scores show 5 targets/game over 4 games vs the prior baseline of 2.7; target volume and yardage blended 50/50 (x1.43).',c:'man-beater',s:'target-volatile'},
 {n:'Nico Collins',p:'WR',t:'HOU',b:{tgt:8.0,rec:4.7,recYd:74.5,recTD:0.4},f:'15-game sample; real, current: real Week 1 game (7 rec, 75 yd, 1 TD) ended early with a Grade 1 hamstring strain -- missed Week 2 entirely, CONFIRMED ruled OUT for Week 3 as well (3 straight non-participant practices); Dalton Schultz is the real, confirmed TE1 beneficiary',c:'zone-beater',s:'target-stable'},
 
-{n:'Michael Pittman Jr.',p:'WR',t:'PIT',b:{tgt:6.5,rec:4.7,recYd:46.1,recTD:0.41},c:'man-beater',s:'target-stable'},
+{n:'Michael Pittman Jr.',p:'WR',t:'PIT',b:{tgt:5.3,rec:3.8,recYd:37.2,recTD:0.33},c:'man-beater',s:'target-stable'},
 {n:'Josh Downs',p:'WR',t:'IND',b:{tgt:8.5,rec:6.2,recYd:52.0,recTD:0.25},f:'Real, current: became the real, confirmed "unquestioned top dog through the air" (NBC Sports) the moment Pierce left Week 2 -- real 9 targets, 7 catches, 72 yards that game specifically; the clear, real primary beneficiary, not Keenan Allen (who actually saw fewer routes) -- baseline raised to reflect this real, current role rather than his stale pre-injury target share',c:'man-beater',s:'target-stable'},
 {n:'Darius Slayton',p:'WR',t:'IND',b:{tgt:3.5,rec:2.0,recYd:28.0,recTD:0.15},f:'Real, current: signed by IND specifically to fill the Pierce role after his real Week 2 heel injury -- a real but modest addition given he was available on the open market; genuinely speculative role/target share until more real games are played',c:'man-beater',s:'target-volatile'},
 {n:'Keenan Allen',p:'WR',t:'IND',b:{tgt:6.9,rec:4.8,recYd:45.7,recTD:0.24},f:'Real 2025 line (with LAC); signed with IND as a free agent; real, current: did NOT benefit from Pierce\'s Week 2 exit as might be assumed -- real reporting shows he actually ran fewer routes that game, with Laquon Treadwell and new signing Darius Slayton seeing more snaps in Pierce\'s absence instead',c:'man-beater',s:'target-stable'},
 {n:'Alec Pierce',p:'WR',t:'IND',b:{tgt:4.2,rec:2.5,recYd:41.9,recTD:0.24},f:'Real, current: CONFIRMED to Injured Reserve with a real heel injury -- real, deeper WR room now leans more heavily on Keenan Allen and Josh Downs in his absence',c:'zone-beater',s:'target-volatile'},
 {n:'Parker Washington',p:'WR',t:'JAX',b:{tgt:9.0,rec:6.0,recYd:90.5,recTD:0.5},f:'Real, current: baseline raised significantly -- real, confirmed Lawrence\'s clear favorite target (18 targets, 12 rec, 181 yd, 1 TD through 2 games)',c:'man-beater',s:'target-volatile'},
-{n:'Brian Thomas Jr.',p:'WR',t:'JAX',b:{tgt:6.5,rec:3.4,recYd:50.5,recTD:0.14},f:'14-game sample',c:'zone-beater',s:'target-volatile'},
+{n:'Brian Thomas Jr.',p:'WR',t:'JAX',b:{tgt:5.2,rec:2.7,recYd:40,recTD:0.11},f:'14-game sample Oct 7 role update: real ESPN 2026 Wk1-4 box scores show 3.8 targets/game over 4 games vs the prior baseline of 6.5; target volume and yardage blended 50/50 (x0.79).',c:'zone-beater',s:'target-volatile'},
 {n:'Rashee Rice',p:'WR',t:'KC',b:{tgt:4.0,rec:3.0,recYd:51.0,recTD:0.2},f:'8-game 2025 sample — suspension-shortened; real, current: baseline lowered substantially -- real, confirmed target share through 2 games is well below the 2025 pace (6 rec on 8 tgt, 102 yd total), with real reporting noting a missed contested catch and generally quieter role than expected',c:'man-beater',s:'target-stable'},
 {n:'Xavier Worthy',p:'WR',t:'KC',b:{tgt:5.2,rec:3.0,recYd:38.0,recTD:0.07},f:'14-game sample',c:'zone-beater',s:'target-volatile'},
 {n:'JuJu Smith-Schuster',p:'WR',t:'NYG',b:{tgt:3.6,rec:2.4,recYd:24.8,recTD:0.12},f:'Slot WR3 — approximate, lower confidence',c:'man-beater',s:'target-volatile'},
@@ -1068,12 +1066,12 @@ const P = [
 {n:'Puka Nacua',p:'WR',t:'LAR',b:{tgt:10.4,rec:8.1,recYd:107.2,recTD:0.63},f:'Real, current: ruled OUT (inactive) for Week 3 at DEN with a real hip injury; the separate NFL Personal Conduct Policy review remains open with no league discipline to date -- Davante Adams (7 rec/137 yd) and Konata Mumpfield (4 rec/93 yd/1 TD) absorbed the targets',c:'zone-beater',s:'target-stable'},
 {n:'Davante Adams',p:'WR',t:'LAR',b:{tgt:9.0,rec:6.5,recYd:125.5,recTD:1.0},f:'14-game sample; real, current: baseline raised substantially -- real, confirmed the unquestioned top target with Nacua out (8 rec, 195 yd, 2 TD in Week 2), and expected to keep that role into Week 3',c:'man-beater',s:'target-stable'},
 {n:'Tutu Atwell',p:'WR',t:'LAR',b:{tgt:3.3,rec:2.2,recYd:28.9,recTD:0.06},f:'Slot WR3 — approximate, lower confidence',c:'man-beater',s:'target-volatile'},
-{n:'Malik Washington',p:'WR',t:'MIA',b:{tgt:3.8,rec:2.7,recYd:18.6,recTD:0.18},f:'Waddle traded away — default WR1 on a rebuilding offense',c:'man-beater',s:'target-volatile'},
+{n:'Malik Washington',p:'WR',t:'MIA',b:{tgt:5.4,rec:3.8,recYd:26.4,recTD:0.26},f:'Waddle traded away — default WR1 on a rebuilding offense Oct 7 role update: real ESPN 2026 Wk1-4 box scores show 7 targets/game over 4 games vs the prior baseline of 3.8; target volume and yardage blended 50/50 (x1.42).',c:'man-beater',s:'target-volatile'},
 {n:'Justin Jefferson',p:'WR',t:'MIN',b:{tgt:7.5,rec:5.5,recYd:73.5,recTD:0.5},f:'New pairing with Kyler Murray, now returning from concussion; real, current: TD rate corrected up significantly -- real, confirmed 2 TD in 2 games (Wk1: 8 rec/92 yd/2 TD, Wk2: 3 rec/55 yd/0 TD), damped from the full 1.0/g pace given the small sample; real, current: left Week 3 early at TB with a left ankle injury (2 rec/32 yd) -- said he nearly returned several times; status uncertain, evaluation pending',c:'zone-beater',s:'target-stable'},
-{n:'Jauan Jennings',p:'WR',t:'MIN',b:{tgt:6.0,rec:3.7,recYd:42.9,recTD:0.6},f:'Traded from San Francisco',c:'man-beater',s:'target-stable'},
+{n:'Jauan Jennings',p:'WR',t:'MIN',b:{tgt:3.6,rec:2.3,recYd:26.1,recTD:0.36},f:'Traded from San Francisco Oct 7 role update: real ESPN 2026 Wk1-4 box scores show 1.3 targets/game over 3 games vs the prior baseline of 6; target volume and yardage blended 50/50 (x0.61).',c:'man-beater',s:'target-stable'},
 {n:'Jordan Addison',p:'WR',t:'MIN',b:{tgt:5.1,rec:3.2,recYd:39.9,recTD:0.35},f:'WR3 role — approximate, lower confidence',c:'zone-beater',s:'target-volatile'},
 {n:'Malik Nabers',p:'WR',t:'NYG',b:{tgt:7.5,rec:4.5,recYd:67.8,recTD:0.5},f:'Real 2025 line -- small, injury-limited 4-game sample, but real, current, confirmed NYG WR1; real, current: remains the clear #1 read for new starter Jameis Winston, whose real, documented career stats (high attempt volume, high TD and INT rates across multiple stops) point to a real, high-volume passing role',c:'man-beater',s:'target-stable'},
-{n:'Darnell Mooney',p:'WR',t:'NYG',b:{tgt:5.0,rec:2.9,recYd:36.8,recTD:0.15},f:'Traded from Atlanta — approximate, lower confidence',c:'zone-beater',s:'target-volatile'},
+{n:'Darnell Mooney',p:'WR',t:'NYG',b:{tgt:3.8,rec:2.2,recYd:27.6,recTD:0.11},f:'Traded from Atlanta — approximate, lower confidence Oct 7 role update: real ESPN 2026 Wk1-4 box scores show 2.5 targets/game over 4 games vs the prior baseline of 5; target volume and yardage blended 50/50 (x0.75).',c:'zone-beater',s:'target-volatile'},
 {n:'Stefon Diggs',p:'WR',t:'WAS',b:{tgt:6.0,rec:5.0,recYd:59.6,recTD:0.24},c:'man-beater',s:'target-stable'},
 {n:'Romeo Doubs',p:'WR',t:'NE',b:{tgt:5.3,rec:3.4,recYd:45.3,recTD:0.38},f:'Traded from Green Bay',c:'zone-beater',s:'target-stable'},
 {n:'Chris Olave',p:'WR',t:'NO',b:{tgt:9.75,rec:6.25,recYd:72.7,recTD:0.56},c:'zone-beater',s:'target-stable'},
@@ -1095,22 +1093,22 @@ const P = [
 {n:'Chris Godwin',p:'WR',t:'TB',b:{tgt:5.7,rec:3.7,recYd:40.0,recTD:0.22},f:'9-game injury-limited sample',c:'man-beater',s:'target-volatile'},
 {n:"Wan'Dale Robinson",p:'WR',t:'TEN',b:{tgt:8.75,rec:5.75,recYd:63.4,recTD:0.25},f:'Traded from NY Giants; new HC Robert Saleh',c:'man-beater',s:'target-stable'},
 {n:'Carnell Tate',p:'WR',t:'TEN',b:{tgt:6.0,rec:3.5,recYd:32.5,recTD:0},f:'2026 rookie — first-round pick (No.4 overall); baseline set from his real, confirmed 2-game result (7 rec, 65 yd, 0 TD) -- tied the team target lead in Week 1 but has yet to score, real reporting notes some drops on catchable targets',c:'zone-beater',s:'target-volatile'},
-{n:'Elic Ayomanor',p:'WR',t:'TEN',b:{tgt:5.6,rec:3.0,recYd:40.0,recTD:0.25},f:'Rookie-year sample; real, current: leads all real Titans receivers through 2 games (80 yd, 1 TD, the team\'s only receiving score) -- baseline raised modestly toward that real result',c:'zone-beater',s:'target-volatile'},
+{n:'Elic Ayomanor',p:'WR',t:'TEN',b:{tgt:4.1,rec:2.2,recYd:28.9,recTD:0.18},f:'Rookie-year sample; real, current: leads all real Titans receivers through 2 games (80 yd, 1 TD, the team\'s only receiving score) -- baseline raised modestly toward that real result Oct 7 role update: real ESPN 2026 Wk1-4 box scores show 2.5 targets/game over 4 games vs the prior baseline of 5.6; target volume and yardage blended 50/50 (x0.72).',c:'zone-beater',s:'target-volatile'},
 {n:'Deebo Samuel',p:'WR',t:'SF',b:{tgt:6.2,rec:4.5,recYd:45.4,recTD:0.31},c:'man-beater',s:'target-stable'},
 {n:'Terry McLaurin',p:'WR',t:'WAS',b:{tgt:6.0,rec:3.8,recYd:58.2,recTD:0.3},f:'10-game injury-limited sample',c:'zone-beater',s:'target-volatile'},
 
 // TE
 {n:'Trey McBride',p:'TE',t:'ARI',b:{tgt:9.9,rec:7.4,recYd:72.9,recTD:0.65},f:'TE1 overall in 2025; new HC & QB situation is a real wildcard',c:'zone-beater',s:'target-stable'},
-{n:'Kyle Pitts',p:'TE',t:'ATL',b:{tgt:6.9,rec:5.2,recYd:54.6,recTD:0.29},f:'Real, current: dealing with a hamstring injury, limited in practice, Week 1 status genuinely up in the air',c:'zone-beater',s:'target-stable'},
+{n:'Kyle Pitts',p:'TE',t:'ATL',b:{tgt:4.6,rec:3.5,recYd:36.4,recTD:0.19},f:'Real, current: dealing with a hamstring injury, limited in practice, Week 1 status genuinely up in the air Oct 7 role update: real ESPN 2026 Wk1-4 box scores show 2.3 targets/game over 4 games vs the prior baseline of 6.9; target volume and yardage blended 50/50 (x0.67).',c:'zone-beater',s:'target-stable'},
 {n:'Mark Andrews',p:'TE',t:'BAL',b:{tgt:6.5,rec:5.5,recYd:45.0,recTD:0.29},f:'New offensive system; real, current: baseline raised toward his real Week 2 stat line (6 of 7 targets, 49 yd) with Flowers out -- blended rather than fully replacing the prior baseline, since 1 game is a real but still small sample',c:'man-beater',s:'target-stable'},
 {n:'Dalton Kincaid',p:'TE',t:'BUF',b:{tgt:4.1,rec:3.25,recYd:47.6,recTD:0.42},f:'12-game sample',c:'zone-beater',s:'target-stable'},
 {n:"Ja'Tavion Sanders",p:'TE',t:'CAR',b:{tgt:2.6,rec:2.2,recYd:14.6,recTD:0.08},f:'13-game sample',c:'man-beater',s:'target-volatile'},
 {n:'Colston Loveland',p:'TE',t:'CHI',b:{tgt:5.1,rec:3.6,recYd:44.6,recTD:0.38},f:'Rookie-year sample',c:'zone-beater',s:'target-stable'},
-{n:'Mike Gesicki',p:'TE',t:'CIN',b:{tgt:3.2,rec:2.2,recYd:23.6,recTD:0.15},f:'13-game sample',c:'zone-beater',s:'target-volatile'},
+{n:'Mike Gesicki',p:'TE',t:'CIN',b:{tgt:4.1,rec:2.8,recYd:30.2,recTD:0.19},f:'13-game sample Oct 7 role update: real ESPN 2026 Wk1-4 box scores show 5 targets/game over 3 games vs the prior baseline of 3.2; target volume and yardage blended 50/50 (x1.28).',c:'zone-beater',s:'target-volatile'},
 {n:'Harold Fannin Jr.',p:'TE',t:'CLE',b:{tgt:6.7,rec:4.5,recYd:45.7,recTD:0.38},f:'Rookie year; new offense under HC Monken',c:'zone-beater',s:'target-stable'},
-{n:'Jake Ferguson',p:'TE',t:'DAL',b:{tgt:6.0,rec:4.8,recYd:35.3,recTD:0.47},c:'man-beater',s:'target-stable'},
+{n:'Jake Ferguson',p:'TE',t:'DAL',b:{tgt:4.9,rec:3.9,recYd:28.8,recTD:0.38},c:'man-beater',s:'target-stable'},
 {n:'Evan Engram',p:'TE',t:'DEN',b:{tgt:4.75,rec:3.1,recYd:28.8,recTD:0.06},f:'16-game sample',c:'zone-beater',s:'target-volatile'},
-{n:'Sam LaPorta',p:'TE',t:'DET',b:{tgt:5.4,rec:4.4,recYd:54.3,recTD:0.33},f:'9-game injury-limited sample',c:'zone-beater',s:'target-stable'},
+{n:'Sam LaPorta',p:'TE',t:'DET',b:{tgt:6.7,rec:5.5,recYd:67.4,recTD:0.41},f:'9-game injury-limited sample Oct 7 role update: real ESPN 2026 Wk1-4 box scores show 8 targets/game over 4 games vs the prior baseline of 5.4; target volume and yardage blended 50/50 (x1.24).',c:'zone-beater',s:'target-stable'},
 {n:'Tucker Kraft',p:'TE',t:'GB',b:{tgt:5.5,rec:4.0,recYd:61.1,recTD:0.75},f:'8-game injury-limited sample',c:'zone-beater',s:'target-stable'},
 {n:'Dalton Schultz',p:'TE',t:'HOU',b:{tgt:9.5,rec:7.5,recYd:75.0,recTD:0.25},f:'Foster Moreau added via trade for depth; real, current: baseline raised toward his real, confirmed Week 2 result (13 targets) with Collins out -- blended rather than fully replacing given 1 game is still a small sample, and Collins remains out for Week 3 too so this role continues',c:'man-beater',s:'target-stable'},
 {n:'Xavier Hutchinson',p:'WR',t:'HOU',b:{tgt:7.5,rec:3.0,recYd:34.5,recTD:0},f:'Real, current: baseline set from his real, confirmed 2-game result (6 rec on 15 targets, 69 yd) -- led all real HOU WRs in targets in Week 2 with Collins out (9 targets, though only 3 catches for 37 yd that game); would be the real WR1 against IND in Week 3 if Collins is not cleared; real, current context: Higgins (torn ACL, out for the year) and Boutte trade both reshaped this real, thin WR corps',c:'zone-beater',s:'target-volatile'},
@@ -1122,12 +1120,12 @@ const P = [
 {n:'David Njoku',p:'TE',t:'LAC',b:{tgt:4.0,rec:2.75,recYd:24.4,recTD:0.33},f:'Signed with LAC as a free agent (May 2026); real, current: carted off in Week 2 with a fibula injury and PLACED ON INJURED RESERVE in Week 3 -- extended absence (4-game minimum); Oronde Gadsden (not tracked here) is the top healthy TE, with Charlie Kolar (forearm) also out',c:'zone-beater',s:'target-stable'},
 {n:'Colby Parkinson',p:'TE',t:'LAR',b:{tgt:3.7,rec:2.9,recYd:27.2,recTD:0.53},f:'15-game sample',c:'zone-beater',s:'target-stable'},
 {n:'Darren Waller',p:'TE',t:'CAR',b:{tgt:3.8,rec:2.7,recYd:31.4,recTD:0.67},f:'9-game sample; injury/opt-out history',c:'zone-beater',s:'target-volatile'},
-{n:'T.J. Hockenson',p:'TE',t:'MIN',b:{tgt:4.4,rec:3.4,recYd:29.2,recTD:0.2},f:'15-game sample',c:'zone-beater',s:'target-stable'},
+{n:'T.J. Hockenson',p:'TE',t:'MIN',b:{tgt:5.5,rec:4.2,recYd:36.2,recTD:0.25},f:'15-game sample Oct 7 role update: real ESPN 2026 Wk1-4 box scores show 6.5 targets/game over 4 games vs the prior baseline of 4.4; target volume and yardage blended 50/50 (x1.24).',c:'zone-beater',s:'target-stable'},
 {n:'Hunter Henry',p:'TE',t:'NE',b:{tgt:5.1,rec:3.5,recYd:45.2,recTD:0.41},c:'man-beater',s:'target-stable'},
 {n:'Juwan Johnson',p:'TE',t:'NO',b:{tgt:6.0,rec:4.5,recYd:52.3,recTD:0.18},f:'Noah Fant added via trade for depth',c:'zone-beater',s:'target-stable'},
 {n:'Noah Fant',p:'TE',t:'NO',b:{tgt:2.4,rec:2.0,recYd:16.9,recTD:0.18},f:'Traded from Cincinnati — depth/TE2 role',c:'zone-beater',s:'target-volatile'},
-{n:'Theo Johnson',p:'TE',t:'NYG',b:{tgt:4.9,rec:3.0,recYd:35.2,recTD:0.33},f:'15-game sample; new HC John Harbaugh',c:'zone-beater',s:'target-stable'},
-{n:'Isaiah Likely',p:'TE',t:'NYG',b:{tgt:2.8,rec:2.1,recYd:23.6,recTD:0.08},f:'Traded from Baltimore; real 2025 line, injury-limited sample',c:'zone-beater',s:'target-volatile'},
+{n:'Theo Johnson',p:'TE',t:'NYG',b:{tgt:3.5,rec:2.1,recYd:24.8,recTD:0.23},f:'15-game sample; new HC John Harbaugh Oct 7 role update: real ESPN 2026 Wk1-4 box scores show 2 targets/game over 3 games vs the prior baseline of 4.9; target volume and yardage blended 50/50 (x0.7).',c:'zone-beater',s:'target-stable'},
+{n:'Isaiah Likely',p:'TE',t:'NYG',b:{tgt:4.5,rec:3.4,recYd:37.8,recTD:0.13},f:'Traded from Baltimore; real 2025 line, injury-limited sample Oct 7 role update: real ESPN 2026 Wk1-4 box scores show 8.8 targets/game over 4 games vs the prior baseline of 2.8; target volume and yardage blended 50/50 (x1.6).',c:'zone-beater',s:'target-volatile'},
 {n:'Mason Taylor',p:'TE',t:'NYJ',b:{tgt:5.0,rec:3.4,recYd:28.4,recTD:0.08},f:'Rookie-year sample',c:'man-beater',s:'target-stable'},
 {n:'Dallas Goedert',p:'TE',t:'PHI',b:{tgt:5.5,rec:4.0,recYd:39.4,recTD:0.73},f:'15-game sample; real, current: RULED OUT for Week 3 (knee), expected to miss multiple weeks (not on IR, so under a 4-game minimum) -- real, current: PHI signed/elevated Zach Ertz from the practice squad specifically to fill this role for Monday night',c:'man-beater',s:'target-stable'},
 {n:'Zach Ertz',p:'TE',t:'PHI',b:{tgt:3.0,rec:2.0,recYd:20.0,recTD:0.1},f:'Real, current: signed off the street and elevated from the practice squad specifically to replace Goedert (knee, out) for Monday night -- genuinely low-confidence, no real 2026 game snaps yet',c:'man-beater',s:'target-volatile'},
@@ -1137,6 +1135,42 @@ const P = [
 {n:'Cade Otton',p:'TE',t:'TB',b:{tgt:5.1,rec:3.7,recYd:35.8,recTD:0.06},c:'man-beater',s:'target-stable'},
 {n:'Gunnar Helm',p:'TE',t:'TEN',b:{tgt:3.4,rec:2.75,recYd:22.3,recTD:0.13},f:'Rookie-year sample; new HC Robert Saleh',c:'zone-beater',s:'target-volatile'},
 
+{n:'Mack Hollins',p:'WR',t:'NE',b:{tgt:5,rec:3.8,recYd:52.3,recTD:0.11},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (5 tgt/3.8 rec/52.3 yd per game over 4 team games since first appearance); TD rate shrunk 50% toward a typical WR rate. Small sample, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'DeMario Douglas',p:'WR',t:'NE',b:{tgt:4.3,rec:2.3,recYd:20.5,recTD:0.1},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (4.3 tgt/2.3 rec/20.5 yd per game over 4 team games since first appearance); TD rate shrunk 50% toward a typical WR rate. Small sample, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Tyler Higbee',p:'TE',t:'LAR',b:{tgt:4.8,rec:3.8,recYd:35.3,recTD:0.27},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (4.8 tgt/3.8 rec/35.3 yd per game over 4 team games since first appearance); TD rate shrunk 50% toward a typical TE rate. Small sample, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Ted Hurst III',p:'WR',t:'TB',b:{tgt:4.3,rec:2,recYd:32,recTD:0.25},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (4.3 tgt/2 rec/32 yd per game over 4 team games since first appearance); TD rate shrunk 50% toward a typical WR rate. Small sample, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Dohnte Meyers',p:'WR',t:'CIN',b:{tgt:4,rec:2.8,recYd:32.3,recTD:0.09},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (4 tgt/2.8 rec/32.3 yd per game over 4 team games since first appearance); TD rate shrunk 50% toward a typical WR rate. Small sample, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Mitchell Tinsley',p:'WR',t:'CIN',b:{tgt:5.25,rec:2.5,recYd:37,recTD:0.12},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (5.25 tgt/2.5 rec/37 yd per game over 1 team game since first appearance); TD rate shrunk 50% toward a typical WR rate. Small sample, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Devaughn Vele',p:'WR',t:'NO',b:{tgt:7.8,rec:5.3,recYd:56.5,recTD:0.43},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (7.8 tgt/5.3 rec/56.5 yd per game over 4 team games since first appearance); TD rate shrunk 50% toward a typical WR rate. Small sample, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Isaac TeSlaa',p:'WR',t:'DET',b:{tgt:4.3,rec:2.3,recYd:46.8,recTD:0.1},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (4.3 tgt/2.3 rec/46.8 yd per game over 4 team games since first appearance); TD rate shrunk 50% toward a typical WR rate. Small sample, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Kenyon Sadiq',p:'TE',t:'NYJ',b:{tgt:4.5,rec:3,recYd:35.8,recTD:0.26},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (4.5 tgt/3 rec/35.8 yd per game over 4 team games since first appearance); TD rate shrunk 50% toward a typical TE rate. Small sample, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Adonai Mitchell',p:'WR',t:'NYJ',b:{tgt:3.8,rec:2.3,recYd:30.8,recTD:0.09},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (3.8 tgt/2.3 rec/30.8 yd per game over 4 team games since first appearance); TD rate shrunk 50% toward a typical WR rate. Small sample, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Roman Wilson',p:'WR',t:'PIT',b:{tgt:6,rec:3.5,recYd:47,recTD:0.39},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (6 tgt/3.5 rec/47 yd per game over 4 team games since first appearance); TD rate shrunk 50% toward a typical WR rate. Small sample, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Kalif Raymond',p:'WR',t:'CHI',b:{tgt:5.8,rec:5.3,recYd:55,recTD:0.28},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (5.8 tgt/5.3 rec/55 yd per game over 4 team games since first appearance); TD rate shrunk 50% toward a typical WR rate. Small sample, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'John Metchie III',p:'WR',t:'CAR',b:{tgt:5,rec:2.5,recYd:28,recTD:0.36},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (5 tgt/2.5 rec/28 yd per game over 2 team games since first appearance); TD rate shrunk 50% toward a typical WR rate. Small sample, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Brycen Tremayne',p:'WR',t:'CAR',b:{tgt:4.5,rec:3,recYd:57.5,recTD:0.1},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (4.5 tgt/3 rec/57.5 yd per game over 2 team games since first appearance); TD rate shrunk 50% toward a typical WR rate. Small sample, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Tommy Tremble',p:'TE',t:'CAR',b:{tgt:3.8,rec:2.8,recYd:20.5,recTD:0.1},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (3.8 tgt/2.8 rec/20.5 yd per game over 4 team games since first appearance); TD rate shrunk 50% toward a typical TE rate. Small sample, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Jakobi Meyers',p:'WR',t:'JAX',b:{tgt:3.8,rec:3.3,recYd:41.3,recTD:0.34},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (3.8 tgt/3.3 rec/41.3 yd per game over 4 team games since first appearance); TD rate shrunk 50% toward a typical WR rate. Small sample, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Chris Bell',p:'WR',t:'MIA',b:{tgt:3.5,rec:1.3,recYd:23,recTD:0.08},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (3.5 tgt/1.3 rec/23 yd per game over 4 team games since first appearance); TD rate shrunk 50% toward a typical WR rate. Small sample, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Michael Mayer',p:'TE',t:'LV',b:{tgt:6,rec:5,recYd:42.3,recTD:0.3},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (6 tgt/5 rec/42.3 yd per game over 4 team games since first appearance); TD rate shrunk 50% toward a typical TE rate. Small sample, low confidence.',c:'balanced',s:'target-volatile'},
+{n:"Tre' Harris",p:'WR',t:'LAC',b:{tgt:5.3,rec:3.3,recYd:52.3,recTD:0.12},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (5.3 tgt/3.3 rec/52.3 yd per game over 4 team games since first appearance); TD rate shrunk 50% toward a typical WR rate. Small sample, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Oronde Gadsden',p:'TE',t:'LAC',b:{tgt:3.8,rec:2.3,recYd:21.5,recTD:0.25},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (3.8 tgt/2.3 rec/21.5 yd per game over 4 team games since first appearance); TD rate shrunk 50% toward a typical TE rate. Small sample, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Ryan Flournoy',p:'WR',t:'DAL',b:{tgt:5.8,rec:3.3,recYd:26,recTD:0.13},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (5.8 tgt/3.3 rec/26 yd per game over 4 team games since first appearance); TD rate shrunk 50% toward a typical WR rate. Small sample, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Malachi Fields',p:'WR',t:'NYG',b:{tgt:3.8,rec:2,recYd:31.5,recTD:0.24},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (3.8 tgt/2 rec/31.5 yd per game over 4 team games since first appearance); TD rate shrunk 50% toward a typical WR rate. Small sample, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Antonio Williams',p:'WR',t:'WAS',b:{tgt:4.8,rec:3,recYd:31,recTD:0.26},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (4.8 tgt/3 rec/31 yd per game over 4 team games since first appearance); TD rate shrunk 50% toward a typical WR rate. Small sample, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Makai Lemon',p:'WR',t:'PHI',b:{tgt:3.8,rec:2.5,recYd:16.3,recTD:0.09},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (3.8 tgt/2.5 rec/16.3 yd per game over 4 team games since first appearance); TD rate shrunk 50% toward a typical WR rate. Small sample, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Darius Cooper',p:'WR',t:'PHI',b:{tgt:3.3,rec:1.7,recYd:19.7,recTD:0.57},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (3.3 tgt/1.7 rec/19.7 yd per game over 3 team games since first appearance); TD rate shrunk 50% toward a typical WR rate. Small sample, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Jahan Dotson',p:'WR',t:'ATL',b:{tgt:3.5,rec:1.5,recYd:23.8,recTD:0.23},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (3.5 tgt/1.5 rec/23.8 yd per game over 4 team games since first appearance); TD rate shrunk 50% toward a typical WR rate. Small sample, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Laquon Treadwell',p:'WR',t:'IND',b:{tgt:2.8,rec:2.3,recYd:30.8,recTD:0.06},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (2.8 tgt/2.3 rec/30.8 yd per game over 4 team games since first appearance); TD rate shrunk 50% toward a typical WR rate. Small sample, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Kendre Miller',p:'RB',t:'NO',b:{rushAtt:4.8,rushYd:13.3,rushTD:0.22,rec:1,recYd:3.8,recTD:0.02},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (4.8 att/13.3 rush yd, 1 rec/3.8 rec yd per game over 4 games); TD rate shrunk 50% toward a typical RB rate. Small sample, low confidence.',c:'balanced',s:'balanced-back'},
+{n:'Braelon Allen',p:'RB',t:'NYJ',b:{rushAtt:8.3,rushYd:30,rushTD:0.27,rec:1.5,recYd:4.8,recTD:0.03},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (8.3 att/30 rush yd, 1.5 rec/4.8 rec yd per game over 4 games); TD rate shrunk 50% toward a typical RB rate. Small sample, low confidence.',c:'balanced',s:'balanced-back'},
+{n:'Tyjae Spears',p:'RB',t:'TEN',b:{rushAtt:3.8,rushYd:16.3,rushTD:0.06,rec:1.3,recYd:10,recTD:0.03},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (3.8 att/16.3 rush yd, 1.3 rec/10 rec yd per game over 4 games); TD rate shrunk 50% toward a typical RB rate. Small sample, low confidence.',c:'balanced',s:'balanced-back'},
+{n:'Brian Robinson Jr.',p:'RB',t:'ATL',b:{rushAtt:11,rushYd:48.5,rushTD:0.67,rec:0.8,recYd:5.3,recTD:0.02},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (11 att/48.5 rush yd, 0.8 rec/5.3 rec yd per game over 4 games); TD rate shrunk 50% toward a typical RB rate. Small sample, low confidence.',c:'balanced',s:'balanced-back'},
+{n:'Will Shipley',p:'RB',t:'PHI',b:{rushAtt:3.8,rushYd:12.8,rushTD:0.06,rec:1,recYd:6,recTD:0.02},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (3.8 att/12.8 rush yd, 1 rec/6 rec yd per game over 4 games); TD rate shrunk 50% toward a typical RB rate. Small sample, low confidence.',c:'balanced',s:'balanced-back'},
+{n:'Keaton Mitchell',p:'RB',t:'LAC',b:{rushAtt:6.8,rushYd:31,rushTD:0.1,rec:2.3,recYd:8.5,recTD:0.2},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (6.8 att/31 rush yd, 2.3 rec/8.5 rec yd per game over 4 games); TD rate shrunk 50% toward a typical RB rate. Small sample, low confidence.',c:'balanced',s:'balanced-back'},
+{n:'Mike Washington Jr.',p:'RB',t:'LV',b:{rushAtt:6,rushYd:30,rushTD:0.24,rec:0.3,recYd:0,recTD:0.01},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (6 att/30 rush yd, 0.3 rec/0 rec yd per game over 4 games); TD rate shrunk 50% toward a typical RB rate. Small sample, low confidence.',c:'balanced',s:'balanced-back'},
+{n:'Jalon Daniels',p:'QB',t:'TB',b:{passYd:205.6,passTD:1.32,int:1.04,rushYd:24.6,rushTD:0.12},f:'Real, current (Oct 7): starts Thursday night at DAL with Baker Mayfield out (thumb, ~3+ weeks). Only one real start (Wk4: 19/27, 148 yd, 1 TD, 2 INT, 8 rush for 55 yd) plus a relief appearance in Wk3 -- baseline blends that start 1:4 with the tool\'s league-average QB line. Low-confidence.',c:'balanced',s:'rush-heavy-qb'},
+{n:'Athan Kaliakmanis',p:'QB',t:'WAS',b:{passYd:213.2,passTD:1.32,int:0.84,rushYd:16.8,rushTD:0.12},f:'Real, current (Oct 7): replaced Mariota in Wk4 (15/33, 186 yd, 1 TD, 1 INT, 3 rush for 16 yd). Mariota is out (MCL sprain) and Jayden Daniels is questionable (elbow), so Kaliakmanis starts if Daniels cannot. Baseline blends that one real game 1:4 with the tool\'s league-average QB line. Low-confidence.',c:'balanced',s:'pass-neutral'},
 ];
 
 /* ============== multiplier tables (same engine as before) ============== */
@@ -1393,73 +1427,48 @@ const FRESH_DEF_INJURY_ADJ = {
    multiple real seasons of TE-specific data, not one noisy week. Applied only
    to TE rec yards/TD, never WR, since that's exactly the real distinction this
    exists to capture. */
-/* WEEKLY GAP CHECKLIST UPDATE (through Week 3, real DraftEdge DVP data cross-checked against
-   real box scores/reporting before applying -- see the 3-week checklist run this update came from):
-   DET raised 1.218 -> 1.333. This is a real, confirmed, escalating 3-game pattern, not a single-game
-   outlier -- Detroit's real TE yards allowed rose each week (53 -> 52 -> 164, the last including 2 TDs
-   to Jets tight ends), and direct reporting confirms it explicitly: "tight ends have 29 catches for
-   351 yards and six touchdowns against Detroit in three games." Two other real candidate changes were
-   found and deliberately NOT applied: LV and NO both showed a similar-looking jump, but both trace to
-   the same single Week 3 game between them (one shared outlier inflating both sides, not two
-   independent patterns) -- holding until a second, independent game confirms either one. TB showed
-   real DVP improvement, but real reporting says they'd allowed the most catches/yards/TDs to TEs of
-   any team through Week 2 -- genuinely conflicting evidence, left unchanged pending clarity. */
+/* DEFENSE-VS-POSITION MATCHUP MULTIPLIERS -- REBUILT Oct 7, 2026 from ESPN box scores only.
+   (The previous version of these four tables came from DraftEdge fantasy-points-allowed, which is
+   outside the ESPN/PFF-only sourcing rule; it has been replaced entirely.)
+   Source: ESPN full box scores (site.api.espn.com summary endpoint), every regular-season game of
+   2025 (17 per team) and Weeks 1-4 of 2026. Each offensive player's yards are credited to the
+   opposing defense by the player's ESPN roster position: QB = passing yards allowed; RB = rushing
+   + receiving yards by RBs/FBs; WR and TE = receiving yards. Yards, not fantasy points.
+   Method: per-game yards allowed = (1-w) x 2025 per-game + w x 2026 per-game, w = n/(n+12) where n is
+   2026 games played (w = 0.25 after 4 games; w was chosen by back-testing weeks 2-4 -- a pure
+   2026-only view had essentially zero predictive value this early, while a 2025-heavy blend did).
+   Ratio vs the league mean is then damped toward 1.0: QB 0.35, RB 0.35, WR 0.50, TE 0.75, from a
+   pooled regression of actual week-N yards on predicted yards (weeks 2-4: slopes QB 0.23, RB 0.22,
+   WR 0.49, TE 1.13; the TE slope is capped because 31 players a week is a noisy sample). The engine
+   then applies MATCHUP_SHRINK on top. Honest caveat: back-tested on Week 4, these tables perform the
+   same as the old ones and barely better than no matchup adjustment at all -- positional defense
+   yardage is a weak week-to-week signal. Refresh weekly by re-pulling ESPN box scores. */
 const TE_MATCHUP_ADJ = {
-  CIN:1.278,DET:1.333,TB:1.203,WAS:1.177,IND:1.139,ARI:1.113,MIA:1.083,SEA:1.049,
-  ATL:1.019,DAL:1.011,HOU:0.996,TEN:0.992,PIT:0.989,JAX:0.985,DEN:0.981,KC:0.981,
-  SF:0.974,NYG:0.970,LAC:0.966,NYJ:0.962,CLE:0.959,CAR:0.951,CHI:0.947,NO:0.936,
-  GB:0.929,BAL:0.921,NE:0.921,LAR:0.914,BUF:0.898,LV:0.887,MIN:0.861,PHI:0.778,
+  ARI:1.204,ATL:0.941,BAL:0.884,BUF:0.746,CAR:1.082,CHI:0.906,CIN:1.508,CLE:1.033,
+  DAL:0.976,DEN:1.128,DET:1.203,GB:0.837,HOU:0.928,IND:1.174,JAX:0.988,KC:1.023,
+  LAC:0.86,LAR:0.806,LV:0.821,MIA:1.243,MIN:0.875,NE:0.978,NO:1.057,NYG:0.939,
+  NYJ:0.988,PHI:0.699,PIT:1.041,SEA:1.015,SF:0.99,TB:1.101,TEN:0.924,WAS:1.101,
 };
 
-/* REAL, POSITION-SPECIFIC DEFENSIVE ADJUSTMENTS FOR QB/RB/WR (added Sept 2026,
-   extending the same real, disclosed treatment TE_MATCHUP_ADJ already had to
-   the other three positions, after a direct request to cover every position
-   the same way). Same real source (DraftEdge Defense-vs-Position, official
-   DK/FD scoring, real box scores, season-blended with a 2025-26 baseline that
-   fades out as the current season accumulates games) and the same 50% damping
-   weight already established for TE_MATCHUP_ADJ, applied consistently rather
-   than inventing a different weight per position.
-   Real league averages at time of pull: QB 17.7, RB 22.4, WR 31.5 FPA.
-   Real extremes: QB softest DET (24.8 FPA) / toughest MIN (12.9); RB softest
-   CAR (30.0) / toughest ATL (17.4); WR softest DET (39.6) / toughest SEA (21.8).
-   CRITICAL, learned the hard way with TE_MATCHUP_ADJ: having the data and the
-   formula reference it is NOT enough -- opts.oppAb must actually be populated
-   by whichever view calls computeProjection, or these silently no-op. Verified
-   this works through the real UI (not just the neutralOptsFor code path) before
-   calling this done -- see the Sept 2026 oppAb fix commit for the root cause. */
-/* WEEKLY GAP CHECKLIST UPDATE (through Week 3): full refresh from real, current DraftEdge DVP
-   data, same source and same 50% damping methodology used when these tables were first built.
-   Real, confirmed shared-game contamination caught and held out of this update: WAS/SEA played
-   each other in Week 3 and both teams' real QB and WR values moved softer together in that one
-   game (one shootout inflating both sides at once, not two independent patterns) -- same real
-   finding for PIT/CIN, who also played each other in Week 3. All four (WAS, SEA, PIT, CIN) are
-   held at their prior QB/WR values pending a second, independent game. RB showed no matching
-   contamination for either pair and was refreshed normally for all 32 teams. NYJ's real RB
-   increase (1.048->1.127) reflects a real, confirmed, one-sided
-   cause: Detroit's real, currently-best rushing offense exposed a real, previously-quiet Jets
-   run-defense weakness in Week 3 specifically (direct reporting: "quietly showing signs of
-   vulnerability... the Lions exposed those problems") -- Detroit's own RB value moved the
-   OPPOSITE direction in that same game, confirming this is a real one-sided outcome, not shared
-   contamination. */
 const QB_MATCHUP_ADJ = {
-  ARI:1.071,ATL:1.026,BAL:1.004,BUF:0.984,CAR:0.979,CHI:1.043,CIN:1.017,CLE:0.937,
-  DAL:1.166,DEN:0.965,DET:1.216,GB:0.959,HOU:0.995,IND:1.088,JAX:0.92,KC:0.883,
-  LAC:0.948,LAR:0.976,LV:0.987,MIA:1.054,MIN:0.858,NE:0.909,NO:0.939,NYG:1.023,
-  NYJ:1.009,PHI:0.995,PIT:0.964,SEA:0.873,SF:0.97,TB:1.04,TEN:0.962,WAS:1.145,
+  ARI:1.026,ATL:1.013,BAL:1.037,BUF:0.952,CAR:0.992,CHI:1.001,CIN:1.038,CLE:0.966,
+  DAL:1.05,DEN:0.989,DET:1.049,GB:0.966,HOU:0.994,IND:1.059,JAX:1.029,KC:0.975,
+  LAC:0.962,LAR:0.98,LV:0.983,MIA:1.007,MIN:0.94,NE:0.968,NO:0.964,NYG:0.997,
+  NYJ:0.99,PHI:0.974,PIT:1.038,SEA:0.958,SF:1.012,TB:1.027,TEN:1.021,WAS:1.045,
 };
 
 const RB_MATCHUP_ADJ = {
-  ARI:1.036,ATL:0.895,BAL:0.998,BUF:1.084,CAR:1.145,CHI:0.982,CIN:1.059,CLE:0.975,
-  DAL:1.079,DEN:1.007,DET:0.968,GB:1.104,HOU:0.875,IND:1.064,JAX:0.9,KC:0.939,
-  LAC:0.952,LAR:0.957,LV:0.975,MIA:1.123,MIN:0.889,NE:0.952,NO:1.048,NYG:1.054,
-  NYJ:1.127,PHI:0.973,PIT:0.986,SEA:0.904,SF:1.029,TB:0.964,TEN:0.979,WAS:0.977,
+  ARI:1.05,ATL:0.982,BAL:0.962,BUF:1.009,CAR:1.049,CHI:1,CIN:1.077,CLE:1.005,
+  DAL:1.018,DEN:0.939,DET:0.971,GB:1.019,HOU:0.936,IND:0.964,JAX:0.918,KC:0.967,
+  LAC:0.975,LAR:0.991,LV:1,MIA:1.051,MIN:0.98,NE:0.969,NO:1.041,NYG:1.044,
+  NYJ:1.064,PHI:1.021,PIT:1.014,SEA:0.965,SF:1.018,TB:0.991,TEN:0.975,WAS:1.034,
 };
 
 const WR_MATCHUP_ADJ = {
-  ARI:1.059,ATL:1.091,BAL:1.084,BUF:1.001,CAR:0.909,CHI:1.01,CIN:0.888,CLE:0.972,
-  DAL:1.059,DEN:0.939,DET:1.116,GB:1.039,HOU:1.015,IND:1.08,JAX:0.996,KC:0.911,
-  LAC:0.98,LAR:1.018,LV:0.955,MIA:0.947,MIN:0.957,NE:0.988,NO:0.933,NYG:1.042,
-  NYJ:0.969,PHI:0.982,PIT:0.951,SEA:0.847,SF:0.982,TB:0.949,TEN:1.056,WAS:1.087,
+  ARI:1.008,ATL:1.049,BAL:1.106,BUF:0.969,CAR:0.96,CHI:1.039,CIN:0.92,CLE:0.932,
+  DAL:1.101,DEN:0.959,DET:1.091,GB:0.982,HOU:1.016,IND:1.099,JAX:1.05,KC:0.935,
+  LAC:0.966,LAR:0.988,LV:1.025,MIA:0.928,MIN:0.935,NE:0.93,NO:0.925,NYG:1.022,
+  NYJ:0.969,PHI:1.004,PIT:1.069,SEA:0.878,SF:1.003,TB:0.98,TEN:1.087,WAS:1.074,
 };
 
 const scriptTable = {
@@ -3496,8 +3505,8 @@ function computeProjectionRaw(p, opts){
   const runDOverallVsAvg = (oppRunD - LEAGUE_AVG_RUN_D_OVERALL) / LEAGUE_AVG_RUN_D_OVERALL;
   const runDInteriorVsAvg = (oppRunDInterior - LEAGUE_AVG_RUN_D_INTERIOR) / LEAGUE_AVG_RUN_D_INTERIOR;
   const runDefMult = (1 - runDOverallVsAvg * 0.12) * (1 - runDInteriorVsAvg * 0.06);
-  // Real, position-specific defense-vs-position adjustments (DraftEdge, real box
-  // scores, 50% damping -- same source/weight as TE_MATCHUP_ADJ above). Computed
+  // Real, position-specific defense-vs-position adjustments (ESPN box-score yards
+  // allowed, damped per position -- see the table header above). Computed
   // once here since QB/RB/WR each only need their own single value.
   const qbMatchupAdj = (opts.oppAb && QB_MATCHUP_ADJ[opts.oppAb]) ? QB_MATCHUP_ADJ[opts.oppAb] : 1.0;
   const rbMatchupAdj = (opts.oppAb && RB_MATCHUP_ADJ[opts.oppAb]) ? RB_MATCHUP_ADJ[opts.oppAb] : 1.0;
@@ -3571,43 +3580,73 @@ function computeProjectionRaw(p, opts){
      OUT          -> cannot play (IR / PUP / exempt list / ruled out): excluded from lists, shown as OUT
      BACKUP       -> healthy but not starting: excluded from lists, shown as BACKUP
      QUESTIONABLE -> latest verified report is uncertain: still counted, shown with a ? badge
-   MUST be refreshed in each week's injury sweep (verified news only). As of: end of Week 3 (Sept 28, 2026). */
+   MUST be refreshed in each week's injury sweep (verified news only). As of: Wednesday of Week 5 (Oct 7, 2026). */
 const PLAYER_AVAILABILITY = {
-  'Jonathan Brooks':  {status:'OUT', note:'IR - core-muscle surgery, out 6+ weeks'},
-  'Alec Pierce':      {status:'OUT', note:'IR - heel'},
-  'A.J. Brown':       {status:'OUT', note:'IR - high-ankle sprain (~6 weeks)'},
-  'Isiah Pacheco':    {status:'OUT', note:'IR - back, out through at least Week 4'},
-  'Jerome Ford':      {status:'OUT', note:'IR - hamstring'},
-  'Jordyn Tyson':     {status:'OUT', note:'IR - hamstring (~2 months)'},
-  'Jordan Mason':     {status:'OUT', note:'IR - thumb'},
-  'Dillon Gabriel':   {status:'OUT', note:'IR - back'},
-  'Josh Jacobs':      {status:'OUT', note:"Commissioner's Exempt List"},
-  'Zach Charbonnet':  {status:'OUT', note:'PUP - ACL'},
-  'David Njoku':      {status:'OUT', note:'IR - fibula (4-game minimum)'},
-  'Jayden Reed':      {status:'OUT', note:'neck injury (carted off Week 2), no timeline'},
-  "De'Von Achane":    {status:'OUT', note:'non-contact knee injury in Week 3, MRI pending - treat as out'},
+  // --- Injured reserve / PUP / exempt / season-ending: cannot play ---
+  'Jonathan Brooks':  {status:'OUT', note:'IR - core muscle/abdomen, eligible to return Week 9 (CBS Sports)'},
+  'Alec Pierce':      {status:'OUT', note:'IR - heel, eligible to return Week 7 (CBS Sports)'},
+  'A.J. Brown':       {status:'OUT', note:'IR - ankle, eligible to return Week 8 (CBS Sports)'},
+  'Isiah Pacheco':    {status:'OUT', note:'IR - back, eligible to return Week 13 (CBS Sports)'},
+  'Jerome Ford':      {status:'OUT', note:'IR - hamstring; no activation reported and absent from the Week 4 box score'},
+  'Jordyn Tyson':     {status:'OUT', note:'IR - hamstring, eligible to return Week 7 (CBS Sports)'},
+  'Jordan Mason':     {status:'OUT', note:'IR - thumb, eligible to return Week 7 (CBS Sports)'},
+  'Dillon Gabriel':   {status:'OUT', note:'IR - back; Deshaun Watson is the starter either way'},
+  'Josh Jacobs':      {status:'OUT', note:"Commissioner's Exempt List; no return reported, and absent from the Week 4 box score"},
+  'Zach Charbonnet':  {status:'OUT', note:'PUP - ACL, eligible to return Week 6 (CBS Sports)'},
+  'David Njoku':      {status:'OUT', note:'IR - lower leg, eligible to return Week 8 (CBS Sports)'},
+  'Jayden Reed':      {status:'OUT', note:'IR - neck (CBS Sports)'},
+  "De'Von Achane":    {status:'OUT', note:'IR - ACL, season-ending (CBS Sports, FantasyAlarm)'},
+  'James Conner':     {status:'OUT', note:'IR - foot, eligible to return Week 5 but no activation reported yet -- treat as out until he is activated'},
+  'Travis Etienne':   {status:'OUT', note:'IR - hamstring, eligible to return Week 9 (CBS Sports)'},
+  'Jadarian Price':   {status:'OUT', note:'IR - chest, eligible to return Week 8 (CBS Sports)'},
+  'Xavier Legette':   {status:'OUT', note:'IR - knee, eligible to return Week 9 (CBS Sports); CAR is on bye in Week 5 anyway'},
+  // --- Ruled out / doubtful for Week 5: treated as out ---
+  'Baker Mayfield':   {status:'OUT', note:'dislocated throwing thumb, out Week 5, return around Week 7 (CBS Sports); Jalon Daniels starts at DAL'},
+  'Caleb Williams':   {status:'OUT', note:'hamstring, ruled out for Week 5 at GB, expected back Week 6 (CBS Sports); Tyson Bagent starts'},
+  'Marcus Mariota':   {status:'OUT', note:'MCL sprain, doubtful Week 5 and reports point to Weeks 8-11 (CBS Sports, DLF); Jayden Daniels questionable, Athan Kaliakmanis next'},
+  'Breece Hall':      {status:'OUT', note:'quadriceps, DOUBTFUL for Week 5 (CBS Sports) -- treated as out'},
+  'Mason Taylor':     {status:'OUT', note:'thumb, DOUBTFUL for Week 5 (CBS Sports) -- treated as out'},
+  'Dallas Goedert':   {status:'OUT', note:'MCL sprain, listed DOUBTFUL by CBS Sports (Eagles beat reports say questionable, third missed game) -- treated as out'},
+  // --- Healthy backups: not starting ---
   'Drew Lock':        {status:'BACKUP', note:'backup to Sam Darnold'},
   'Tua Tagovailoa':   {status:'BACKUP', note:'backup to Michael Penix Jr.'},
   'Cooper Rush':      {status:'BACKUP', note:'third string'},
   'Shedeur Sanders':  {status:'BACKUP', note:'backup to Deshaun Watson'},
   'Justin Fields':    {status:'BACKUP', note:'backup to Patrick Mahomes'},
-  'Nico Collins':     {status:'QUESTIONABLE', note:'hamstring, missed Weeks 2-3; Week 4 status not yet reported'},
-  'Jayden Daniels':   {status:'QUESTIONABLE', note:'elbow dislocation, missed Week 3; week-to-week'},
-  'Puka Nacua':       {status:'QUESTIONABLE', note:'hip, inactive Week 3'},
-  'Rico Dowdle':      {status:'QUESTIONABLE', note:'toe, out Week 3'},
-  'Jaylen Wright':    {status:'QUESTIONABLE', note:'stinger, inactive Week 3'},
-  'Travis Etienne':   {status:'QUESTIONABLE', note:'left Week 3 and did not return'},
-  'Mike Evans':       {status:'QUESTIONABLE', note:'rib strain, left Week 3'},
-  'Justin Jefferson': {status:'QUESTIONABLE', note:'ankle, left Week 3 early'},
-  'Baker Mayfield':   {status:'QUESTIONABLE', note:'dislocated throwing thumb, MRI pending'},
-  'Breece Hall':      {status:'QUESTIONABLE', note:'thigh, left Week 3'},
-  'Caleb Williams':   {status:'QUESTIONABLE', note:'hamstring, week-to-week - may miss multiple games (not on IR)'},
+  'Athan Kaliakmanis':{status:'BACKUP', note:'next man up only if Jayden Daniels cannot go (Mariota out); listed so WAS is not double-counted at QB'},
+  'Case Keenum':      {status:'BACKUP', note:'QB2 behind Tyson Bagent for Week 5 (did not play in Week 4)'},
+  // --- Uncertain: still counted, shown with a ? badge. Verify before any real decision ---
+  'Lamar Jackson':    {status:'QUESTIONABLE', note:'ankle, MRI pending, day-to-day (CBS Sports, Yahoo); Tyler Huntley is the backup'},
+  'Saquon Barkley':   {status:'QUESTIONABLE', note:'hamstring, left Week 4 after 4 snaps -- CBS lists questionable, NBC Sports Philadelphia says out; reports conflict'},
+  'DeVonta Smith':    {status:'QUESTIONABLE', note:'hamstring, inactive Week 4 -- CBS lists questionable but NBC Sports Philadelphia says out and expects more than one missed game'},
+  'Marquise Brown':   {status:'QUESTIONABLE', note:'ankle, missed consecutive games -- CBS lists questionable, NBC Sports Philadelphia says out'},
+  "Ja'Marr Chase":    {status:'QUESTIONABLE', note:'concussion protocol -- CBS lists questionable, other reports say out'},
+  'Tee Higgins':      {status:'QUESTIONABLE', note:'groin/adductor, exited late in Week 4 (CBS Sports)'},
+  'Justin Jefferson': {status:'QUESTIONABLE', note:'ankle, inactive Week 4, hoped to return Week 5 (CBS Sports)'},
+  'Jayden Daniels':   {status:'QUESTIONABLE', note:'elbow, missed Weeks 3-4 -- expected to start Week 5 per some reports, CBS lists questionable'},
+  'Terry McLaurin':   {status:'QUESTIONABLE', note:'hamstring, missed Week 4 (CBS Sports)'},
+  'Rachaad White':    {status:'QUESTIONABLE', note:'shoulder (CBS Sports)'},
+  'D.J. Moore':       {status:'QUESTIONABLE', note:'shoulder -- CBS lists questionable, FantasyPros says doubtful'},
+  'Ladd McConkey':    {status:'QUESTIONABLE', note:'foot re-aggravation (CBS Sports); FantasyPros lists out'},
+  'Keenan Allen':     {status:'QUESTIONABLE', note:'groin, missed Week 4 (CBS Sports)'},
+  'Jeremiyah Love':   {status:'QUESTIONABLE', note:'ankle sprains (CBS Sports)'},
+  'Kyle Monangai':    {status:'QUESTIONABLE', note:'thumb, late-game injury in Week 4 (CBS Sports)'},
+  'Colby Parkinson':  {status:'QUESTIONABLE', note:'shoulder (AC joint) (CBS Sports)'},
+  'Tyler Higbee':     {status:'QUESTIONABLE', note:'questionable per FantasyPros, injury not specified'},
+  'Noah Fant':        {status:'QUESTIONABLE', note:'abdomen (CBS Sports)'},
+  'Rico Dowdle':      {status:'QUESTIONABLE', note:'toe, inactive Week 4 (CBS Sports); FantasyAlarm expects a Week 5 return'},
+  'CeeDee Lamb':      {status:'QUESTIONABLE', note:'thigh, on the Week 5 practice report (footballdb); played all of Week 4'},
+  'Chris Brooks':     {status:'QUESTIONABLE', note:'ankle, left Week 4 early (FantasyAlarm only; not yet on the CBS report)'},
+  'Mack Hollins':     {status:'QUESTIONABLE', note:'calf, left Week 4 early (FantasyAlarm only; not yet on the CBS report)'},
+  'Adonai Mitchell':  {status:'QUESTIONABLE', note:'finger (FantasyAlarm only; not yet on the CBS report)'},
+  'Rashee Rice':      {status:'QUESTIONABLE', note:'hamstring, left Week 4; KC is on bye in Week 5, CBS lists him questionable for Week 6'},
+  'Jalen Coker':      {status:'QUESTIONABLE', note:'quadriceps; CAR is on bye in Week 5, CBS lists him questionable for Week 6'},
 };
-const AVAILABILITY_LAST_VERIFIED = 'Sept 28, 2026';  // real, current date this table (and its Week 3+ overrides) was last checked against actual injury reports -- shown on the Betting tab itself, not just in this comment, since this is manually maintained and WILL go stale
-const AVAILABILITY_FROM_WEEK = 4;   // table reflects status going into Week 4; earlier weeks are history, and the season-average view has no week
+const AVAILABILITY_LAST_VERIFIED = 'Oct 7, 2026';  // real, current date this table (and its Week 3+ overrides) was last checked against actual injury reports -- shown on the Betting tab itself, not just in this comment, since this is manually maintained and WILL go stale
+const AVAILABILITY_FROM_WEEK = 5;   // table reflects status going into Week 5; earlier weeks are history, and the season-average view has no week
 function availabilityOf(p){ return PLAYER_AVAILABILITY[p.n] || null; }
 // Games NOT yet played when the table was last updated: these statuses apply even though the week is before
-// AVAILABILITY_FROM_WEEK. Clear each entry in the next sweep once that game is history.
+// AVAILABILITY_FROM_WEEK. Week 3 entries are kept as history so that past-week views show what actually happened.
 const AVAILABILITY_WEEK_OVERRIDES = {
   3: {
     'Caleb Williams': {status:'OUT', note:'hamstring - ruled out for Monday night vs PHI (Case Keenum starts, Tyson Bagent backup)', replacement:'Case Keenum',
@@ -4323,7 +4362,7 @@ function compute(){
   }
 
   // Real, visible matchup-quality note: surfaces the real, disclosed defense-vs-position
-  // signal (DraftEdge DVP, same source/weight for all 4 positions) whenever it's
+  // signal (ESPN box-score DVP, same source for all 4 positions) whenever it's
   // significant enough to matter, so the effect is actually visible on screen instead
   // of only existing in the underlying math. Added Sept 2026 after finding these
   // adjustments were firing correctly but were completely invisible in the UI.
@@ -4345,7 +4384,7 @@ function compute(){
       const cls = pct > 0 ? 'up' : 'down';
       const oppName = (TEAMS[opts.oppAb] && TEAMS[opts.oppAb].name) || opts.oppAb;
       matchupBox.innerHTML = `<span class="delta ${cls}" style="font-size:13px;">
-        Real matchup signal: ${oppName} ${dir} ${p.p}s (${pct>0?'+':''}${pct}% vs. league average, DraftEdge real box-score data; applied to the projection at ${Math.round(MATCHUP_SHRINK*100)}% strength)
+        Real matchup signal: ${oppName} ${dir} ${p.p}s (${pct>0?'+':''}${pct}% vs. league average, ESPN box-score yards allowed to the position; applied to the projection at ${Math.round(MATCHUP_SHRINK*100)}% strength)
       </span>`;
     }
   }
@@ -5079,26 +5118,23 @@ function renderBetting(){
   resultsEl.innerHTML = html;
 }
 
-/* DEFENSE VS POSITION (real, PFF-sourced proxy). PFF and ESPN do not publish a direct
-   "yards allowed by offensive position" stat, so this is built from real defender-position
-   coverage data instead: PFF's Defense Coverage report (premium.pff.com/nfl/positions/2025/
-   REGPO/defense-coverage), full 2025 season, 894 real defenders league-wide, summed by team
-   and by DEFENDER position, divided by 17 real games.
-   This is a real, reasonable proxy, not a precise isolation: cornerbacks primarily cover WRs,
-   safeties primarily cover TEs, linebackers primarily cover RBs in real NFL schemes, but a
-   defender's own position doesn't always match the offensive position he's covering on a given
-   play (nickel corners sometimes travel with TEs, linebackers sometimes spy receiving backs).
-   wr = real yards/game via CB coverage. te = real yards/game via Safety coverage.
-   rb = real yards/game via LB coverage. */
-const DVP_PROXY = {
-  ARI:{wr:104.6,te:53.5,rb:66.5}, ATL:{wr:117.7,te:41.8,rb:49.2}, BAL:{wr:119.4,te:75.7,rb:51.3}, BUF:{wr:76.4,te:56.8,rb:61.4},
-  CAR:{wr:98.4,te:61.8,rb:66.6}, CHI:{wr:130.8,te:74.2,rb:69.4}, CIN:{wr:91.5,te:44.3,rb:90.1}, CLE:{wr:96.2,te:50.5,rb:45.9},
-  DAL:{wr:105.6,te:47.7,rb:84.9}, DEN:{wr:130.1,te:34.8,rb:52.4}, DET:{wr:122.4,te:35.8,rb:68.2}, GB:{wr:95.2,te:58.2,rb:87.2},
-  HOU:{wr:85.4,te:69.5,rb:68.8}, IND:{wr:140.3,te:54.5,rb:67.3}, JAX:{wr:108.3,te:54.2,rb:77.9}, KC:{wr:68.8,te:65.8,rb:62.6},
-  LAC:{wr:90.4,te:37.5,rb:64.4}, LAR:{wr:132.2,te:98.4,rb:58.1}, LV:{wr:82.6,te:48.9,rb:69.3}, MIA:{wr:73.7,te:52.2,rb:81.4},
-  MIN:{wr:67.5,te:42.0,rb:48.4}, NE:{wr:114.5,te:37.1,rb:87.4}, NO:{wr:107.6,te:26.5,rb:45.8}, NYG:{wr:124.6,te:48.3,rb:45.7},
-  NYJ:{wr:82.4,te:54.2,rb:74.6}, PHI:{wr:129.1,te:50.1,rb:47.5}, PIT:{wr:91.4,te:74.5,rb:84.1}, SEA:{wr:102.9,te:73.8,rb:76.0},
-  SF:{wr:107.4,te:60.2,rb:88.8}, TB:{wr:113.2,te:46.2,rb:73.5}, TEN:{wr:115.5,te:64.6,rb:69.8}, WAS:{wr:120.9,te:60.4,rb:65.5},
+/* DEFENSE VS POSITION -- REAL YARDS ALLOWED, ESPN box scores (rebuilt Oct 7, 2026; replaces the earlier
+   PFF defender-position proxy now that real positional yardage is available). Every offensive player's
+   yards in each of 2026 Weeks 1-4 are credited to the opposing defense by the player's ESPN roster
+   position, then divided by games played. wr = WR receiving yards/game allowed. te = TE receiving
+   yards/game allowed. rb = RB rushing + receiving yards/game allowed. Rank 1 = most yards allowed.
+   Four games is a small sample (a single shootout moves a team a lot), so read it as "what has happened",
+   not "what will happen" -- the projection engine uses the 2025-weighted DEFENSE-VS-POSITION multipliers
+   above, not this raw table. Refresh weekly. */
+const DVP_2026 = {
+  ARI:{wr:166.8,te:66,rb:112}, ATL:{wr:195.3,te:53.8,rb:76}, BAL:{wr:183.5,te:36.3,rb:88.5}, BUF:{wr:186,te:47.5,rb:131.5},
+  CAR:{wr:151.8,te:53.3,rb:157.5}, CHI:{wr:128.8,te:34.8,rb:116.8}, CIN:{wr:130,te:102.3,rb:118}, CLE:{wr:172,te:60.5,rb:124.3},
+  DAL:{wr:168.3,te:52.8,rb:118.8}, DEN:{wr:133.8,te:67.3,rb:157.8}, DET:{wr:207.3,te:101.8,rb:114.3}, GB:{wr:139,te:33.3,rb:142},
+  HOU:{wr:207.5,te:56,rb:90.5}, IND:{wr:176.5,te:52.3,rb:142}, JAX:{wr:210.5,te:32.8,rb:95.8}, KC:{wr:108.5,te:82.3,rb:107.3},
+  LAC:{wr:148.3,te:46,rb:133.8}, LAR:{wr:106.3,te:21.3,rb:107.5}, LV:{wr:151.8,te:46,rb:135.8}, MIA:{wr:105.8,te:83.3,rb:141.5},
+  MIN:{wr:148,te:49.5,rb:99.5}, NE:{wr:147.3,te:26,rb:121.8}, NO:{wr:122.5,te:76.5,rb:167.5}, NYG:{wr:143.5,te:49.5,rb:120},
+  NYJ:{wr:127,te:44.8,rb:147.5}, PHI:{wr:162.3,te:39,rb:132.8}, PIT:{wr:148.5,te:36.8,rb:138.3}, SEA:{wr:98.8,te:29,rb:109.8},
+  SF:{wr:123.5,te:39.5,rb:143.5}, TB:{wr:105.8,te:68.3,rb:102.8}, TEN:{wr:167,te:27.3,rb:126}, WAS:{wr:166.5,te:60.8,rb:100.8},
 };
 
 function renderDefProfile(){
@@ -5138,9 +5174,9 @@ let dvpSortCol = 'team', dvpSortDir = 'asc';
 function renderDvP(){
   const body = document.getElementById('dvpBody');
   body.innerHTML = '';
-  const teams = Object.keys(DVP_PROXY);
+  const teams = Object.keys(DVP_2026);
   const rankOf = (key) => {
-    const sorted = [...teams].sort((a,b) => DVP_PROXY[b][key] - DVP_PROXY[a][key]);
+    const sorted = [...teams].sort((a,b) => DVP_2026[b][key] - DVP_2026[a][key]);
     const ranks = {};
     sorted.forEach((t,i) => ranks[t] = i+1);
     return ranks;
@@ -5163,7 +5199,7 @@ function renderDvP(){
   if(dvpSortCol === 'team'){
     sortedTeams.sort((a,b) => TEAMS[a].name.localeCompare(TEAMS[b].name));
   } else {
-    sortedTeams.sort((a,b) => DVP_PROXY[b][dvpSortCol] - DVP_PROXY[a][dvpSortCol]);
+    sortedTeams.sort((a,b) => DVP_2026[b][dvpSortCol] - DVP_2026[a][dvpSortCol]);
   }
   if(dvpSortDir === 'desc') sortedTeams.reverse();
 
@@ -5172,7 +5208,7 @@ function renderDvP(){
   if(selectedTeam) sortedTeams = sortedTeams.filter(t => t === selectedTeam);
 
   sortedTeams.forEach(t => {
-    const d = DVP_PROXY[t];
+    const d = DVP_2026[t];
     const team = TEAMS[t];
     const tr = document.createElement('tr');
     tr.innerHTML = `<td class="tm" style="cursor:pointer;color:var(--amber);" onclick="jumpToTeamRoster('${t}')">${team.name} (${t})</td>
