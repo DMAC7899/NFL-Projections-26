@@ -407,7 +407,7 @@
           pass/run-block grade, and sack rate as adjustments to output — not usage. Weekly sportsbook
           lines aren't posted this far ahead, so this remains a season-level calibration.
           <br><br>
-          <b>Sack conversion</b> is a real 2025 team-defense metric, aggregated from every individual
+          <b>Sack conversion</b> is a real team-defense metric (2025 full season plus 2026 so far), aggregated from every individual
           pass-rusher's sacks and total pressures (PFF Pass Rush Summary) up to a team total — sacks divided
           by pressures generated. Two defenses can pressure the QB at the same rate but finish very
           differently (real 2025 range: 9.4% to 20.5%), so this is layered on top of the existing
@@ -698,7 +698,7 @@
     <b>Coverage shell:</b> real 2025 man/zone rates from PFF's Defense Coverage Scheme report,
     snap-weighted across every real defender (replaces an earlier FTN/nflverse-sourced table that
     was found to systematically overstate man rate by an average of 7.5 points league-wide).
-    <b>Pressure rate:</b> real ESPN sack-rate data (sacks per real dropback, 2025 season, all 32
+    <b>Pressure rate:</b> real ESPN sack-rate data (sacks per real dropback, 2025 season blended with 2026 Weeks 1-4, all 32
     teams), replacing FTN Data via nflverse's broader pressure-rate definition. <b>Time-to-throw</b>
     is still FTN Data via nflverse, pending its own PFF/ESPN rebuild.
     <b>Rankings/Compare</b> auto-apply the real schedule-driven opponent, defense tier, coverage shell and
@@ -1562,40 +1562,40 @@ const wxRushMult = [1.00, 1.07];
    man rate): LAR +24, CLE +19, CHI +17, CIN +16, NE +14, JAX +12, PIT -15, MIN -11, DET -10, SEA -9. LEAGUE_AVG_MAN
    is recomputed from the blended values. */
 const COVERAGE_2025 = {
-ARI:{man:0.1764,zone:0.8236,pressure:0.0498,ttt:2.72,dom:'Cover 3',domPct:0.261,c0:0.036,c1:0.183,c2:0.202,c3:0.261,c4:0.129},
-ATL:{man:0.2272,zone:0.7728,pressure:0.0973,ttt:2.68,dom:'Cover 1',domPct:0.287,c0:0.023,c1:0.287,c2:0.158,c3:0.248,c4:0.156},
-BAL:{man:0.2949,zone:0.7051,pressure:0.0458,ttt:2.66,dom:'Cover 3',domPct:0.314,c0:0.063,c1:0.249,c2:0.183,c3:0.314,c4:0.076},
-BUF:{man:0.2171,zone:0.7829,pressure:0.072,ttt:2.76,dom:'Cover 2',domPct:0.266,c0:0.031,c1:0.185,c2:0.266,c3:0.221,c4:0.106},
-CAR:{man:0.163,zone:0.837,pressure:0.0559,ttt:2.72,dom:'Cover 3',domPct:0.323,c0:0.024,c1:0.178,c2:0.224,c3:0.323,c4:0.144},
-CHI:{man:0.3069,zone:0.6931,pressure:0.0616,ttt:2.7,dom:'Cover 1',domPct:0.328,c0:0.048,c1:0.328,c2:0.25,c3:0.214,c4:0.05},
-CIN:{man:0.3138,zone:0.6862,pressure:0.0615,ttt:2.84,dom:'Cover 3',domPct:0.317,c0:0.064,c1:0.256,c2:0.201,c3:0.317,c4:0.033},
-CLE:{man:0.4342,zone:0.5658,pressure:0.0981,ttt:2.6,dom:'Cover 1',domPct:0.348,c0:0.044,c1:0.348,c2:0.199,c3:0.269,c4:0.064},
-DAL:{man:0.2485,zone:0.7515,pressure:0.0592,ttt:2.75,dom:'Cover 3',domPct:0.283,c0:0.032,c1:0.222,c2:0.239,c3:0.283,c4:0.133},
-DEN:{man:0.2917,zone:0.7083,pressure:0.1029,ttt:2.7,dom:'Cover 1',domPct:0.307,c0:0.066,c1:0.307,c2:0.152,c3:0.249,c4:0.083},
-DET:{man:0.3214,zone:0.6786,pressure:0.0811,ttt:2.83,dom:'Cover 1',domPct:0.286,c0:0.028,c1:0.286,c2:0.165,c3:0.27,c4:0.074},
-GB:{man:0.1918,zone:0.8082,pressure:0.0615,ttt:2.81,dom:'Cover 3',domPct:0.319,c0:0.019,c1:0.185,c2:0.288,c3:0.319,c4:0.093},
-HOU:{man:0.2017,zone:0.7983,pressure:0.0803,ttt:2.65,dom:'Cover 1',domPct:0.285,c0:0.018,c1:0.285,c2:0.223,c3:0.231,c4:0.122},
-IND:{man:0.2991,zone:0.7009,pressure:0.0586,ttt:2.79,dom:'Cover 3',domPct:0.258,c0:0.057,c1:0.251,c2:0.236,c3:0.258,c4:0.074},
-JAX:{man:0.2342,zone:0.7658,pressure:0.048,ttt:2.62,dom:'Cover 3',domPct:0.291,c0:0.043,c1:0.178,c2:0.262,c3:0.291,c4:0.095},
-KC:{man:0.258,zone:0.742,pressure:0.0643,ttt:2.67,dom:'Cover 2',domPct:0.247,c0:0.073,c1:0.219,c2:0.247,c3:0.203,c4:0.122},
-LAC:{man:0.1796,zone:0.8204,pressure:0.0818,ttt:2.68,dom:'Cover 3',domPct:0.299,c0:0.042,c1:0.138,c2:0.253,c3:0.299,c4:0.119},
-LAR:{man:0.2666,zone:0.7334,pressure:0.0739,ttt:2.72,dom:'Cover 3',domPct:0.267,c0:0.029,c1:0.185,c2:0.239,c3:0.267,c4:0.105},
-LV:{man:0.1803,zone:0.8197,pressure:0.066,ttt:2.73,dom:'Cover 3',domPct:0.374,c0:0.048,c1:0.148,c2:0.215,c3:0.374,c4:0.111},
-MIA:{man:0.232,zone:0.768,pressure:0.0704,ttt:2.7,dom:'Cover 2',domPct:0.346,c0:0.024,c1:0.209,c2:0.346,c3:0.233,c4:0.072},
-MIN:{man:0.1493,zone:0.8507,pressure:0.0988,ttt:2.66,dom:'Cover 2',domPct:0.365,c0:0.051,c1:0.08,c2:0.365,c3:0.241,c4:0.116},
-NE:{man:0.341,zone:0.659,pressure:0.0623,ttt:2.74,dom:'Cover 3',domPct:0.276,c0:0.04,c1:0.261,c2:0.257,c3:0.276,c4:0.098},
-NO:{man:0.1688,zone:0.8312,pressure:0.084,ttt:2.8,dom:'Cover 3',domPct:0.403,c0:0.03,c1:0.169,c2:0.153,c3:0.403,c4:0.094},
-NYG:{man:0.3627,zone:0.6373,pressure:0.0662,ttt:2.67,dom:'Cover 1',domPct:0.313,c0:0.034,c1:0.313,c2:0.146,c3:0.258,c4:0.148},
-NYJ:{man:0.2965,zone:0.7035,pressure:0.0481,ttt:2.63,dom:'Cover 1',domPct:0.283,c0:0.052,c1:0.283,c2:0.26,c3:0.224,c4:0.068},
-PHI:{man:0.2538,zone:0.7462,pressure:0.0717,ttt:2.72,dom:'Cover 1',domPct:0.351,c0:0.03,c1:0.351,c2:0.171,c3:0.218,c4:0.079},
-PIT:{man:0.2722,zone:0.7278,pressure:0.0726,ttt:2.63,dom:'Cover 3',domPct:0.281,c0:0.042,c1:0.259,c2:0.202,c3:0.281,c4:0.088},
-SEA:{man:0.1417,zone:0.8583,pressure:0.0726,ttt:2.76,dom:'Cover 2',domPct:0.31,c0:0.031,c1:0.188,c2:0.31,c3:0.215,c4:0.072},
-SF:{man:0.183,zone:0.817,pressure:0.0331,ttt:2.75,dom:'Cover 3',domPct:0.31,c0:0.028,c1:0.218,c2:0.17,c3:0.31,c4:0.142},
-TB:{man:0.2125,zone:0.7875,pressure:0.0612,ttt:2.64,dom:'Cover 3',domPct:0.306,c0:0.049,c1:0.18,c2:0.215,c3:0.306,c4:0.108},
-TEN:{man:0.1841,zone:0.8159,pressure:0.0755,ttt:2.73,dom:'Cover 2',domPct:0.288,c0:0.033,c1:0.199,c2:0.288,c3:0.258,c4:0.096},
-WAS:{man:0.2135,zone:0.7865,pressure:0.0722,ttt:2.81,dom:'Cover 1',domPct:0.252,c0:0.03,c1:0.252,c2:0.193,c3:0.235,c4:0.147},
+ARI:{man:0.1764,zone:0.8236,pressure:0.0533,ttt:2.72,dom:'Cover 3',domPct:0.261,c0:0.036,c1:0.183,c2:0.202,c3:0.261,c4:0.129},
+ATL:{man:0.2272,zone:0.7728,pressure:0.086,ttt:2.68,dom:'Cover 1',domPct:0.287,c0:0.023,c1:0.287,c2:0.158,c3:0.248,c4:0.156},
+BAL:{man:0.2949,zone:0.7051,pressure:0.0464,ttt:2.66,dom:'Cover 3',domPct:0.314,c0:0.063,c1:0.249,c2:0.183,c3:0.314,c4:0.076},
+BUF:{man:0.2171,zone:0.7829,pressure:0.0704,ttt:2.76,dom:'Cover 2',domPct:0.266,c0:0.031,c1:0.185,c2:0.266,c3:0.221,c4:0.106},
+CAR:{man:0.163,zone:0.837,pressure:0.0553,ttt:2.72,dom:'Cover 3',domPct:0.323,c0:0.024,c1:0.178,c2:0.224,c3:0.323,c4:0.144},
+CHI:{man:0.3069,zone:0.6931,pressure:0.0673,ttt:2.7,dom:'Cover 1',domPct:0.328,c0:0.048,c1:0.328,c2:0.25,c3:0.214,c4:0.05},
+CIN:{man:0.3138,zone:0.6862,pressure:0.067,ttt:2.84,dom:'Cover 3',domPct:0.317,c0:0.064,c1:0.256,c2:0.201,c3:0.317,c4:0.033},
+CLE:{man:0.4342,zone:0.5658,pressure:0.094,ttt:2.6,dom:'Cover 1',domPct:0.348,c0:0.044,c1:0.348,c2:0.199,c3:0.269,c4:0.064},
+DAL:{man:0.2485,zone:0.7515,pressure:0.0543,ttt:2.75,dom:'Cover 3',domPct:0.283,c0:0.032,c1:0.222,c2:0.239,c3:0.283,c4:0.133},
+DEN:{man:0.2917,zone:0.7083,pressure:0.0935,ttt:2.7,dom:'Cover 1',domPct:0.307,c0:0.066,c1:0.307,c2:0.152,c3:0.249,c4:0.083},
+DET:{man:0.3214,zone:0.6786,pressure:0.0815,ttt:2.83,dom:'Cover 1',domPct:0.286,c0:0.028,c1:0.286,c2:0.165,c3:0.27,c4:0.074},
+GB:{man:0.1918,zone:0.8082,pressure:0.0648,ttt:2.81,dom:'Cover 3',domPct:0.319,c0:0.019,c1:0.185,c2:0.288,c3:0.319,c4:0.093},
+HOU:{man:0.2017,zone:0.7983,pressure:0.0822,ttt:2.65,dom:'Cover 1',domPct:0.285,c0:0.018,c1:0.285,c2:0.223,c3:0.231,c4:0.122},
+IND:{man:0.2991,zone:0.7009,pressure:0.0593,ttt:2.79,dom:'Cover 3',domPct:0.258,c0:0.057,c1:0.251,c2:0.236,c3:0.258,c4:0.074},
+JAX:{man:0.2342,zone:0.7658,pressure:0.0517,ttt:2.62,dom:'Cover 3',domPct:0.291,c0:0.043,c1:0.178,c2:0.262,c3:0.291,c4:0.095},
+KC:{man:0.258,zone:0.742,pressure:0.0571,ttt:2.67,dom:'Cover 2',domPct:0.247,c0:0.073,c1:0.219,c2:0.247,c3:0.203,c4:0.122},
+LAC:{man:0.1796,zone:0.8204,pressure:0.0816,ttt:2.68,dom:'Cover 3',domPct:0.299,c0:0.042,c1:0.138,c2:0.253,c3:0.299,c4:0.119},
+LAR:{man:0.2666,zone:0.7334,pressure:0.0698,ttt:2.72,dom:'Cover 3',domPct:0.267,c0:0.029,c1:0.185,c2:0.239,c3:0.267,c4:0.105},
+LV:{man:0.1803,zone:0.8197,pressure:0.07,ttt:2.73,dom:'Cover 3',domPct:0.374,c0:0.048,c1:0.148,c2:0.215,c3:0.374,c4:0.111},
+MIA:{man:0.232,zone:0.768,pressure:0.0635,ttt:2.7,dom:'Cover 2',domPct:0.346,c0:0.024,c1:0.209,c2:0.346,c3:0.233,c4:0.072},
+MIN:{man:0.1493,zone:0.8507,pressure:0.1007,ttt:2.66,dom:'Cover 2',domPct:0.365,c0:0.051,c1:0.08,c2:0.365,c3:0.241,c4:0.116},
+NE:{man:0.341,zone:0.659,pressure:0.0618,ttt:2.74,dom:'Cover 3',domPct:0.276,c0:0.04,c1:0.261,c2:0.257,c3:0.276,c4:0.098},
+NO:{man:0.1688,zone:0.8312,pressure:0.0796,ttt:2.8,dom:'Cover 3',domPct:0.403,c0:0.03,c1:0.169,c2:0.153,c3:0.403,c4:0.094},
+NYG:{man:0.3627,zone:0.6373,pressure:0.0577,ttt:2.67,dom:'Cover 1',domPct:0.313,c0:0.034,c1:0.313,c2:0.146,c3:0.258,c4:0.148},
+NYJ:{man:0.2965,zone:0.7035,pressure:0.0515,ttt:2.63,dom:'Cover 1',domPct:0.283,c0:0.052,c1:0.283,c2:0.26,c3:0.224,c4:0.068},
+PHI:{man:0.2538,zone:0.7462,pressure:0.0634,ttt:2.72,dom:'Cover 1',domPct:0.351,c0:0.03,c1:0.351,c2:0.171,c3:0.218,c4:0.079},
+PIT:{man:0.2722,zone:0.7278,pressure:0.0741,ttt:2.63,dom:'Cover 3',domPct:0.281,c0:0.042,c1:0.259,c2:0.202,c3:0.281,c4:0.088},
+SEA:{man:0.1417,zone:0.8583,pressure:0.0743,ttt:2.76,dom:'Cover 2',domPct:0.31,c0:0.031,c1:0.188,c2:0.31,c3:0.215,c4:0.072},
+SF:{man:0.183,zone:0.817,pressure:0.0344,ttt:2.75,dom:'Cover 3',domPct:0.31,c0:0.028,c1:0.218,c2:0.17,c3:0.31,c4:0.142},
+TB:{man:0.2125,zone:0.7875,pressure:0.0583,ttt:2.64,dom:'Cover 3',domPct:0.306,c0:0.049,c1:0.18,c2:0.215,c3:0.306,c4:0.108},
+TEN:{man:0.1841,zone:0.8159,pressure:0.0738,ttt:2.73,dom:'Cover 2',domPct:0.288,c0:0.033,c1:0.199,c2:0.288,c3:0.258,c4:0.096},
+WAS:{man:0.2135,zone:0.7865,pressure:0.0678,ttt:2.81,dom:'Cover 1',domPct:0.252,c0:0.03,c1:0.252,c2:0.193,c3:0.235,c4:0.147},
 };
-const LEAGUE_AVG_MAN = 0.2443, LEAGUE_AVG_PRESSURE = 0.069, LEAGUE_AVG_TTT = 2.715, LEAGUE_AVG_C0 = 0.0394, LEAGUE_AVG_QB_RUSH_GAP = 2.3; // LEAGUE_AVG_MAN recomputed 2026-09-30 from the real PFF-sourced man/zone rebuild (was 0.3099 under FTN). LEAGUE_AVG_PRESSURE recomputed from real ESPN sack-rate data (was 0.300 under FTN's broader pressure-rate definition) -- see the pressurePassMult/pressureIntMult comment below for the required rescaling.
+const LEAGUE_AVG_MAN = 0.2443, LEAGUE_AVG_PRESSURE = 0.068, LEAGUE_AVG_TTT = 2.715, LEAGUE_AVG_C0 = 0.0394, LEAGUE_AVG_QB_RUSH_GAP = 2.3; // LEAGUE_AVG_MAN recomputed 2026-09-30 from the real PFF-sourced man/zone rebuild (was 0.3099 under FTN). LEAGUE_AVG_PRESSURE recomputed from real ESPN sack-rate data (was 0.300 under FTN's broader pressure-rate definition) -- see the pressurePassMult/pressureIntMult comment below for the required rescaling.
 
 /* Real 2025 team-level pass-rush sack conversion (PFF Pass Rush Summary, aggregated
    from individual pass-rushers up to team totals -- sacks / total pressures generated).
@@ -1604,26 +1604,26 @@ const LEAGUE_AVG_MAN = 0.2443, LEAGUE_AVG_PRESSURE = 0.069, LEAGUE_AVG_TTT = 2.7
    an additional real adjustment to QB pass yards/TD, layered on top of (not replacing) the
    existing opponent pressure-rate effect. */
 const TEAM_SACK_DATA = {
-ARI:{sacks:77,pressures:517,sackConvPct:14.8}, ATL:{sacks:94,pressures:565,sackConvPct:16.7},
-BAL:{sacks:102,pressures:643,sackConvPct:15.9}, BUF:{sacks:88,pressures:663,sackConvPct:13.3},
-CAR:{sacks:67,pressures:429,sackConvPct:15.6}, CHI:{sacks:89,pressures:563,sackConvPct:15.8},
-CIN:{sacks:70,pressures:506,sackConvPct:13.8}, CLE:{sacks:78,pressures:536,sackConvPct:14.6},
-DAL:{sacks:98,pressures:661,sackConvPct:14.8}, DEN:{sacks:170,pressures:861,sackConvPct:19.8},
-DET:{sacks:98,pressures:722,sackConvPct:13.6}, GB:{sacks:92,pressures:643,sackConvPct:14.3},
-HOU:{sacks:122,pressures:739,sackConvPct:16.5}, IND:{sacks:85,pressures:557,sackConvPct:15.3},
-JAX:{sacks:71,pressures:622,sackConvPct:11.4}, KC:{sacks:98,pressures:693,sackConvPct:14.2},
-LAC:{sacks:104,pressures:632,sackConvPct:16.5}, LAR:{sacks:140,pressures:904,sackConvPct:15.5},
-LV:{sacks:78,pressures:507,sackConvPct:15.4}, MIA:{sacks:76,pressures:507,sackConvPct:15.0},
-MIN:{sacks:102,pressures:660,sackConvPct:15.5}, NE:{sacks:82,pressures:637,sackConvPct:12.9},
-NO:{sacks:93,pressures:555,sackConvPct:16.8}, NYG:{sacks:89,pressures:549,sackConvPct:16.2},
-NYJ:{sacks:75,pressures:509,sackConvPct:14.7}, PHI:{sacks:112,pressures:849,sackConvPct:13.2},
-PIT:{sacks:106,pressures:687,sackConvPct:15.4}, SEA:{sacks:109,pressures:806,sackConvPct:13.5},
-SF:{sacks:67,pressures:528,sackConvPct:12.7}, TB:{sacks:94,pressures:707,sackConvPct:13.3},
-TEN:{sacks:77,pressures:477,sackConvPct:16.2}, WAS:{sacks:101,pressures:617,sackConvPct:16.4},
+ARI:{sacks:85,pressures:565,sackConvPct:15.0}, ATL:{sacks:103,pressures:677,sackConvPct:15.2},
+BAL:{sacks:108,pressures:714,sackConvPct:15.1}, BUF:{sacks:100,pressures:761,sackConvPct:13.1},
+CAR:{sacks:74,pressures:516,sackConvPct:14.3}, CHI:{sacks:98,pressures:619,sackConvPct:15.8},
+CIN:{sacks:85,pressures:589,sackConvPct:14.4}, CLE:{sacks:88,pressures:623,sackConvPct:14.1},
+DAL:{sacks:101,pressures:721,sackConvPct:14.0}, DEN:{sacks:178,pressures:934,sackConvPct:19.1},
+DET:{sacks:112,pressures:818,sackConvPct:13.7}, GB:{sacks:101,pressures:696,sackConvPct:14.5},
+HOU:{sacks:142,pressures:820,sackConvPct:17.3}, IND:{sacks:97,pressures:617,sackConvPct:15.7},
+JAX:{sacks:82,pressures:688,sackConvPct:11.9}, KC:{sacks:100,pressures:760,sackConvPct:13.2},
+LAC:{sacks:116,pressures:692,sackConvPct:16.8}, LAR:{sacks:146,pressures:971,sackConvPct:15.0},
+LV:{sacks:92,pressures:582,sackConvPct:15.8}, MIA:{sacks:80,pressures:552,sackConvPct:14.5},
+MIN:{sacks:121,pressures:756,sackConvPct:16.0}, NE:{sacks:91,pressures:705,sackConvPct:12.9},
+NO:{sacks:103,pressures:612,sackConvPct:16.8}, NYG:{sacks:92,pressures:587,sackConvPct:15.7},
+NYJ:{sacks:83,pressures:566,sackConvPct:14.7}, PHI:{sacks:116,pressures:907,sackConvPct:12.8},
+PIT:{sacks:117,pressures:743,sackConvPct:15.7}, SEA:{sacks:119,pressures:885,sackConvPct:13.4},
+SF:{sacks:72,pressures:587,sackConvPct:12.3}, TB:{sacks:100,pressures:751,sackConvPct:13.3},
+TEN:{sacks:84,pressures:531,sackConvPct:15.8}, WAS:{sacks:109,pressures:686,sackConvPct:15.9},
 };
-const LEAGUE_AVG_SACK_CONV = 15.0;
+const LEAGUE_AVG_SACK_CONV = 14.8;
 
-/* Real team-level run-defense grades, blended across two full real seasons
+/* [SUPERSEDED Oct 2026 by the 2025+2026 blend described below] Real team-level run-defense grades, blended across two full real seasons
    (2023 and 2024), aggregated from individual defenders (PFF Run Defense Summary,
    min 50 real run snaps each), snap-weighted to team totals within each season.
    Two signals: overall (every defender) and interior/'up the middle' (DI position
@@ -1669,26 +1669,38 @@ TEN:{ypcs:1.508,ydsPerTgt:9.19,tds:7}, WAS:{ypcs:1.329,ydsPerTgt:8.56,tds:5},
 };
 const LEAGUE_AVG_SLOT_YPCS = 1.167;
 
+/* RUN DEFENSE + PASS RUSH UPDATE Oct 7, 2026 (user request: run defence to 2025 AND 2026; sack/pressure rates with 2026 so far).
+   TEAM_RUN_DEFENSE_2024 (name kept so call sites don't change) was a 2023-24 blend; it is now a 2025 + 2026 (Weeks 1-4) blend,
+   weighted by games (17 : 4). overall = PFF team Run Defense grade (team pages, 2025 full season + 2026 Wk1-4);
+   interior = snap-weighted PFF run-defense grade of the DI position (2025 + 2026). Both are re-expressed on the table's previous
+   scale (same mean/spread as the old table) so the 0.12 / 0.06 multiplier weights keep the same size of effect -- raw PFF team
+   RDEF has ~4x the spread of the old defender-averaged figure and would otherwise have quadrupled the effect. The old table's
+   LAR Aaron Donald bump is superseded: LAR's 2026 snaps now come from games he actually played. 2025 vs 2026 team RDEF correlate
+   only 0.18 after four games, which is why 2026 is limited to 4/21 of the weight.
+   TEAM_SACK_DATA: 2026 Wk1-4 PFF team sacks/pressures (summed over ED, DI, LB rushers) ADDED to the 2025 totals (pooled, so each
+   sample counts by volume); sackConvPct recomputed; LEAGUE_AVG_SACK_CONV recomputed as the team mean.
+   COVERAGE_2025.pressure (ESPN sacks per dropback): 2025 value blended 17 : 4 with 2026 Wk1-4 ESPN defence sack rate
+   (sacks / (opponent pass attempts + sacks)); LEAGUE_AVG_PRESSURE recomputed as the team mean. */
 const TEAM_RUN_DEFENSE_2024 = {
-ARI:{overall:59.28,interior:49.75}, ATL:{overall:67.63,interior:62.36},
-BAL:{overall:64.84,interior:63.47}, BUF:{overall:61.91,interior:46.69},
-CAR:{overall:58.84,interior:53.31}, CHI:{overall:63.42,interior:49.45},
-CIN:{overall:62.31,interior:56.62}, CLE:{overall:64.17,interior:60.88},
-DAL:{overall:62.74,interior:49.21}, DEN:{overall:63.54,interior:54.43},
-DET:{overall:67.47,interior:58.08}, GB:{overall:59.72,interior:51.93},
-HOU:{overall:63.68,interior:46.69}, IND:{overall:64.05,interior:60.03},
-JAX:{overall:62.69,interior:56.59}, KC:{overall:65.78,interior:53.44},
-LAC:{overall:65.79,interior:53.02}, LAR:{overall:65.13,interior:63.32},
-LV:{overall:66.23,interior:52.53}, MIA:{overall:69.58,interior:65.12},
-MIN:{overall:65.76,interior:58.09}, NE:{overall:66.0,interior:55.08},
-NO:{overall:61.26,interior:40.94}, NYG:{overall:62.17,interior:57.61},
-NYJ:{overall:62.48,interior:53.23}, PHI:{overall:67.06,interior:60.01},
-PIT:{overall:64.44,interior:56.55}, SEA:{overall:63.56,interior:59.16},
-SF:{overall:62.34,interior:48.69}, TB:{overall:64.09,interior:51.74},
-TEN:{overall:62.86,interior:62.34}, WAS:{overall:58.9,interior:46.43},
+ARI:{overall:59.86,interior:50.04}, ATL:{overall:63.22,interior:58.35},
+BAL:{overall:65.93,interior:62.34}, BUF:{overall:60.69,interior:51.3},
+CAR:{overall:62.16,interior:57.26}, CHI:{overall:61.95,interior:45.66},
+CIN:{overall:59.79,interior:56.23}, CLE:{overall:66.87,interior:57.17},
+DAL:{overall:61.31,interior:63}, DEN:{overall:66.49,interior:57.82},
+DET:{overall:66.62,interior:58.83}, GB:{overall:62.82,interior:46.97},
+HOU:{overall:65.89,interior:54.86}, IND:{overall:62.44,interior:50.52},
+JAX:{overall:65.77,interior:56.25}, KC:{overall:66.46,interior:49.33},
+LAC:{overall:65.57,interior:63.31}, LAR:{overall:67.8,interior:61.56},
+LV:{overall:60.56,interior:45.74}, MIA:{overall:63.93,interior:53.82},
+MIN:{overall:65.14,interior:58.88}, NE:{overall:62.7,interior:49.75},
+NO:{overall:64.15,interior:50.5}, NYG:{overall:59.56,interior:51.53},
+NYJ:{overall:64.17,interior:59.76}, PHI:{overall:65,interior:57.98},
+PIT:{overall:64.91,interior:57.09}, SEA:{overall:67.89,interior:58.45},
+SF:{overall:58.52,interior:39.21}, TB:{overall:63.52,interior:58.26},
+TEN:{overall:65.87,interior:63.23}, WAS:{overall:62.2,interior:51.8}
 };
-const LEAGUE_AVG_RUN_D_OVERALL = 64.11;
-const LEAGUE_AVG_RUN_D_INTERIOR = 54.36;
+const LEAGUE_AVG_RUN_D_OVERALL = 63.74;
+const LEAGUE_AVG_RUN_D_INTERIOR = 54.9;
 
 /* Real PFF grades (2025 regular season, min 6 games): informational only, not used
    in the projection math -- BTT/TWP rate and PFF's own grade largely measure the same
