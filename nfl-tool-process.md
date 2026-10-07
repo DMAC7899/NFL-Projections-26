@@ -173,3 +173,8 @@ but never made it into the main `P` array that actually drives projections.
 - OL: scrape PFF T/G/C run-block grade and pass-block GRADE (not the EFF column), blend 17:4, rescale to old mean/sd, write olRunGrade/olPbe in TEAMS.
 - QB_ATT_COMP: ESPN box scores per QB (att, comp, games); blend with 2025 by 2026 games/(17+games); skip 1-game samples.
 - Betting team points: base (win totals + PFF grades) x engine matchup factor (half weight, +/-12%) x injury factor (60% pass-through, floor 0.80) via teamEngineAdjustment(). Weekly: refresh availability overrides first, then re-run the Weeks 1-4 backtest (backtest uses ESPN scoreboard scores) to confirm error did not rise.
+
+## Defensive rosters and injuries (added Oct 7, 2026)
+- DEF_ROSTER: PFF /nfl/positions/{yr}/REGPO/defense?position=ED|DI|LB|CB|S for 2025 and 2026 (50 rows per page, click NEXT); blend DEF grade by snaps with a 150-snap prior of 60; keep top 3 ED/DI/LB, 4 CB, 3 S by 2026 snaps per game.
+- DEF_AVAILABILITY: ESPN injuries API (site.api.espn.com/apis/site/v2/sports/football/nfl/injuries), defensive positions only, statuses Out/IR/Doubtful/Questionable, matched by name per team. Refresh every Friday and remove expired entries.
+- defenderInjuryFactors() converts missing defenders into pass/run multipliers used by the engine and team points. Check the team table for sanity (star edge out is about +0.5 to +1 point allowed).

@@ -665,8 +665,13 @@
         (2) <i>Injuries:</i> the lineup is rebuilt from the best available players and 60% of the lost projected
         PPR comes off team points (teammates absorb the rest), floored at -20%; a QB change with real PFF grades still uses
         the grade ratio instead. Check on Weeks 1-4 results: team-score error 7.63 &rarr; 7.53 pts, total error
-        11.89 &rarr; 11.67, margin error 9.59 &rarr; 9.50 (in-sample, injuries not replayed). Not covered: defensive
-        injuries (no defensive roster is tracked), weather, and stale preseason win totals.
+        11.89 &rarr; 11.67, margin error 9.59 &rarr; 9.50 (in-sample, injuries not replayed). Defensive injuries are now covered:
+        every team carries its key defenders (top 3 ED, 3 DI, 3 LB, 4 CB, 3 S by 2026 snaps) valued by blended 2025+2026
+        PFF grade; an out defender costs (grade &minus; 55) &times; snap share, converted at 1.6% per team-grade point, split into
+        pass and run effects, and feeds the player projections (pass yards/TD/receiving and rushing) as well as team points.
+        OUT/IR counts 100%, doubtful 75%, questionable 20% (ESPN report, Oct 7). A star edge or corner out is roughly +0.5 to +1 point
+        allowed. The scale is a judgment call (no past weeks to backtest) so revisit as weeks accumulate. Not covered: weather and stale
+        preseason win totals.
       </div>
     </div>
     <div class="filter-row">
@@ -1450,6 +1455,143 @@ const PASS_DEF_WK1_ADJ = {
    real games without those players, and DAL has now played four. No new defensive injuries have been added this week. */
 const FRESH_DEF_INJURY_ADJ = {
 };
+
+/* DEFENSIVE ROSTERS (added Oct 7, 2026). Each team's key defenders carry a rough value, so a defender being
+   out makes that defence concede more -- inside the projection engine, not as a separate page.
+   DEF_ROSTER rows: [name, position, snaps per game (2026), blended PFF overall grade].
+   Source: PFF defense summary (premium.pff.com, logged in) for 2025 and 2026 through Week 4. Grade = snap-weighted
+   2025+2026 PFF DEF grade shrunk toward 60 with a 150-snap prior (so a 3-game hot streak cannot make a star).
+   Per team: top 3 ED, 3 DI, 3 LB, 4 CB, 3 S by 2026 snaps per game. A player who has played no 2026 snaps (already
+   out all year) is not listed, so season-long absences are already in the team's ratings and are not double counted.
+   VALUE MODEL (defenderInjuryFactors): a defender's value = (grade - 55 replacement) x snap share / 11, i.e. the team
+   defence grade points lost when he is replaced by a replacement-level player. Team grade points convert to
+   points allowed at 1.6% per point (0.36 pts at 22.5 avg: between the weak PFF_DEF_REGRESSION slope 0.192, R^2 0.08, and the offence slope 0.541, R^2 0.66;
+   a judgment call, revisit with more weeks). Each position is split between pass and run weights. A star edge out is roughly
+   +0.5 to +1 point allowed. */
+const DEF_ROSTER = {
+  ARI:[['Josh Sweat','ED',31,68],['Baron Browning','ED',30,55],['Zaven Collins','ED',28,71],['Walter Nolen','DI',38,65],['Dante Stills','DI',37,49],['Roy Lopez','DI',35,68],['Mack Wilson Sr.','LB',60,59],['Jack Gibbens','LB',59,60],['Cody Simon','LB',4,57],['Will Johnson','CB',56,61],['Denzel Burke','CB',53,57],['Max Melton','CB',39,50],['Garrett Williams','CB',26,63],['Budda Baker','S',62,58],['Andrew Wingard','S',46,62],['Wydett Williams Jr.','S',27,49]],
+  ATL:[['Cameron Thomas','ED',41,70],['Samson Ebukam','ED',34,62],['Yasir Abdullah','ED',21,63],['Gervon Dexter Sr.','DI',38,60],['Brandon Dorlus','DI',38,65],['Maason Smith','DI',36,56],['Divine Deablo','LB',62,73],['Harold Perkins Jr.','LB',36,71],['Kendal Daniels','LB',35,64],['Mike Hughes','CB',59,57],['CJ Henderson','CB',48,67],['Billy Bowman Jr.','CB',48,53],['A.J. Terrell','CB',34,58],['Xavier Watts','S',67,61],['Jessie Bates III','S',64,66],['Sydney Brown','S',22,61]],
+  BAL:[['Tavius Robinson','ED',50,54],['Trey Hendrickson','ED',40,74],['Mike Green','ED',28,51],['Nnamdi Madubuike','DI',47,71],['Travis Jones','DI',36,76],['Calais Campbell','DI',33,68],['Roquan Smith','LB',65,73],['Trenton Simpson','LB',39,68],['Teddye Buchanan','LB',7,60],['Nate Wiggins','CB',63,66],['Marlon Humphrey','CB',47,54],['Chandler Rivers','CB',28,57],['Chidobe Awuzie','CB',19,72],['Malaki Starks','S',63,54],['Kyle Hamilton','S',63,73],['Jaylinn Hawkins','S',55,55]],
+  BUF:[['Greg Rousseau','ED',56,83],['Bradley Chubb','ED',56,56],['Michael Hoecht','ED',23,56],['Deone Walker','DI',51,65],['Ed Oliver','DI',39,64],['DeWayne Carter','DI',32,61],['Terrel Bernard','LB',70,54],['Dorian Williams','LB',49,58],['Kaleb Elarms-Orr','LB',11,55],['Christian Benford','CB',65,62],['Maxwell Hairston','CB',61,57],['Dee Alford','CB',37,52],['Davison Igbinosun','CB',33,63],['C.J. Gardner-Johnson','S',72,58],['Cole Bishop','S',71,54],['Damar Hamlin','S',20,55]],
+  CAR:[['Jaelan Phillips','ED',50,71],['Pat Jones II','ED',48,60],['Princely Umanmielen','ED',33,56],['Derrick Brown','DI',48,69],['Cam\'Ron Jackson','DI',37,55],['Bobby Brown III','DI',30,60],['Devin Lloyd','LB',65,80],['Bobby Okereke','LB',60,65],['Tyrel Dodson','LB',37,57],['Jaycee Horn','CB',63,64],['Will Lee III','CB',50,60],['Mike Jackson','CB',50,60],['Akayleb Evans','CB',39,53],['Tre\'von Moehrig','S',69,59],['Nick Scott','S',49,61],['Zakee Wheatley','S',42,70]],
+  CHI:[['Montez Sweat','ED',35,68],['Dayo Odeyingbo','ED',31,56],['Austin Booker','ED',27,64],['Grady Jarrett','DI',36,58],['Kentavius Street','DI',23,53],['Neville Gallimore','DI',18,56],['T.J. Edwards','LB',51,69],['Devin Bush','LB',48,78],['D\'Marco Jackson','LB',17,70],['Jaylon Johnson','CB',50,56],['Malik Muhammad','CB',41,58],['Tyrique Stevenson','CB',34,63],['Dillon Thieneman','S',51,66],['Cam Lewis','S',48,60],['Xavier Woods','S',27,64]],
+  CIN:[['Boye Mafe','ED',48,70],['Myles Murphy','ED',42,60],['Cashius Howell','ED',27,55],['Dexter Lawrence','DI',46,75],['Jonathan Allen','DI',44,54],['B.J. Hill','DI',24,66],['Barrett Carter','LB',65,49],['Demetrius Knight Jr.','LB',56,45],['Oren Burks','LB',5,39],['Dax Hill','CB',65,56],['DJ Turner II','CB',65,69],['Jalen Davis','CB',41,63],['Tacario Davis','CB',14,53],['Jordan Battle','S',65,50],['Bryan Cook','S',53,77],['Kyle Dugger','S',41,52]],
+  CLE:[['Jared Verse','ED',43,59],['Isaiah McGuire','ED',41,71],['Derek Barnett','ED',25,64],['Maliek Collins','DI',43,68],['Mason Graham','DI',35,67],['Michael Hall Jr.','DI',31,47],['Carson Schwesinger','LB',68,70],['Quincy Williams','LB',65,51],['Easton Mascarenas-Arnold','LB',10,59],['Denzel Ward','CB',67,66],['Tyson Campbell','CB',59,67],['Myles Harden','CB',45,51],['Mekhi Blackmon','CB',31,52],['Grant Delpit','S',67,52],['Ronnie Hickman Jr.','S',67,52],['Emmanuel McNeil-Warren','S',20,66]],
+  DAL:[['Donovan Ezeiruaku','ED',46,69],['Rashan Gary','ED',43,67],['Malachi Lawrence','ED',23,54],['Quinnen Williams','DI',47,78],['Kenny Clark','DI',45,66],['Otito Ogbonnia','DI',32,63],['DeMarvion Overshown','LB',51,60],['Dee Winters','LB',45,50],['Jaishawn Barham','LB',42,65],['DaRon Bland','CB',64,62],['Cobie Durant','CB',44,64],['Shavon Revel','CB',26,44],['Joey Porter Jr.','CB',25,69],['Caleb Downs','S',63,66],['Jalen Thompson','S',56,65],['Markquese Bell','S',37,49]],
+  DEN:[['Jonah Elliss','ED',44,66],['Nik Bonitto','ED',44,77],['Quandarrius Robinson','ED',32,60],['Zach Allen','DI',49,66],['Malcolm Roach','DI',41,63],['Eyioma Uwazurike','DI',37,58],['Alex Singleton','LB',70,63],['Justin Strnad','LB',56,67],['Jordan Turner','LB',2,62],['Riley Moss','CB',62,58],['Pat Surtain II','CB',61,55],['Ja\'Quan McMillian','CB',41,74],['Kris Abrams-Draine','CB',34,57],['Talanoa Hufanga','S',70,66],['Brandon Jones','S',69,64],['Devon Key','S',5,69]],
+  DET:[['Aidan Hutchinson','ED',68,81],['D.J. Wonnum','ED',44,56],['Tyler Lacy','ED',26,60],['Alim McNeill','DI',65,60],['Tyleik Williams','DI',41,64],['Skyler Gill-Howard','DI',34,59],['Jack Campbell','LB',76,53],['Derrick Barnes','LB',63,63],['Devin White','LB',26,56],['D.J. Reed','CB',74,63],['Rock Ya-Sin','CB',57,59],['Roger McCreary','CB',49,66],['Ennis Rakestraw Jr.','CB',27,59],['Chuck Clark','S',62,71],['Avonte Maddox','S',56,67],['Christian Izien','S',54,58]],
+  GB:[['Lukas Van Ness','ED',48,70],['Barryn Sorrell','ED',33,60],['Dani Dennis-Sutton','ED',29,60],['Karl Brooks','DI',41,50],['Devonte Wyatt','DI',34,54],['Javon Hargrave','DI',31,67],['Zaire Franklin','LB',68,51],['Edgerrin Cooper','LB',57,60],['Isaiah McDuffie','LB',14,66],['Keisean Nixon','CB',68,62],['Brandon Cisse','CB',62,55],['Carrington Valentine','CB',9,62],['Benjamin St-Juste','CB',1,72],['Evan Williams','S',68,71],['Xavier McKinney','S',68,56],['Javon Bullard','S',49,66]],
+  HOU:[['Will Anderson Jr.','ED',54,89],['Danielle Hunter','ED',53,83],['Jadeveon Clowney','ED',25,73],['Sheldon Rankins','DI',46,68],['Tommy Togiai','DI',43,71],['Logan Hall','DI',25,64],['Kenneth Murray Jr.','LB',64,43],['Azeez Al-Shaair','LB',57,55],['Jake Hansen','LB',51,59],['Derek Stingley Jr.','CB',67,63],['Kamari Lassiter','CB',67,62],['Jaylin Smith','CB',7,62],['Jalen Pitre','S',66,80],['Calen Bullock','S',65,57],['Reed Blankenship','S',61,54]],
+  IND:[['Laiatu Latu','ED',48,78],['Arden Key','ED',43,62],['JT Tuimoloau','ED',28,60],['DeForest Buckner','DI',54,70],['Grover Stewart','DI',40,57],['Jerry Tillery','DI',29,48],['Akeem Davis-Gaither','LB',64,55],['Jaylon Carlies','LB',40,56],['Bryce Boettcher','LB',20,55],['Sauce Gardner','CB',64,69],['Charvarius Ward','CB',54,70],['Justin Walley','CB',47,58],['Cam Taylor-Britt','CB',13,59],['Camryn Bynum','S',67,60],['A.J. Haulcy','S',49,43],['Hunter Wohler','S',22,60]],
+  JAX:[['Josh Hines-Allen','ED',48,82],['Travon Walker','ED',48,64],['Dennis Gardeck','ED',23,59],['Arik Armstead','DI',41,59],['DaVon Hamilton','DI',29,60],['Ruke Orhorhoro','DI',25,43],['Foyesade Oluokun','LB',56,67],['Ventrell Miller','LB',44,75],['Branson Combs','LB',13,58],['Jarrian Jones','CB',50,64],['Travis Hunter','CB',47,68],['Jourdan Lewis','CB',43,64],['Montaric Brown','CB',39,69],['Antonio Johnson','S',59,77],['Eric Murray','S',48,61],['Caleb Ransaw','S',20,61]],
+  KC:[['George Karlaftis','ED',59,74],['R Mason Thomas','ED',36,62],['Felix Anudike-Uzomah','ED',33,65],['Chris Jones','DI',48,69],['Peter Woods','DI',32,58],['Khyiris Tonga','DI',30,62],['Nick Bolton','LB',68,67],['Drue Tranquill','LB',58,73],['Jack Cochrane','LB',17,62],['Nohl Williams','CB',64,68],['L\'Jarius Sneed','CB',53,46],['Mansoor Delane','CB',51,72],['Kristian Fulton','CB',38,64],['Alohi Gilman','S',66,51],['Chamarri Conner','S',63,61],['Jaden Hicks','S',55,63]],
+  LAC:[['Tuli Tuipulotu','ED',51,69],['Khalil Mack','ED',46,76],['Akheem Mesidor','ED',32,63],['Justin Eboigbe','DI',41,57],['Jamaree Caldwell','DI',39,62],['Teair Tart','DI',35,67],['Daiyan Henley','LB',58,57],['Del\'Shawn Phillips','LB',41,61],['Troy Dye','LB',14,61],['Tarheeb Still','CB',60,68],['Cam Hart','CB',57,60],['Donte Jackson','CB',28,68],['Deane Leonard','CB',9,61],['Derwin James Jr.','S',64,74],['Elijah Molden','S',42,56],['Tony Jefferson','S',42,69]],
+  LAR:[['Byron Young','ED',50,81],['Myles Garrett','ED',40,87],['Josaiah Stewart','ED',40,68],['Kobie Turner','DI',42,77],['Braden Fiske','DI',35,57],['Aaron Donald','DI',34,66],['Nate Landman','LB',57,59],['Omar Speights','LB',28,66],['Shaun Dolac','LB',19,66],['Trent McDuffie','CB',63,77],['Jaylen Watson','CB',47,71],['Josh Wallace','CB',41,64],['Emmanuel Forbes','CB',22,56],['Quentin Lake','S',63,72],['Kamren Curl','S',54,64],['Kamren Kinchens','S',48,72]],
+  LV:[['Maxx Crosby','ED',56,79],['Kwity Paye','ED',37,58],['Malcolm Koonce','ED',29,62],['Tonka Hemingway','DI',40,51],['Foley Fatukasi','DI',27,56],['Adam Butler','DI',26,55],['Quay Walker','LB',64,50],['Nakobe Dean','LB',63,67],['Tommy Eichenberg','LB',12,61],['Eric Stokes','CB',64,50],['Taron Johnson','CB',53,60],['Hezekiah Masses','CB',48,57],['Darien Porter','CB',25,55],['Jeremy Chinn','S',64,67],['Treydan Stukes','S',49,59],['Isaiah Pola-Mao','S',37,54]],
+  MIA:[['Chop Robinson','ED',43,57],['Joshua Uche','ED',38,76],['Malik Herring','ED',26,56],['Zach Sieler','DI',47,57],['Jordan Phillips','DI',38,52],['Zeek Biggers','DI',38,51],['Jacob Rodriguez','LB',62,60],['Jordyn Brooks','LB',60,75],['Willie Gay','LB',31,60],['Chris Johnson','CB',60,60],['Jason Marshall Jr.','CB',52,53],['JuJu Brents','CB',41,60],['Michael Taaffe','S',56,45],['Dante Trader Jr.','S',44,61],['Zayne Anderson','S',32,65]],
+  MIN:[['Dallas Turner','ED',53,65],['Andrew Van Ginkel','ED',52,69],['Kyle Van Noy','ED',20,64],['Jalen Redmond','DI',50,71],['Levi Drake Rodriguez','DI',36,58],['Tyrion Ingram-Dawkins','DI',31,59],['Blake Cashman','LB',59,64],['Eric Wilson','LB',59,61],['Ivan Pace Jr.','LB',11,50],['Byron Murphy Jr.','CB',60,58],['Isaiah Rodgers','CB',60,74],['James Pierre','CB',22,78],['Zemaiah Vaughn','CB',3,60],['Josh Metellus','S',63,53],['Theo Jackson','S',40,65],['Harrison Smith','S',28,64]],
+  NE:[['Elijah Ponder','ED',46,60],['Gabe Jacas','ED',36,65],['Dre\'Mont Jones','ED',35,66],['Milton Williams','DI',41,68],['Cory Durden','DI',32,64],['Christian Barmore','DI',31,57],['Robert Spillane','LB',60,69],['Christian Elliss','LB',59,62],['Darius Muasau','LB',8,54],['Christian Gonzalez','CB',57,64],['Carlton Davis III','CB',54,69],['Marcus Jones','CB',47,70],['Charles Woods','CB',27,56],['Kevin Byard','S',60,63],['Craig Woodson','S',52,64],['Jaylen Reed','S',40,60]],
+  NO:[['Chase Young','ED',48,76],['Carl Granderson','ED',45,66],['Cameron Jordan','ED',32,71],['Nathan Shepherd','DI',44,57],['Vernon Broughton','DI',39,59],['Davon Godchaux','DI',27,50],['Kaden Elliss','LB',68,66],['Pete Werner','LB',39,60],['Danny Stutsman','LB',33,66],['Kool-Aid McKinstry','CB',66,57],['Quincy Riley','CB',61,59],['Martin Emerson Jr.','CB',9,57],['Julian Blackmon','S',66,62],['Justin Reid','S',66,61],['Jonas Sanker','S',42,61]],
+  NYG:[['Abdul Carter','ED',58,74],['Kayvon Thibodeaux','ED',41,62],['Brian Burns','ED',39,73],['DJ Reader','DI',33,70],['Chauncey Golston','DI',32,56],['Shelby Harris','DI',30,59],['Tremaine Edmunds','LB',62,62],['Arvell Reese','LB',61,71],['Zaire Barnes','LB',3,56],['Greg Newsome II','CB',60,55],['Deonte Banks','CB',57,51],['Dru Phillips','CB',43,63],['Colton Hood','CB',42,55],['Jevon Holland','S',62,65],['Tyler Nubin','S',57,56],['Jason Pinnock','S',31,54]],
+  NYJ:[['David Bailey','ED',49,61],['Joseph Ossai','ED',43,62],['Kingsley Enagbare','ED',37,61],['Harrison Phillips','DI',39,67],['Jowon Briggs','DI',37,67],['T\'Vondre Sweat','DI',33,77],['Demario Davis','LB',67,54],['Jamien Sherwood','LB',63,57],['Marcelino McCrary-Ball','LB',5,55],['Azareye\'h Thomas','CB',67,61],['Brandon Stephens','CB',66,68],['Jarvis Brownlee Jr.','CB',38,56],['D\'Angelo Ponds','CB',10,56],['Dane Belton','S',67,66],['Minkah Fitzpatrick','S',50,79],['Andre Cisco','S',43,62]],
+  PHI:[['Jalyx Hunt','ED',53,64],['Nolan Smith','ED',49,67],['Arnold Ebiketie','ED',23,68],['Jalen Carter','DI',57,55],['Moro Ojomo','DI',48,68],['Jordan Davis','DI',32,72],['Jihaad Campbell','LB',66,69],['Zack Baun','LB',63,69],['Jeremiah Trotter Jr.','LB',45,68],['Tariq Woolen','CB',69,60],['Quinyon Mitchell','CB',58,61],['Jonathan Jones','CB',25,53],['Mac McWilliams','CB',3,57],['Andrew Mukuba','S',70,57],['Cooper DeJean','S',69,59],['Marcus Epps','S',40,56]],
+  PIT:[['Alex Highsmith','ED',40,78],['T.J. Watt','ED',40,74],['Nick Herbig','ED',31,81],['Cameron Heyward','DI',39,84],['Keeanu Benton','DI',36,60],['Derrick Harmon','DI',21,54],['Patrick Queen','LB',59,59],['Payton Wilson','LB',48,56],['Cole Holcomb','LB',4,67],['Asante Samuel Jr.','CB',54,60],['Jamel Dean','CB',42,77],['Daylen Everette','CB',22,58],['Brandin Echols','CB',5,62],['Jalen Ramsey','S',59,65],['Jaquan Brisker','S',59,56],['Rayshawn Jenkins','S',32,51]],
+  SEA:[['DeMarcus Lawrence','ED',40,79],['Derick Hall','ED',38,66],['Uchenna Nwosu','ED',32,59],['Leonard Williams','DI',45,74],['Byron Murphy II','DI',43,69],['Jarran Reed','DI',32,61],['Ernest Jones','LB',65,69],['Drake Thomas','LB',58,69],['Tyrice Knight','LB',11,73],['Devon Witherspoon','CB',65,83],['Josh Jobe','CB',65,59],['Nehemiah Pritchett','CB',37,66],['Trevon Diggs','CB',9,59],['Rodney Thomas II','S',65,66],['Julian Love','S',63,77],['AJ Finley','S',36,54]],
+  SF:[['Keion White','ED',43,58],['Nick Bosa','ED',38,75],['Romello Height','ED',34,57],['Osa Odighizuwa','DI',50,61],['Gracen Halton','DI',30,56],['Sebastian Valdez','DI',28,64],['Fred Warner','LB',64,83],['Dre Greenlaw','LB',50,72],['Jaden Dugger','LB',25,56],['Renardo Green','CB',66,58],['Deommodore Lenoir','CB',64,62],['Upton Stout','CB',40,60],['Jack Jones','CB',15,59],['Ji\'Ayir Brown','S',65,65],['Marques Sigle','S',60,52],['Malik Mustapha','S',12,62]],
+  TB:[['Yaya Diaby','ED',38,69],['Rueben Bain Jr.','ED',38,53],['Al-Quadin Muhammad','ED',30,71],['Vita Vea','DI',44,68],['Calijah Kancey','DI',38,58],['A\'Shawn Robinson','DI',31,66],['Alex Anzalone','LB',60,47],['Josiah Trotter','LB',52,70],['Christian Rozeboom','LB',19,51],['Zyon McCollum','CB',60,62],['Jacob Parrish','CB',46,67],['Keionte Scott','CB',36,65],['Benjamin Morrison','CB',34,54],['Tykee Smith','S',59,68],['Antoine Winfield Jr.','S',59,70],['Ifeatu Melifonwu','S',4,62]],
+  TEN:[['Jermaine Johnson','ED',42,62],['Jacob Martin','ED',39,57],['Keldric Faulk','ED',21,55],['Jeffery Simmons','DI',58,83],['John Franklin-Myers','DI',36,64],['Jordan Elliott','DI',23,48],['Anthony Hill Jr.','LB',68,54],['Cody Barton','LB',55,64],['Cedric Gray','LB',30,75],['Alontae Taylor','CB',68,47],['Cor\'Dale Flott','CB',65,64],['Micah Robinson','CB',39,62],['Marcus Harris','CB',38,67],['Kevin Winston Jr.','S',68,61],['Amani Hooker','S',67,57],['Erick Hallett','S',11,57]],
+  WAS:[['K\'Lavon Chaisson','ED',42,57],['Odafe Oweh','ED',42,71],['Dorance Armstrong','ED',28,68],['Daron Payne','DI',44,61],['Javon Kinlaw','DI',39,51],['Charles Omenihu','DI',28,57],['Sonny Styles','LB',55,70],['Frankie Luvu','LB',46,55],['Kain Medrano','LB',33,65],['Amik Robertson','CB',60,57],['Rasul Douglas','CB',36,71],['Mike Sainristil','CB',33,46],['Fabian Moreau','CB',23,66],['Jeremy Reaves','S',55,63],['Nick Cross','S',55,54],['Quan Martin','S',42,49]],
+};
+
+/* DEF_AVAILABILITY: ESPN injury report, Wednesday Oct 7, 2026 (Week 5). OUT/IR = out; DOUBTFUL counts 75%,
+   QUESTIONABLE 20% (expected-loss, because the tool cannot know who plays). Only listed defenders matter.
+   MUST be refreshed every Friday. */
+const DEF_AVAILABILITY = {
+  "Cam'Ron Jackson":{team:'CAR',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, knee (listed as Cam Jackson)'},
+  'Andrew Wingard':{team:'ARI',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Knee'},
+  'Marlon Humphrey':{team:'BAL',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Calf'},
+  'Trey Hendrickson':{team:'BAL',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Finger'},
+  'Christian Benford':{team:'BUF',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Toe'},
+  'Dee Alford':{team:'BUF',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Ankle'},
+  'Ed Oliver':{team:'BUF',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Knee'},
+  'Jaelan Phillips':{team:'CAR',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Hamstrin'},
+  'Mike Jackson':{team:'CAR',status:'OUT',note:'ESPN injury report Oct 7: injured reserve, Groin'},
+  'Cam Lewis':{team:'CHI',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Hip'},
+  'B.J. Hill':{team:'CIN',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Achilles'},
+  'Bryan Cook':{team:'CIN',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Ankle'},
+  'Jalen Davis':{team:'CIN',status:'OUT',note:'ESPN injury report Oct 7: injured reserve, Hamstrin'},
+  'Kyle Dugger':{team:'CIN',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Quadrice'},
+  'Mason Graham':{team:'CLE',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Knee'},
+  'Cobie Durant':{team:'DAL',status:'DOUBTFUL',note:'ESPN injury report Oct 7: doubtful, Hamstrin'},
+  'DeMarvion Overshown':{team:'DAL',status:'DOUBTFUL',note:'ESPN injury report Oct 7: doubtful, Hamstrin'},
+  'Jalen Thompson':{team:'DAL',status:'OUT',note:'ESPN injury report Oct 7: injured reserve, Hamstrin'},
+  'Pat Surtain II':{team:'DEN',status:'DOUBTFUL',note:'ESPN injury report Oct 7: doubtful, Ankle'},
+  'Riley Moss':{team:'DEN',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Ribs'},
+  'Rock Ya-Sin':{team:'DET',status:'DOUBTFUL',note:'ESPN injury report Oct 7: doubtful, Hamstrin'},
+  'Brandon Cisse':{team:'GB',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Neck'},
+  'Edgerrin Cooper':{team:'GB',status:'OUT',note:'ESPN injury report Oct 7: injured reserve, Achilles'},
+  'Azeez Al-Shaair':{team:'HOU',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Groin'},
+  'Jaylin Smith':{team:'HOU',status:'OUT',note:'ESPN injury report Oct 7: injured reserve, Hamstrin'},
+  'Kenneth Murray Jr.':{team:'HOU',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Head'},
+  'Arden Key':{team:'IND',status:'OUT',note:'ESPN injury report Oct 7: out, Hamstrin'},
+  'Caleb Ransaw':{team:'JAX',status:'OUT',note:'ESPN injury report Oct 7: injured reserve, Knee'},
+  'Eric Murray':{team:'JAX',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Concussi'},
+  'Montaric Brown':{team:'JAX',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Hamstrin'},
+  'Derwin James Jr.':{team:'LAC',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Hamstrin'},
+  'Donte Jackson':{team:'LAC',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Hamstrin'},
+  'Aaron Donald':{team:'LAR',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Back'},
+  'Jaylen Watson':{team:'LAR',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Shoulder'},
+  'Myles Garrett':{team:'LAR',status:'OUT',note:'ESPN injury report Oct 7: injured reserve, Knee'},
+  'Dante Trader Jr.':{team:'MIA',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Knee'},
+  'Charles Woods':{team:'NE',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Shoulder'},
+  'Christian Barmore':{team:'NE',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Shoulder'},
+  'Christian Gonzalez':{team:'NE',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Shoulder'},
+  'Carl Granderson':{team:'NO',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Ankle'},
+  'Davon Godchaux':{team:'NO',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Groin'},
+  'Kaden Elliss':{team:'NO',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Calf'},
+  'Chauncey Golston':{team:'NYG',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Neck'},
+  'Jason Pinnock':{team:'NYG',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Concussi'},
+  'Jarvis Brownlee Jr.':{team:'NYJ',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Concussi'},
+  'Kingsley Enagbare':{team:'NYJ',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Knee'},
+  'Marcus Epps':{team:'PHI',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Groin'},
+  'Quinyon Mitchell':{team:'PHI',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Knee'},
+  'Zack Baun':{team:'PHI',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Concussi'},
+  'Derrick Harmon':{team:'PIT',status:'OUT',note:'ESPN injury report Oct 7: injured reserve, Foot'},
+  'Jamel Dean':{team:'PIT',status:'DOUBTFUL',note:'ESPN injury report Oct 7: doubtful, Ankle'},
+  'Leonard Williams':{team:'SEA',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Ankle'},
+  'Marques Sigle':{team:'SF',status:'DOUBTFUL',note:'ESPN injury report Oct 7: doubtful, Ankle'},
+  'Nick Bosa':{team:'SF',status:'DOUBTFUL',note:'ESPN injury report Oct 7: doubtful, Calf'},
+  'Antoine Winfield Jr.':{team:'TB',status:'OUT',note:'ESPN injury report Oct 7: out, Ribs'},
+  'Benjamin Morrison':{team:'TB',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Quadrice'},
+  'Charles Omenihu':{team:'WAS',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Groin'},
+  'Jeremy Reaves':{team:'WAS',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Finger'},
+  'Nick Cross':{team:'WAS',status:'QUESTIONABLE',note:'ESPN injury report Oct 7: questionable, Illness'},
+};
+const DEF_INJ_STATUS_WEIGHT = {OUT:1, DOUBTFUL:0.75, QUESTIONABLE:0.2};
+const DEF_POS_WEIGHTS = {ED:{pass:0.6,run:0.4}, DI:{pass:0.5,run:0.5}, LB:{pass:0.4,run:0.6}, CB:{pass:0.9,run:0.1}, S:{pass:0.65,run:0.35}};
+const DEF_REPLACEMENT_GRADE = 55, DEF_SNAPS_PER_GAME = 65, DEF_GRADE_PCT_PTS = 0.016, DEF_PASS_SHARE = 0.6, DEF_INJ_CAP = 0.10;
+function defenderInjuryFactors(teamAb, wk){
+  const none = {pass:1, run:1, total:1, missing:[]};
+  if(!teamAb || !wk || wk < AVAILABILITY_FROM_WEEK || !DEF_ROSTER[teamAb]) return none;
+  let dp = 0, dr = 0; const missing = [];
+  DEF_ROSTER[teamAb].forEach(([n,pos,spg,g])=>{
+    const a = DEF_AVAILABILITY[n];
+    if(!a || a.team !== teamAb) return;
+    const w = DEF_INJ_STATUS_WEIGHT[a.status] || 0;
+    const loss = Math.max(0, g - DEF_REPLACEMENT_GRADE) * (Math.min(1, spg/DEF_SNAPS_PER_GAME)/11) * w;
+    if(loss <= 0) return;
+    const pw = DEF_POS_WEIGHTS[pos];
+    dp += loss * pw.pass; dr += loss * pw.run;
+    missing.push({ n, pos, status:a.status, loss });
+  });
+  const cap = x => Math.min(DEF_INJ_CAP, x);
+  return {
+    pass: 1 + cap(dp * DEF_GRADE_PCT_PTS / DEF_PASS_SHARE),
+    run:  1 + cap(dr * DEF_GRADE_PCT_PTS / (1 - DEF_PASS_SHARE)),
+    total: 1 + Math.min(0.08, (dp + dr) * DEF_GRADE_PCT_PTS),
+    missing: missing.sort((a,b)=>b.loss-a.loss)
+  };
+}
 
 /* TE-SPECIFIC MATCHUP ADJUSTMENT (real, disclosed -- added Sept 2026): the existing
    PASS_DEF_WK1_ADJ above is a single, team-wide pass-defense signal applied
@@ -3693,6 +3835,7 @@ function computeProjectionRaw(p, opts){
   // allowed, damped per position -- see the table header above). Computed
   // once here since QB/RB/WR each only need their own single value.
   const qbMatchupAdj = (opts.oppAb && QB_MATCHUP_ADJ[opts.oppAb]) ? QB_MATCHUP_ADJ[opts.oppAb] : 1.0;
+  const dInj = (opts.oppAb && !opts.noDefInj) ? defenderInjuryFactors(opts.oppAb, opts.wk) : {pass:1, run:1};
   const rbMatchupAdj = (opts.oppAb && RB_MATCHUP_ADJ[opts.oppAb]) ? RB_MATCHUP_ADJ[opts.oppAb] : 1.0;
   const wrMatchupAdj = (opts.oppAb && WR_MATCHUP_ADJ[opts.oppAb]) ? WR_MATCHUP_ADJ[opts.oppAb] : 1.0;
 
@@ -3700,8 +3843,8 @@ function computeProjectionRaw(p, opts){
   let ppr=0, half=0, std=0;
 
   if(p.p==='QB'){
-    const passYd = bb.passYd * oppM * paceM * siteM * (wxPassMult[wi]) * scriptVolMult * roleMult * pressurePassMult * sackMult * tttMult * qbSackSkillMult * qbCov.yd * vegasM * olPassM * WEEKLY_CALIBRATION.qbMult * qbMatchupAdj;
-    const passTD = bb.passTD * oppM * paceM * siteM * (wxPassMult[wi]) * scriptVolMult * roleMult * pressurePassMult * sackMult * tttMult * qbSackSkillMult * qbCov.yd * vegasM * olPassM * WEEKLY_CALIBRATION.qbMult * qbMatchupAdj;
+    const passYd = bb.passYd * oppM * paceM * siteM * (wxPassMult[wi]) * scriptVolMult * roleMult * pressurePassMult * sackMult * tttMult * qbSackSkillMult * qbCov.yd * vegasM * olPassM * WEEKLY_CALIBRATION.qbMult * qbMatchupAdj * dInj.pass;
+    const passTD = bb.passTD * oppM * paceM * siteM * (wxPassMult[wi]) * scriptVolMult * roleMult * pressurePassMult * sackMult * tttMult * qbSackSkillMult * qbCov.yd * vegasM * olPassM * WEEKLY_CALIBRATION.qbMult * qbMatchupAdj * dInj.pass;
     const rushYd = bb.rushYd * paceM * siteM * (wxRushMult[wi]) * scriptSecMult * roleMult * vegasM * qbRushSkillMult;
     const rushTD = bb.rushTD * paceM * siteM * (wxRushMult[wi]) * scriptSecMult * roleMult * vegasM * qbRushSkillMult;
     const ints = bb.int * (oi<=1 ? 1.15 : oi>=3 ? 0.85 : 1.0) * pressureIntMult * c0IntMult * qbCov.int * (2 - olPassM);
@@ -3723,11 +3866,11 @@ function computeProjectionRaw(p, opts){
     ppr = std; half = std;
   } else if(p.p==='RB'){
     const rushAtt = bb.rushAtt * paceM * siteM * scriptVolMult * roleMult * splitMult * (wxRushMult[wi]);
-    const rushYd  = bb.rushYd  * oppM * paceM * siteM * scriptVolMult * roleMult * splitMult * (wxRushMult[wi]) * vegasM * olRunM * runDefMult * WEEKLY_CALIBRATION.rbMult * rbMatchupAdj;
-    const rushTD  = bb.rushTD  * oppM * scriptVolMult * roleMult * splitMult * vegasM * rbMatchupAdj;
+    const rushYd  = bb.rushYd  * oppM * paceM * siteM * scriptVolMult * roleMult * splitMult * (wxRushMult[wi]) * vegasM * olRunM * runDefMult * WEEKLY_CALIBRATION.rbMult * rbMatchupAdj * dInj.run;
+    const rushTD  = bb.rushTD  * oppM * scriptVolMult * roleMult * splitMult * vegasM * rbMatchupAdj * dInj.run;
     const rec     = bb.rec * paceM * siteM * scriptSecMult * covM * roleMult * splitMult * cbMult * (wxPassMult[wi]);
-    const recYd   = bb.recYd * oppM * paceM * siteM * scriptSecMult * covM * roleMult * splitMult * cbMult * (wxPassMult[wi]) * vegasM * rbMatchupAdj;
-    const recTD   = bb.recTD * oppM * scriptSecMult * covM * roleMult * splitMult * cbMult * vegasM * rbMatchupAdj;
+    const recYd   = bb.recYd * oppM * paceM * siteM * scriptSecMult * covM * roleMult * splitMult * cbMult * (wxPassMult[wi]) * vegasM * rbMatchupAdj * dInj.pass;
+    const recTD   = bb.recTD * oppM * scriptSecMult * covM * roleMult * splitMult * cbMult * vegasM * rbMatchupAdj * dInj.pass;
     lines.push({label:'Rush Attempts', base:bb.rushAtt, val:rushAtt});
     lines.push({label:'Rush Yards', base:bb.rushYd, val:rushYd});
     lines.push({label:'Rush TD', base:bb.rushTD, val:rushTD});
@@ -3743,8 +3886,8 @@ function computeProjectionRaw(p, opts){
     const passDefWk1Adj = (opts.oppAb && PASS_DEF_WK1_ADJ[opts.oppAb]) ? PASS_DEF_WK1_ADJ[opts.oppAb] : 1.0;
     const freshDefInjuryAdj = (opts.oppAb && FRESH_DEF_INJURY_ADJ[opts.oppAb]) ? FRESH_DEF_INJURY_ADJ[opts.oppAb] : 1.0;
     const posMatchupAdj = p.p==='TE' ? ((opts.oppAb && TE_MATCHUP_ADJ[opts.oppAb]) ? TE_MATCHUP_ADJ[opts.oppAb] : 1.0) : wrMatchupAdj;
-    const recYd = bb.recYd * oppM * paceM * siteM * scriptVolMult * covM * roleMult * cbMult * c0RecMult * (wxPassMult[wi]) * vegasM * (p.p==='WR' ? WEEKLY_CALIBRATION.wrMult : 1.0) * passDefWk1Adj * freshDefInjuryAdj * posMatchupAdj;
-    const recTD = bb.recTD * oppM * scriptVolMult * covM * roleMult * cbMult * c0RecMult * vegasM * posMatchupAdj;
+    const recYd = bb.recYd * oppM * paceM * siteM * scriptVolMult * covM * roleMult * cbMult * c0RecMult * (wxPassMult[wi]) * vegasM * (p.p==='WR' ? WEEKLY_CALIBRATION.wrMult : 1.0) * passDefWk1Adj * freshDefInjuryAdj * posMatchupAdj * dInj.pass;
+    const recTD = bb.recTD * oppM * scriptVolMult * covM * roleMult * cbMult * c0RecMult * vegasM * posMatchupAdj * dInj.pass;
     lines.push({label:'Targets', base:bb.tgt, val:tgt});
     lines.push({label:'Receptions', base:bb.rec, val:rec});
     lines.push({label:'Rec Yards', base:bb.recYd, val:recYd});
@@ -3902,7 +4045,7 @@ function neutralOptsFor(p, wk){
       }
     }
   }
-  return { opts:{oppTier, script:2, cov, pace:1, site, wx:0, role:0, cbShadow, split:0, pressure, sackConv, ttt, c0, runDefOverall, runDefInterior, cbGrade, oppAb}, isBye, oppAb, isOut, avail };
+  return { opts:{oppTier, script:2, cov, pace:1, site, wx:0, role:0, cbShadow, split:0, pressure, sackConv, ttt, c0, runDefOverall, runDefInterior, cbGrade, oppAb, wk}, isBye, oppAb, isOut, avail };
 }
 
 function fmtN(n, d=1){ return n.toFixed(d); }
@@ -4500,6 +4643,7 @@ function compute(){
     runDefInterior: runDefInterior,
     cbGrade: cbGrade,
     oppAb: oppAb,
+    wk: globalWeekEl.value ? parseInt(globalWeekEl.value,10) : null,
   };
   const result = computeProjection(p, opts);
 
@@ -5125,8 +5269,8 @@ function computeTeamProjectedPoints(teamAb, oppAb, isHome, wk){
   // Projection-engine layer (Oct 7, 2026): the same player projections shown on every other page
   // feed the team total, so defence tiers, run defence, coverage, pressure, sack rate, time-to-throw,
   // OL ratings (via the engine) and confirmed injuries all move team points.
-  const adj = wk ? teamEngineAdjustment(teamAb, wk, !!qbRep) : { matchup:1, injury:1, matchupRaw:1, missing:[] };
-  const points = base * adj.matchup * adj.injury + hfa;
+  const adj = wk ? teamEngineAdjustment(teamAb, wk, !!qbRep, oppAb) : { matchup:1, injury:1, defInj:1, matchupRaw:1, missing:[], defMissing:[] };
+  const points = base * adj.matchup * adj.injury * (adj.defInj || 1) + hfa;
   return { points, basePoints: base + hfa, offRating: myOff, defRatingFaced: oppDef, winTotalDefRating: winTotalDef, pffGradeUsed: oppPffGrade, qbRep, adj };
 }
 
@@ -5138,13 +5282,13 @@ const TEAM_MATCHUP_WEIGHT = 0.5, TEAM_MATCHUP_CLAMP = 0.12, TEAM_INJURY_FLOOR = 
 const TEAM_INJURY_PASS_THROUGH = 0.6;
 // Skill-position slots that carry a team's scoring: 1 QB, 2 RB, 3 WR, 1 TE (best available at each).
 const TEAM_SLOTS = { QB:1, RB:2, WR:3, TE:1 };
-function teamEngineAdjustment(teamAb, wk, qbHandled){
+function teamEngineAdjustment(teamAb, wk, qbHandled, oppAb){
   const neutralDef = {cbShadow:0, cov:1, pressure:null, sackConv:null, ttt:null, c0:null, runDefOverall:null, runDefInterior:null, cbGrade:null, oppAb:null, oppTier:2};
   const rows = [];
   P.filter(p=>p.t===teamAb && TEAM_SLOTS[p.p]).forEach(p=>{
     const r = neutralOptsFor(p, wk);
     if(r.isBye || !r.opts) return;
-    const matchup = computeProjection(p, r.opts).ppr;
+    const matchup = computeProjection(p, Object.assign({}, r.opts, {noDefInj:true})).ppr;
     const neutral = computeProjection(p, Object.assign({}, r.opts, neutralDef)).ppr;
     rows.push({ p, matchup, neutral, out: r.isOut, avail: r.avail });
   });
@@ -5166,7 +5310,9 @@ function teamEngineAdjustment(teamAb, wk, qbHandled){
   const injury = healthy > 0 ? Math.max(TEAM_INJURY_FLOOR, 1 - TEAM_INJURY_PASS_THROUGH * (1 - Math.min(1, actual / healthy))) : 1;
   const matchupRaw = availNeutral > 0 ? availMatchup / availNeutral : 1;
   const dev = Math.max(-TEAM_MATCHUP_CLAMP, Math.min(TEAM_MATCHUP_CLAMP, (matchupRaw - 1) * TEAM_MATCHUP_WEIGHT));
-  return { matchup: 1 + dev, injury, matchupRaw, missing: rows.filter(r=>r.out && r.matchup >= 8).map(r=>r.p.n) };
+  // Defender injuries on the opposing side, at full strength (excluded from the matchup layer above so they are not counted twice).
+  const dInj = defenderInjuryFactors(oppAb, wk);
+  return { matchup: 1 + dev, injury, matchupRaw, defInj: dInj.total, defMissing: dInj.missing, missing: rows.filter(r=>r.out && r.matchup >= 8).map(r=>r.p.n) };
 }
 
 function renderBetting(){
@@ -5292,7 +5438,7 @@ function renderBetting(){
     const otherRows = other.length ? `<tr><td colspan="4" style="padding-top:10px;padding-bottom:2px;font-size:11px;color:var(--text-faint);text-transform:uppercase;">Other notable (committee mates, WR2/3, etc.)</td></tr>${other.map(rowFor).join('')}` : '';
     return `<div class="card" style="flex:1;min-width:280px;">
       <div style="font-size:15px;font-weight:700;margin-bottom:4px;">${label} (${teamAb}) &mdash; our proj: <span style="font-family:'IBM Plex Mono',monospace;">${fmtN(ourPts,1)}</span></div>
-      <div style="font-size:12.5px;color:var(--text-dim);margin-bottom:10px;">Real season-long Vegas win total: <b>${vegasWinTotal!=null?fmtN(vegasWinTotal,1):'n/a'}</b>${adjInfo?` &middot; Opponent matchup: <b>${adjInfo.matchup>=1?'+':''}${fmtN((adjInfo.matchup-1)*100,1)}%</b> &middot; Injuries: <b>${fmtN((adjInfo.injury-1)*100,1)}%</b>`:''}</div>
+      <div style="font-size:12.5px;color:var(--text-dim);margin-bottom:10px;">Real season-long Vegas win total: <b>${vegasWinTotal!=null?fmtN(vegasWinTotal,1):'n/a'}</b>${adjInfo?` &middot; Opponent matchup: <b>${adjInfo.matchup>=1?'+':''}${fmtN((adjInfo.matchup-1)*100,1)}%</b> &middot; Own injuries: <b>${fmtN((adjInfo.injury-1)*100,1)}%</b> &middot; Opp. defenders out: <b>+${fmtN(((adjInfo.defInj||1)-1)*100,1)}%</b>${adjInfo.defMissing&&adjInfo.defMissing.length?` <span style="color:var(--text-faint);">(${adjInfo.defMissing.slice(0,4).map(m=>m.n+' '+m.status.toLowerCase()).join(', ')})</span>`:''}`:''}</div>
       <table class="rank-table" style="width:100%;">
         <thead><tr><th>Player</th><th>Pos</th><th>Real Proj. Line</th><th style="text-align:right;">PPR</th></tr></thead>
         <tbody>${coreRows}${otherRows}</tbody>
