@@ -658,6 +658,15 @@
         (R&sup2; = 0.66, now stronger than the win-total offense estimate) -- so the weight is
         still held at 25% for both sides this week and the offense side is the first candidate
         to be raised if it holds. The defence slope is flatter, so it moves the projection less.
+        <b>Engine layer (Oct 7, 2026):</b> team points now also run through the same player projections used on
+        every other page. (1) <i>Opponent matchup:</i> the team's QB1, RB1-2, WR1-3 and TE1 are projected against the
+        real opponent (defence tiers, run defence, coverage, pressure, sack rate, time-to-throw, OL ratings, corner
+        shadow) and against a neutral defence; half the resulting swing is applied, capped at &plusmn;12%.
+        (2) <i>Injuries:</i> the lineup is rebuilt from the best available players and 60% of the lost projected
+        PPR comes off team points (teammates absorb the rest), floored at -20%; a QB change with real PFF grades still uses
+        the grade ratio instead. Check on Weeks 1-4 results: team-score error 7.63 &rarr; 7.53 pts, total error
+        11.89 &rarr; 11.67, margin error 9.59 &rarr; 9.50 (in-sample, injuries not replayed). Not covered: defensive
+        injuries (no defensive roster is tracked), weather, and stale preseason win totals.
       </div>
     </div>
     <div class="filter-row">
@@ -5112,8 +5121,52 @@ function computeTeamProjectedPoints(teamAb, oppAb, isHome, wk){
   const qbRep = wk ? qbReplacementRatioForWeek(teamAb, wk) : null;
   if(qbRep) myOff = myOff * qbRep.ratio;
   const hfa = isHome ? m.homeFieldAdj : -m.homeFieldAdj;
-  const points = (myOff + oppDef)/2 + hfa;
-  return { points, offRating: myOff, defRatingFaced: oppDef, winTotalDefRating: winTotalDef, pffGradeUsed: oppPffGrade, qbRep };
+  const base = (myOff + oppDef)/2;
+  // Projection-engine layer (Oct 7, 2026): the same player projections shown on every other page
+  // feed the team total, so defence tiers, run defence, coverage, pressure, sack rate, time-to-throw,
+  // OL ratings (via the engine) and confirmed injuries all move team points.
+  const adj = wk ? teamEngineAdjustment(teamAb, wk, !!qbRep) : { matchup:1, injury:1, matchupRaw:1, missing:[] };
+  const points = base * adj.matchup * adj.injury + hfa;
+  return { points, basePoints: base + hfa, offRating: myOff, defRatingFaced: oppDef, winTotalDefRating: winTotalDef, pffGradeUsed: oppPffGrade, qbRep, adj };
+}
+
+// Fraction of the engine's matchup effect passed to team points. The base already holds a 25% PFF defence
+// blend, so only half the player-level matchup swing is applied, and it is clamped to +/-12%.
+const TEAM_MATCHUP_WEIGHT = 0.5, TEAM_MATCHUP_CLAMP = 0.12, TEAM_INJURY_FLOOR = 0.80;
+// Team points follow plays, not players: when a skill player is out, teammates absorb part of his
+// volume, so only this share of the lost projected PPR is taken off team points.
+const TEAM_INJURY_PASS_THROUGH = 0.6;
+// Skill-position slots that carry a team's scoring: 1 QB, 2 RB, 3 WR, 1 TE (best available at each).
+const TEAM_SLOTS = { QB:1, RB:2, WR:3, TE:1 };
+function teamEngineAdjustment(teamAb, wk, qbHandled){
+  const neutralDef = {cbShadow:0, cov:1, pressure:null, sackConv:null, ttt:null, c0:null, runDefOverall:null, runDefInterior:null, cbGrade:null, oppAb:null, oppTier:2};
+  const rows = [];
+  P.filter(p=>p.t===teamAb && TEAM_SLOTS[p.p]).forEach(p=>{
+    const r = neutralOptsFor(p, wk);
+    if(r.isBye || !r.opts) return;
+    const matchup = computeProjection(p, r.opts).ppr;
+    const neutral = computeProjection(p, Object.assign({}, r.opts, neutralDef)).ppr;
+    rows.push({ p, matchup, neutral, out: r.isOut, avail: r.avail });
+  });
+  const pick = (list, key) => {
+    const by = {};
+    list.forEach(r=>{ (by[r.p.p] = by[r.p.p] || []).push(r); });
+    let tot = 0;
+    Object.keys(TEAM_SLOTS).forEach(pos=>{
+      (by[pos]||[]).sort((a,b)=>b[key]-a[key]).slice(0,TEAM_SLOTS[pos]).forEach(r=>{ tot += r[key]; });
+    });
+    return tot;
+  };
+  const avail = rows.filter(r=>!r.out);
+  const availNeutral = pick(avail, 'neutral'), availMatchup = pick(avail, 'matchup');
+  // Injury: production of the best available lineup vs the full-strength lineup (same opponent).
+  // QB is handled by the PFF-grade ratio when one exists, so QB slots are excluded here to avoid double counting.
+  const noQb = list => list.filter(r=>!(qbHandled && r.p.p==='QB'));
+  const healthy = pick(noQb(rows), 'matchup'), actual = pick(noQb(avail), 'matchup');
+  const injury = healthy > 0 ? Math.max(TEAM_INJURY_FLOOR, 1 - TEAM_INJURY_PASS_THROUGH * (1 - Math.min(1, actual / healthy))) : 1;
+  const matchupRaw = availNeutral > 0 ? availMatchup / availNeutral : 1;
+  const dev = Math.max(-TEAM_MATCHUP_CLAMP, Math.min(TEAM_MATCHUP_CLAMP, (matchupRaw - 1) * TEAM_MATCHUP_WEIGHT));
+  return { matchup: 1 + dev, injury, matchupRaw, missing: rows.filter(r=>r.out && r.matchup >= 8).map(r=>r.p.n) };
 }
 
 function renderBetting(){
@@ -5211,7 +5264,7 @@ function renderBetting(){
       return `${rec?fmtN(rec.val,1):'--'} rec, ${recy?fmtN(recy.val,0):'--'} rec yd`;
     }
   }
-  function teamBlock(teamAb, label, ourPts, qbRep){
+  function teamBlock(teamAb, label, ourPts, qbRep, adjInfo){
     const vegasWinTotal = (TEAMS[teamAb] && TEAMS[teamAb].vegasWinTotal);
     const { core, other, notCounted } = topPlayersFor(teamAb);
     // Players excluded because they are out / not starting, so it is visible WHY someone familiar is missing.
@@ -5228,7 +5281,7 @@ function renderBetting(){
           return `<div style="margin-top:4px;"><b>Starting in his place:</b> ${x.avail.replacement}${rProj!=null?` \u2014 ${fmtN(rProj,1)} PPR`:''}</div>`;
         }).join('')}
         ${qbRep ? `<div style="margin-top:4px;">\u26a0 Team-points projection above already reflects real, current PFF offense grades: ${qbRep.replacement} ${qbRep.replacementGradeOff} vs ${qbRep.starter} ${qbRep.starterGradeOff} (${qbRep.gradeSource}) \u2014 offense scaled ${fmtN(qbRep.ratio*100,0)}%.</div>`
-        : sig.length ? `<div style="margin-top:4px;color:var(--warn, #c9861a);">\u26a0 Team-points projection is not explicitly adjusted for ${sig.map(x=>x.p.n).join(', ')} (it is built from win totals + PFF team grades).</div>` : ''}
+        : sig.length ? `<div style="margin-top:4px;">Team-points projection above is adjusted for ${sig.map(x=>x.p.n).join(', ')} being out (lineup rebuilt from the best available players).</div>` : ''}
       </div>` : '';
     const rowFor = r => `<tr>
         <td class="nm" title="${r.avail?r.avail.note:''}">${r.p.n}${(r.avail&&r.avail.status==='QUESTIONABLE')?' <span style="color:var(--text-faint);" title="'+r.avail.note+'">(?)</span>':''}</td><td>${r.p.p}</td>
@@ -5239,7 +5292,7 @@ function renderBetting(){
     const otherRows = other.length ? `<tr><td colspan="4" style="padding-top:10px;padding-bottom:2px;font-size:11px;color:var(--text-faint);text-transform:uppercase;">Other notable (committee mates, WR2/3, etc.)</td></tr>${other.map(rowFor).join('')}` : '';
     return `<div class="card" style="flex:1;min-width:280px;">
       <div style="font-size:15px;font-weight:700;margin-bottom:4px;">${label} (${teamAb}) &mdash; our proj: <span style="font-family:'IBM Plex Mono',monospace;">${fmtN(ourPts,1)}</span></div>
-      <div style="font-size:12.5px;color:var(--text-dim);margin-bottom:10px;">Real season-long Vegas win total: <b>${vegasWinTotal!=null?fmtN(vegasWinTotal,1):'n/a'}</b></div>
+      <div style="font-size:12.5px;color:var(--text-dim);margin-bottom:10px;">Real season-long Vegas win total: <b>${vegasWinTotal!=null?fmtN(vegasWinTotal,1):'n/a'}</b>${adjInfo?` &middot; Opponent matchup: <b>${adjInfo.matchup>=1?'+':''}${fmtN((adjInfo.matchup-1)*100,1)}%</b> &middot; Injuries: <b>${fmtN((adjInfo.injury-1)*100,1)}%</b>`:''}</div>
       <table class="rank-table" style="width:100%;">
         <thead><tr><th>Player</th><th>Pos</th><th>Real Proj. Line</th><th style="text-align:right;">PPR</th></tr></thead>
         <tbody>${coreRows}${otherRows}</tbody>
@@ -5249,8 +5302,8 @@ function renderBetting(){
   }
 
   let html = `<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px;">
-    ${teamBlock(away,'Away', awayProj.points, awayProj.qbRep)}
-    ${teamBlock(home,'Home', homeProj.points, homeProj.qbRep)}
+    ${teamBlock(away,'Away', awayProj.points, awayProj.qbRep, awayProj.adj)}
+    ${teamBlock(home,'Home', homeProj.points, homeProj.qbRep, homeProj.adj)}
   </div>`;
 
   const hasTotal = vegasTotalVal !== '' && !isNaN(parseFloat(vegasTotalVal));

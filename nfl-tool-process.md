@@ -168,3 +168,8 @@ but never made it into the main `P` array that actually drives projections.
 - WEEKLY_CALIBRATION: refresh from the newest out-of-sample week using the engine as it was BEFORE that week's rebaseline.
 - Player-card PFF badges (PFF_SKILL_GRADES_WK1, ELUSIVE_RATING_WK1): re-scrape PFF receiving (WR, TE, HB) and rushing (HB) pages.
 - Before pushing: run the cross-page audit (Browse, Rankings, Slate, Big Board, Betting vs the engine, several weeks) and require zero differences.
+
+## Offence-side refresh and Betting team model (added Oct 7, 2026)
+- OL: scrape PFF T/G/C run-block grade and pass-block GRADE (not the EFF column), blend 17:4, rescale to old mean/sd, write olRunGrade/olPbe in TEAMS.
+- QB_ATT_COMP: ESPN box scores per QB (att, comp, games); blend with 2025 by 2026 games/(17+games); skip 1-game samples.
+- Betting team points: base (win totals + PFF grades) x engine matchup factor (half weight, +/-12%) x injury factor (60% pass-through, floor 0.80) via teamEngineAdjustment(). Weekly: refresh availability overrides first, then re-run the Weeks 1-4 backtest (backtest uses ESPN scoreboard scores) to confirm error did not rise.
