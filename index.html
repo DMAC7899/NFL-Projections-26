@@ -428,8 +428,8 @@
         </div>
         <div class="methodology" style="margin-top:-4px;">
           Team man/zone rates from PFF's Defense Coverage Scheme report (2025 season, snap-weighted
-          across every real defender who logged a coverage snap). Pressure rate and time-to-throw
-          still sourced from FTN Data via nflverse pending their own rebuild. Player splits 2023-2025
+          across every real defender who logged a coverage snap). Pressure rate is ESPN sack rate
+          (2025 with 2026 so far); time-to-throw and Cover 0-4 shell rates come from FTN Data via nflverse (2025 full season). Player splits 2023-2025
           (minimum 30 targets or 60
           attempts per coverage type). QB grades, pressure metrics, route and efficiency data, red-zone
           shares, and O-line grades via PFF Premium Stats (2025, minimum 6 games played). Win-total and
@@ -700,7 +700,7 @@
     was found to systematically overstate man rate by an average of 7.5 points league-wide).
     <b>Pressure rate:</b> real ESPN sack-rate data (sacks per real dropback, 2025 season blended with 2026 Weeks 1-4, all 32
     teams), replacing FTN Data via nflverse's broader pressure-rate definition. <b>Time-to-throw</b>
-    is still FTN Data via nflverse, pending its own PFF/ESPN rebuild.
+    comes from FTN Data via nflverse (2025 full season; FTN approved for this field by the owner, Oct 7, 2026). The same applies to the Cover 0-4 shell rates; FTN's 2026 coverage data is not published until after the season, so both stay on 2025.
     <b>Rankings/Compare</b> auto-apply the real schedule-driven opponent, defense tier, coverage shell and
     pressure rate for a selected week (game script and pace stay neutral) — open a player in Browse mode to
     fine-tune further. <b>Best Matchups</b> ranks every player by how much their real matchup this week beats
@@ -1540,7 +1540,7 @@ const wxRushMult = [1.00, 1.07];
    values below are now sourced from PFF's Defense Coverage Scheme report alone (2025 season,
    snap-weighted) -- see the REAL DATA SOURCE CORRECTION comment above. Pressure/time-to-throw/
    Pressure rate has since been rebuilt from real ESPN sack-rate data (see the comment at its
-   usage site below). Time-to-throw and Cover-0-4 shell rates are still FTN via nflverse, pending
+   usage site below). Time-to-throw and Cover-0-4 shell rates are FTN via nflverse (2025 full season; owner-approved Oct 7, 2026, and re-derived from the raw nflverse participation file the same day with an exact match: ttt max difference 0.01s, shells max 0.2 points). Previously described as pending
    their own rebuild as part of the
    same wider project. */
 /* REAL DATA SOURCE CORRECTION (this replaces FTN Data via nflverse, which is no longer an
@@ -3579,7 +3579,7 @@ function computeProjectionRaw(p, opts){
   const pressurePassMult = 1 - pressureVsAvg * 1.2;
   const pressureIntMult = 1 + pressureVsAvg * 3.0;
   // Real time-to-throw effect (QB only): defenses that force faster throws (lower real
-  // time-to-throw allowed -- still FTN/nflverse 2025 pending its own rebuild, all 32 teams) give the QB fewer clean
+  // time-to-throw allowed -- FTN/nflverse 2025, owner-approved source for this field, all 32 teams) give the QB fewer clean
   // reads and less time to find a deep option -- a real, independent signal from pressure
   // RATE specifically (a defense can pressure at an average rate but still consistently
   // rush the QB's internal clock via disguise/coverage). Real range across the league is
