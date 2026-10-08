@@ -3710,8 +3710,28 @@ const QB_2026_LINES = {
 'Michael Penix Jr.':{eq:1.50,passYd:319.3,passTD:1.33,int:0.67},
 'Case Keenum':{eq:1.13,passYd:217.9,passTD:1.76,int:0.00},
 };
+/* Role-change correction (RB/WR/TE): players whose real 2026 role is far from their preseason line.
+   ESPN box scores Wk1-4, per game; blended 6 prior-equivalent games : 4 games played (ROLE_2026_PRIOR_G).
+   Judgement call for known role changes only -- a blanket 2026 layer for all skill players did NOT improve
+   accuracy in backtest (406 player-games, MAE worse as the weight rose). Refresh weekly; remove when stale. */
+const ROLE_2026_PRIOR_G = 6;
+const ROLE_2026 = {
+ 'Chris Godwin':     {g:4, tgt:4.5, rec:4.0,  recYd:35.5, recTD:0},
+ 'Emeka Egbuka':     {g:4, tgt:6.0, rec:3.75, recYd:38.5, recTD:0.25},
+ 'Kenneth Gainwell': {g:4, rushAtt:3.25, rushYd:6.5, rushTD:0.125, rec:2.0, recYd:11.0, recTD:0.125}
+};
+/* Players whose 2024 season is not representative (age / role / offence change): skip the 2024 blend. */
+const RECV_2024_EXCLUDE = {'Chris Godwin':'healthy 2024 (82 yd/g, 0.71 TD) no longer matches his role: 35.5 yd/g and 1.04 YPRR in 2026'};
 function getBlendedBaseline(p){
   const r = getBlendedBaselineBase(p);
+  const ro = (p.p!=='QB') ? ROLE_2026[p.n] : null;
+  if(ro){
+    const wP = ROLE_2026_PRIOR_G, w26 = ro.g;
+    const mixR = k => (ro[k]===undefined) ? r.blended[k] : (r.blended[k]*wP + ro[k]*w26) / (wP + w26);
+    const b2 = { ...r.blended };
+    ['tgt','rec','recYd','recTD','rushAtt','rushYd','rushTD'].forEach(k=>{ if(ro[k]!==undefined && r.blended[k]!==undefined) b2[k]=mixR(k); });
+    return { ...r, blended: b2, role2026: true };
+  }
   const l26 = (p.p==='QB') ? QB_2026_LINES[p.n] : null;
   if(!l26) return r;
   const g25 = r.games2025 || QB_2025_GAMES[p.n] || 6, g24 = r.games2024 || 0;
@@ -3723,7 +3743,7 @@ function getBlendedBaselineBase(p){
   const b25 = p.b;
   let b24 = null;
   if(p.p==='QB') b24 = QB_2024_BASELINE[p.n];
-  else b24 = RECV_2024_BASELINE[p.n];
+  else b24 = RECV_2024_EXCLUDE[p.n] ? null : RECV_2024_BASELINE[p.n];
   if(!b24) return { blended: b25, games2025: null, games2024: null, w25pct: 100 };
 
   const g25 = (p.p==='QB' && QB_2025_GAMES[p.n]) || (PFF_RECEIVING[p.n] && PFF_RECEIVING[p.n].games) || 6;

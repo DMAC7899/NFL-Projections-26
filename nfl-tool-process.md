@@ -195,3 +195,6 @@ QB rush yards now scale by the opponent's real rushing leak (all rushers' yards 
 
 ### RB rushing: real run-leak test (Wk1-4, not adopted)
 Tested adding each defence's real non-QB ypc allowed (leave-one-game-out) on top of the existing rush tier + grade adjustment: incremental slope -0.31 (se 0.25, 158 RB games) = no extra signal, so RBs are NOT given a leak factor (QBs are, see above). Per-defence actual/projected RB rush (Wk1-4): TB 1.07 (RBs beat projection vs TB), lowest WSH 0.55, JAX 0.59, ATL 0.67; highest DET 1.52, CLE 1.35, LAC 1.30. Re-test each week as samples grow.
+
+## Role-change corrections (ROLE_2026 / RECV_2024_EXCLUDE) -- preview branch role-2026-preview
+For RB/WR/TE whose real 2026 role differs sharply from the preseason line (Wk1-4: Godwin, Egbuka, Gainwell), `ROLE_2026` blends per-game ESPN lines 4:6 with the prior; `RECV_2024_EXCLUDE` skips the 2024 blend (Godwin). Refresh weekly from box scores and delete entries once the baseline catches up. A blanket 2026 layer for all skill players was tested and did NOT help (406 player-games). Note ESPN name variants (Kenny Gainwell, Chris Godwin Jr.) when matching box scores.
