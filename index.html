@@ -2076,7 +2076,7 @@ const QB_ATT_COMP = {
 'Geno Smith':{attPerGame:29.8,compPct:68.4},
 'Jacoby Brissett':{attPerGame:25.9,compPct:60.7},
 'Jalen Hurts':{attPerGame:24.7,compPct:67.4},
-'Jalon Daniels':{attPerGame:15.0,compPct:63.3},
+'Jalon Daniels':{attPerGame:27.0,compPct:70.4},
 'Jameis Winston':{attPerGame:26.0,compPct:55.1},
 'Jared Goff':{attPerGame:33.7,compPct:70.6},
 'Jayden Daniels':{attPerGame:29.3,compPct:67.2},
@@ -2086,18 +2086,18 @@ const QB_ATT_COMP = {
 'Justin Fields':{attPerGame:20.2,compPct:65.4},
 'Justin Herbert':{attPerGame:29.8,compPct:63.7},
 'Kirk Cousins':{attPerGame:33.1,compPct:66.5},
-'Kyler Murray':{attPerGame:30.6,compPct:68.0},
+'Kyler Murray':{attPerGame:31.9,compPct:68.3},
 'Lamar Jackson':{attPerGame:26.8,compPct:68.0},
 'Malik Willis':{attPerGame:12.2,compPct:70.7},
-'Marcus Mariota':{attPerGame:17.0,compPct:64.7},
+'Marcus Mariota':{attPerGame:23.5,compPct:63.8},
 'Matthew Stafford':{attPerGame:34.2,compPct:64.7},
 'Michael Penix Jr.':{attPerGame:21.2,compPct:59.7},
 'Patrick Mahomes':{attPerGame:34.3,compPct:66.7},
-'Sam Darnold':{attPerGame:31.1,compPct:65.9},
+'Sam Darnold':{attPerGame:32.6,compPct:66.0},
 'Shedeur Sanders':{attPerGame:26.5,compPct:56.6},
 'Trevor Lawrence':{attPerGame:27.9,compPct:62.2},
 'Tyler Shough':{attPerGame:45.0,compPct:67.2},
-'Tyson Bagent':{attPerGame:21.5,compPct:69.8},
+'Tyson Bagent':{attPerGame:34.0,compPct:73.5},
 };
 const QB_ATT_COMP_LEAGUE_AVG = {attPerGame:29.4,compPct:65.7};
 
@@ -3651,7 +3651,7 @@ const QB_2025_GAMES = {'Aaron Rodgers':17, 'Baker Mayfield':17, 'Bo Nix':18, 'Br
    so a half game or a relief appearance counts for what it was). Blended into the baseline in getBlendedBaseline() at
    QB_2026_WEIGHT per game-equivalent (2024 counts 1.0 per game, 2025 1.5). Weight chosen by backtest: predicting each
    QB's next-game passing yards from only earlier weeks (91 starts, Weeks 2-4), MAE 56.59 with no 2026 data, 56.30 at
-   weight 2, 56.29 at 3, 56.55 at 4, 57.1 at 6 -- so a modest weight, not a big one. QBs under 10 attempts are left out.
+   weight 2, 56.29 at 3, 56.55 at 4, 57.1 at 6 -- so a modest weight, not a big one. QBs under 10 attempts are left out, and so are QBs whose roster baseline already blends their 2026 games by hand (Bagent, Watson, Jalon Daniels, Kaliakmanis) to avoid counting them twice.
    REFRESH weekly with the box scores. */
 const QB_2026_WEIGHT = 2.5;
 const QB_2026_LINES = {
@@ -3672,7 +3672,6 @@ const QB_2026_LINES = {
 'Sam Darnold':{eq:2.30,passYd:243.5,passTD:2.61,int:1.30},
 'Baker Mayfield':{eq:3.20,passYd:192.2,passTD:0.62,int:0.62},
 'Joe Burrow':{eq:5.23,passYd:223.8,passTD:1.34,int:0.57},
-'Deshaun Watson':{eq:3.83,passYd:223.0,passTD:1.57,int:0.52},
 'Trevor Lawrence':{eq:3.47,passYd:243.2,passTD:2.31,int:0.58},
 'Geno Smith':{eq:3.90,passYd:231.3,passTD:1.28,int:0.00},
 'Cam Ward':{eq:3.97,passYd:183.0,passTD:0.76,int:0.50},
@@ -3689,11 +3688,8 @@ const QB_2026_LINES = {
 'Jalen Hurts':{eq:3.80,passYd:187.6,passTD:1.84,int:0.79},
 'Marcus Mariota':{eq:1.70,passYd:200.0,passTD:2.35,int:0.00},
 'Jameis Winston':{eq:2.60,passYd:184.2,passTD:1.15,int:1.15},
-'Tyson Bagent':{eq:1.43,passYd:224.7,passTD:0.00,int:0.70},
 'Michael Penix Jr.':{eq:1.50,passYd:319.3,passTD:1.33,int:0.67},
 'Case Keenum':{eq:1.13,passYd:217.9,passTD:1.76,int:0.00},
-'Jalon Daniels':{eq:1.00,passYd:148.0,passTD:1.00,int:3.00},
-'Athan Kaliakmanis':{eq:1.10,passYd:169.1,passTD:0.91,int:0.91}
 };
 function getBlendedBaseline(p){
   const r = getBlendedBaselineBase(p);
@@ -3747,13 +3743,20 @@ function getBlendedBaselineBase(p){
    when a real schedule opponent is in play (opts.oppAb set); manual what-if sliders with no week
    selected, and the neutral Season Total baseline, are untouched. */
 const MATCHUP_SHRINK = 0.6;
+/* QBs only (Oct 9, 2026): re-tested on 126 real QB starts, Weeks 1-4 (opponent effect on pass yards): mean absolute error
+   62.9 yds with no opponent effect, 63.3 at strength 0.3, 64.2 at 0.5, 64.7 at the old 0.6, 67.7 undamped; regression slope of
+   actual-minus-neutral on the damped effect 0.53 +/- 0.28 (i.e. ideal strength ~0.3 of the undamped effect). The week-3 test
+   (all positions) had pointed to 0.3-0.5. QB passing now uses 0.3; RB/WR/TE stay at 0.6 until the same test is run on their
+   box-score lines. */
+const MATCHUP_SHRINK_QB = 0.3;
 const NEUTRAL_OPP_FIELDS = {oppTier:2, site:0, cov:1, cbShadow:false, pressure:null, sackConv:null, ttt:null, c0:null,
                             runDefOverall:null, runDefInterior:null, cbGrade:null, oppAb:null};
 function computeProjection(p, opts){
   const full = computeProjectionRaw(p, opts);
-  if(!opts || !opts.oppAb || MATCHUP_SHRINK >= 1) return full;
+  const shrinkK = (p.p==='QB') ? MATCHUP_SHRINK_QB : MATCHUP_SHRINK;
+  if(!opts || !opts.oppAb || shrinkK >= 1) return full;
   const neutral = computeProjectionRaw(p, {...opts, ...NEUTRAL_OPP_FIELDS});
-  const mix = (n, f) => n + MATCHUP_SHRINK * (f - n);
+  const mix = (n, f) => n + shrinkK * (f - n);
   return {
     lines: full.lines.map((ln, i) => ({...ln, val: mix(neutral.lines[i].val, ln.val)})),
     ppr:  mix(neutral.ppr,  full.ppr),
