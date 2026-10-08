@@ -192,3 +192,6 @@ Run by scheduled tasks. Sources allowed for these runs: espn.com (injuries API s
 
 ## QB rushing vs run defence (DEF_RUN_LEAK)
 QB rush yards now scale by the opponent's real rushing leak (all rushers' yards per carry allowed vs league, ESPN box scores). Refresh `DEF_RUN_LEAK` weekly ([games, rush yds allowed, carries allowed] per defence) and re-test: slope of actual/expected QB rush on leak (leave-one-game-out). Wk1-4: ypc leak slope 0.64 (se 0.52); QB-specific rush-yards-allowed had no signal (-0.12) so is not used. Same weekly re-test of RB/WR/TE matchup strength (Wk1-4 slopes: RB rush 0.92, WR rec 0.61, TE rec 1.00).
+
+### RB rushing: real run-leak test (Wk1-4, not adopted)
+Tested adding each defence's real non-QB ypc allowed (leave-one-game-out) on top of the existing rush tier + grade adjustment: incremental slope -0.31 (se 0.25, 158 RB games) = no extra signal, so RBs are NOT given a leak factor (QBs are, see above). Per-defence actual/projected RB rush (Wk1-4): TB 1.07 (RBs beat projection vs TB), lowest WSH 0.55, JAX 0.59, ATL 0.67; highest DET 1.52, CLE 1.35, LAC 1.30. Re-test each week as samples grow.
