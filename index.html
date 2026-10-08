@@ -2117,7 +2117,7 @@ const QB_ATT_COMP = {
 'Geno Smith':{attPerGame:29.8,compPct:68.4},
 'Jacoby Brissett':{attPerGame:25.9,compPct:60.7},
 'Jalen Hurts':{attPerGame:24.7,compPct:67.4},
-'Jalon Daniels':{attPerGame:15.0,compPct:63.3},
+'Jalon Daniels':{attPerGame:27.0,compPct:70.4},
 'Jameis Winston':{attPerGame:26.0,compPct:55.1},
 'Jared Goff':{attPerGame:33.7,compPct:70.6},
 'Jayden Daniels':{attPerGame:29.3,compPct:67.2},
@@ -2127,19 +2127,27 @@ const QB_ATT_COMP = {
 'Justin Fields':{attPerGame:20.2,compPct:65.4},
 'Justin Herbert':{attPerGame:29.8,compPct:63.7},
 'Kirk Cousins':{attPerGame:33.1,compPct:66.5},
-'Kyler Murray':{attPerGame:30.6,compPct:68.0},
+'Kyler Murray':{attPerGame:31.9,compPct:68.3},
 'Lamar Jackson':{attPerGame:26.8,compPct:68.0},
 'Malik Willis':{attPerGame:12.2,compPct:70.7},
-'Marcus Mariota':{attPerGame:17.0,compPct:64.7},
+'Marcus Mariota':{attPerGame:23.5,compPct:63.8},
 'Matthew Stafford':{attPerGame:34.2,compPct:64.7},
 'Michael Penix Jr.':{attPerGame:21.2,compPct:59.7},
 'Patrick Mahomes':{attPerGame:34.3,compPct:66.7},
-'Sam Darnold':{attPerGame:31.1,compPct:65.9},
+'Sam Darnold':{attPerGame:32.6,compPct:66.0},
 'Shedeur Sanders':{attPerGame:26.5,compPct:56.6},
 'Trevor Lawrence':{attPerGame:27.9,compPct:62.2},
 'Tyler Shough':{attPerGame:45.0,compPct:67.2},
-'Tyson Bagent':{attPerGame:21.5,compPct:69.8},
+'Tyson Bagent':{attPerGame:34.0,compPct:73.5},
 };
+/* Real 2026 rushing leak per defence (ESPN box scores, Wk1-4): [games, rush yards allowed, carries allowed], ALL rushers.
+   Used for QB rushing only (QBs had no run-defence adjustment at all). Backtest (leave-one-game-out, 90 QB games):
+   defence ypc-allowed vs league -> slope 0.64 (se 0.52); QB-specific rush yards allowed -> -0.12 (se 0.13) = no signal, so not used.
+   Pass-through 0.5 and shrunk by games/(games+2). Refresh weekly from ESPN box scores. */
+const DEF_RUN_LEAK = {ARI:[4,470,112], ATL:[4,193,71], BAL:[4,400,103], BUF:[4,464,115], CAR:[4,626,116], CHI:[4,410,83], CIN:[4,398,88], CLE:[4,453,99], DAL:[4,601,126], DEN:[4,571,120], DET:[4,479,108], GB:[4,557,133], HOU:[4,335,100], IND:[4,524,109], JAX:[4,297,91], KC:[4,371,104], LAC:[4,487,129], LAR:[4,408,103], LV:[4,538,104], MIA:[4,436,120], MIN:[4,378,91], NE:[4,416,95], NO:[4,591,117], NYG:[4,436,93], NYJ:[4,494,116], PHI:[4,488,121], PIT:[4,451,104], SEA:[4,408,112], SF:[4,399,107], TB:[4,314,98], TEN:[4,491,134], WSH:[4,374,94]};
+const DEF_RUN_LEAK_LG_YPC = (()=>{let r=0,c=0;for(const k in DEF_RUN_LEAK){r+=DEF_RUN_LEAK[k][1];c+=DEF_RUN_LEAK[k][2]}return r/c})();
+const QB_RUSH_LEAK_PASS = 0.5;
+function qbRushLeakMult(ab){const d=DEF_RUN_LEAK[ab==="WAS"?"WSH":ab];if(!d)return 1;const leak=(d[1]/d[2])/DEF_RUN_LEAK_LG_YPC-1;return 1+QB_RUSH_LEAK_PASS*leak*d[0]/(d[0]+2)}
 const QB_ATT_COMP_LEAGUE_AVG = {attPerGame:29.4,compPct:65.7};
 
 const PFF_QB = {
@@ -3686,7 +3694,62 @@ const QB_2025_GAMES = {'Aaron Rodgers':17, 'Baker Mayfield':17, 'Bo Nix':18, 'Br
 // limited starts) gets meaningfully corrected by a real, complete 2024 season instead
 // of being taken at face value. Falls back to pure 2025 when no 2024 match exists
 // (rookies, or anyone below the games floor those tables were built with).
+/* QB 2026 GAME LOG (added Oct 9, 2026). The QB baseline above is 2024+2025 only, so a QB's actual 2026 games
+   never reached his projection -- Jayden Daniels' two 2026 games (164 yds; 96 yds before leaving) were ignored.
+   Source: ESPN box scores, Weeks 1-4 (passing yards/TD/INT per game-equivalent, where one game-equivalent = 30 attempts,
+   so a half game or a relief appearance counts for what it was). Blended into the baseline in getBlendedBaseline() at
+   QB_2026_WEIGHT per game-equivalent (2024 counts 1.0 per game, 2025 1.5). Weight chosen by backtest: predicting each
+   QB's next-game passing yards from only earlier weeks (91 starts, Weeks 2-4), MAE 56.59 with no 2026 data, 56.30 at
+   weight 2, 56.29 at 3, 56.55 at 4, 57.1 at 6 -- so a modest weight, not a big one. QBs under 10 attempts are left out, and so are QBs whose roster baseline already blends their 2026 games by hand (Bagent, Watson, Jalon Daniels, Kaliakmanis) to avoid counting them twice.
+   REFRESH weekly with the box scores. */
+const QB_2026_WEIGHT = 2.5;
+const QB_2026_LINES = {
+'Lamar Jackson':{eq:3.20,passYd:302.2,passTD:1.88,int:0.31},
+'Daniel Jones':{eq:4.40,passYd:171.4,passTD:0.68,int:0.91},
+'Cooper Rush':{eq:1.30,passYd:176.2,passTD:0.77,int:3.08},
+'Aaron Rodgers':{eq:5.10,passYd:195.9,passTD:1.37,int:0.78},
+'Josh Allen':{eq:3.97,passYd:261.9,passTD:1.51,int:0.76},
+'C.J. Stroud':{eq:5.03,passYd:226.7,passTD:0.99,int:0.00},
+'Jacoby Brissett':{eq:5.07,passYd:161.4,passTD:1.18,int:0.79},
+'Justin Herbert':{eq:3.97,passYd:205.7,passTD:1.01,int:1.51},
+'Bo Nix':{eq:4.50,passYd:182.0,passTD:1.11,int:0.67},
+'Patrick Mahomes':{eq:4.27,passYd:243.0,passTD:2.11,int:0.47},
+'Caleb Williams':{eq:1.83,passYd:222.0,passTD:1.09,int:0.55},
+'Bryce Young':{eq:5.40,passYd:234.8,passTD:1.67,int:0.37},
+'Drake Maye':{eq:3.90,passYd:219.0,passTD:1.03,int:1.79},
+'Drew Lock':{eq:1.60,passYd:263.8,passTD:2.50,int:0.00},
+'Sam Darnold':{eq:2.30,passYd:243.5,passTD:2.61,int:1.30},
+'Baker Mayfield':{eq:3.20,passYd:192.2,passTD:0.62,int:0.62},
+'Joe Burrow':{eq:5.23,passYd:223.8,passTD:1.34,int:0.57},
+'Trevor Lawrence':{eq:3.47,passYd:243.2,passTD:2.31,int:0.58},
+'Geno Smith':{eq:3.90,passYd:231.3,passTD:1.28,int:0.00},
+'Cam Ward':{eq:3.97,passYd:183.0,passTD:0.76,int:0.50},
+'Dak Prescott':{eq:5.00,passYd:213.0,passTD:1.60,int:0.20},
+'Malik Willis':{eq:3.43,passYd:207.4,passTD:0.29,int:0.58},
+'Kirk Cousins':{eq:4.80,passYd:213.8,passTD:2.29,int:0.83},
+'Brock Purdy':{eq:3.77,passYd:267.3,passTD:2.92,int:0.27},
+'Matthew Stafford':{eq:5.40,passYd:220.2,passTD:1.11,int:1.11},
+'Jordan Love':{eq:5.13,passYd:202.8,passTD:1.56,int:0.58},
+'Kyler Murray':{eq:2.37,passYd:183.0,passTD:0.42,int:0.85},
+'Tyler Shough':{eq:6.00,passYd:200.5,passTD:1.50,int:0.50},
+'Jared Goff':{eq:5.37,passYd:226.2,passTD:1.68,int:0.00},
+'Jayden Daniels':{eq:1.70,passYd:152.9,passTD:1.76,int:0.00},
+'Jalen Hurts':{eq:3.80,passYd:187.6,passTD:1.84,int:0.79},
+'Marcus Mariota':{eq:1.70,passYd:200.0,passTD:2.35,int:0.00},
+'Jameis Winston':{eq:2.60,passYd:184.2,passTD:1.15,int:1.15},
+'Michael Penix Jr.':{eq:1.50,passYd:319.3,passTD:1.33,int:0.67},
+'Case Keenum':{eq:1.13,passYd:217.9,passTD:1.76,int:0.00},
+};
 function getBlendedBaseline(p){
+  const r = getBlendedBaselineBase(p);
+  const l26 = (p.p==='QB') ? QB_2026_LINES[p.n] : null;
+  if(!l26) return r;
+  const g25 = r.games2025 || QB_2025_GAMES[p.n] || 6, g24 = r.games2024 || 0;
+  const wBase = g25*1.5 + g24, w26 = QB_2026_WEIGHT * l26.eq;
+  const mix = k => (r.blended[k]*wBase + l26[k]*w26) / (wBase + w26);
+  return { ...r, blended: { ...r.blended, passYd: mix('passYd'), passTD: mix('passTD'), int: mix('int') }, games2026eq: l26.eq };
+}
+function getBlendedBaselineBase(p){
   const b25 = p.b;
   let b24 = null;
   if(p.p==='QB') b24 = QB_2024_BASELINE[p.n];
@@ -3729,13 +3792,20 @@ function getBlendedBaseline(p){
    when a real schedule opponent is in play (opts.oppAb set); manual what-if sliders with no week
    selected, and the neutral Season Total baseline, are untouched. */
 const MATCHUP_SHRINK = 0.6;
+/* QBs only (Oct 9, 2026): re-tested on 126 real QB starts, Weeks 1-4 (opponent effect on pass yards): mean absolute error
+   62.9 yds with no opponent effect, 63.3 at strength 0.3, 64.2 at 0.5, 64.7 at the old 0.6, 67.7 undamped; regression slope of
+   actual-minus-neutral on the damped effect 0.53 +/- 0.28 (i.e. ideal strength ~0.3 of the undamped effect). The week-3 test
+   (all positions) had pointed to 0.3-0.5. QB passing now uses 0.3; RB/WR/TE stay at 0.6 until the same test is run on their
+   box-score lines. */
+const MATCHUP_SHRINK_QB = 0.3;
 const NEUTRAL_OPP_FIELDS = {oppTier:2, site:0, cov:1, cbShadow:false, pressure:null, sackConv:null, ttt:null, c0:null,
                             runDefOverall:null, runDefInterior:null, cbGrade:null, oppAb:null};
 function computeProjection(p, opts){
   const full = computeProjectionRaw(p, opts);
-  if(!opts || !opts.oppAb || MATCHUP_SHRINK >= 1) return full;
+  const shrinkK = (p.p==='QB') ? MATCHUP_SHRINK_QB : MATCHUP_SHRINK;
+  if(!opts || !opts.oppAb || shrinkK >= 1) return full;
   const neutral = computeProjectionRaw(p, {...opts, ...NEUTRAL_OPP_FIELDS});
-  const mix = (n, f) => n + MATCHUP_SHRINK * (f - n);
+  const mix = (n, f) => n + shrinkK * (f - n);
   return {
     lines: full.lines.map((ln, i) => ({...ln, val: mix(neutral.lines[i].val, ln.val)})),
     ppr:  mix(neutral.ppr,  full.ppr),
@@ -3816,7 +3886,10 @@ function computeProjectionRaw(p, opts){
   // same reasonable range the tool's other skill multipliers naturally fall in, so a real
   // but small-sample outlier can meaningfully move the projection without being able to
   // dominate it outright.
-  const qbSackSkillMultRaw = 1 + qbP2SVsAvg * 0.15;
+  // Oct 9, 2026: weight cut from 0.15 to 0.03. Test on 120 real QB starts (Weeks 1-4): actual-vs-baseline passing yards
+  // regressed on this pressure-to-sack gap gave a slope of -0.049 (+/- 0.043), so the old 0.15 was not supported (3.7 standard
+  // errors away) and let small-sample extremes (Daniels' 4.3% rate = +11% to his pass yards) inflate projections.
+  const qbSackSkillMultRaw = 1 + qbP2SVsAvg * 0.03;
   const qbSackSkillMult = Math.max(0.85, Math.min(1.15, qbSackSkillMultRaw));
   // Real Cover-0 (all-out blitz, no deep safety) rate, per opponent -- found unused in
   // the audit alongside c1-c4 (this is the one with the clearest, most defensible real
@@ -3887,8 +3960,9 @@ function computeProjectionRaw(p, opts){
   if(p.p==='QB'){
     const passYd = bb.passYd * oppM * paceM * siteM * (wxPassMult[wi]) * scriptVolMult * roleMult * pressurePassMult * sackMult * tttMult * qbSackSkillMult * qbCov.yd * vegasM * olPassM * WEEKLY_CALIBRATION.qbMult * qbMatchupAdj * dInj.pass;
     const passTD = bb.passTD * oppM * paceM * siteM * (wxPassMult[wi]) * scriptVolMult * roleMult * pressurePassMult * sackMult * tttMult * qbSackSkillMult * qbCov.yd * vegasM * olPassM * WEEKLY_CALIBRATION.qbMult * qbMatchupAdj * dInj.pass;
-    const rushYd = bb.rushYd * paceM * siteM * (wxRushMult[wi]) * scriptSecMult * roleMult * vegasM * qbRushSkillMult;
-    const rushTD = bb.rushTD * paceM * siteM * (wxRushMult[wi]) * scriptSecMult * roleMult * vegasM * qbRushSkillMult;
+    const qbRushLeak = opts.oppAb ? qbRushLeakMult(opts.oppAb) : 1;
+    const rushYd = bb.rushYd * paceM * siteM * (wxRushMult[wi]) * scriptSecMult * roleMult * vegasM * qbRushSkillMult * qbRushLeak;
+    const rushTD = bb.rushTD * paceM * siteM * (wxRushMult[wi]) * scriptSecMult * roleMult * vegasM * qbRushSkillMult * qbRushLeak;
     const ints = bb.int * (oi<=1 ? 1.15 : oi>=3 ? 0.85 : 1.0) * pressureIntMult * c0IntMult * qbCov.int * (2 - olPassM);
     // Real per-game attempts (PFF Passing Summary), scaled by real volume drivers only
     // (pace/site/script/role/vegas) -- not by efficiency-side multipliers, since attempt
