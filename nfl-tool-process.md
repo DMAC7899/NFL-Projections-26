@@ -178,3 +178,10 @@ but never made it into the main `P` array that actually drives projections.
 - DEF_ROSTER: PFF /nfl/positions/{yr}/REGPO/defense?position=ED|DI|LB|CB|S for 2025 and 2026 (50 rows per page, click NEXT); blend DEF grade by snaps with a 150-snap prior of 60; keep top 3 ED/DI/LB, 4 CB, 3 S by 2026 snaps per game.
 - DEF_AVAILABILITY: ESPN injuries API (site.api.espn.com/apis/site/v2/sports/football/nfl/injuries), defensive positions only, statuses Out/IR/Doubtful/Questionable, matched by name per team. Refresh every Friday and remove expired entries.
 - defenderInjuryFactors() converts missing defenders into pass/run multipliers used by the engine and team points. Check the team table for sanity (star edge out is about +0.5 to +1 point allowed).
+
+## Scheduled injury / trade runs (added Oct 8, 2026)
+Run by scheduled tasks. Sources allowed for these runs: espn.com (injuries API site.api.espn.com/apis/site/v2/sports/football/nfl/injuries, transactions, team pages) and nfl.com only. If a fact is not on one of those, do not use it.
+1. Pull ESPN injuries for all 32 teams. Offence: update PLAYER_AVAILABILITY / AVAILABILITY_WEEK_OVERRIDES for players in the roster P (OUT = out/IR/PUP, BACKUP = healthy but not starting, QUESTIONABLE = questionable; doubtful maps to OUT only if ESPN/NFL.com say out). Defence: rebuild DEF_AVAILABILITY for players in DEF_ROSTER (OUT/IR, DOUBTFUL, QUESTIONABLE). Remove entries for players now healthy or no longer listed. Set AVAILABILITY_LAST_VERIFIED to today.
+2. Trades / signings / releases (ESPN transactions, NFL.com transactions): if a rostered player moved teams, update his t field and flag it; do not invent a role. A move that needs a judgement call (new baseline, role) is listed in the commit message under "NEEDS REVIEW" and left unchanged.
+3. Run: node tools/validate.js (must print ALL OK) and node tools/audit.js (0 diffs, no page errors). If either fails, do not push; fix or revert.
+4. Commit with a message listing what changed (players and statuses), push to main.
