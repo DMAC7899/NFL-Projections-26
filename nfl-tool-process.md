@@ -189,3 +189,6 @@ Run by scheduled tasks. Sources allowed for these runs: espn.com (injuries API s
 ## QB 2026 game log (added Oct 9, 2026)
 - QB_2026_LINES: ESPN box scores (scoreboard seasontype=2&week=N&dates=2026 then summary?event=ID, boxscore.players passing: C/ATT, YDS, TD, INT) summed per QB; eq = attempts/30; per-game-equivalent yards/TD/INT. Blended into getBlendedBaseline at QB_2026_WEIGHT 2.5 (backtest-picked). Refresh weekly with the new week's box scores.
 - The pressure-to-sack skill multiplier weight is 0.03 (test slope -0.049 +/- 0.043); re-test with more weeks (script: regress actual-vs-baseline pass yards on the P2S gap).
+
+## QB rushing vs run defence (DEF_RUN_LEAK)
+QB rush yards now scale by the opponent's real rushing leak (all rushers' yards per carry allowed vs league, ESPN box scores). Refresh `DEF_RUN_LEAK` weekly ([games, rush yds allowed, carries allowed] per defence) and re-test: slope of actual/expected QB rush on leak (leave-one-game-out). Wk1-4: ypc leak slope 0.64 (se 0.52); QB-specific rush-yards-allowed had no signal (-0.12) so is not used. Same weekly re-test of RB/WR/TE matchup strength (Wk1-4 slopes: RB rush 0.92, WR rec 0.61, TE rec 1.00).

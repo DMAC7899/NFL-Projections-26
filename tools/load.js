@@ -7,6 +7,6 @@ const document=mk(), window={addEventListener(){},}, localStorage={getItem(){ret
 global.document=document;global.window=window;global.localStorage=localStorage;
 global.navigator={};global.requestAnimationFrame=()=>{};global.setTimeout=(f)=>0;
 // expose
-code+='\n;globalThis.__X={QB_PRESSURE,QB_PRESSURE_LEAGUE_AVG,getBlendedBaseline,computeTeamProjectedPoints,defenderInjuryFactors:(typeof defenderInjuryFactors!=="undefined"?defenderInjuryFactors:null),QB_MATCHUP_ADJ,RB_MATCHUP_ADJ,WR_MATCHUP_ADJ,TE_MATCHUP_ADJ,P,TEAMS,computeProjection,neutralOptsFor,PLAYER_AVAILABILITY,AVAILABILITY_WEEK_OVERRIDES};';
+code+='\n;globalThis.__X={QB_PRESSURE,QB_PRESSURE_LEAGUE_AVG,getBlendedBaseline,qbRushLeakMult:(typeof qbRushLeakMult!=="undefined"?qbRushLeakMult:null),computeTeamProjectedPoints,defenderInjuryFactors:(typeof defenderInjuryFactors!=="undefined"?defenderInjuryFactors:null),QB_MATCHUP_ADJ,RB_MATCHUP_ADJ,WR_MATCHUP_ADJ,TE_MATCHUP_ADJ,P,TEAMS,computeProjection,neutralOptsFor,PLAYER_AVAILABILITY,AVAILABILITY_WEEK_OVERRIDES};';
 try{(0,eval)(code)}catch(e){console.error('LOAD ERR',e.message.slice(0,300)); }
 module.exports=globalThis.__X;
