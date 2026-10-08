@@ -2106,7 +2106,7 @@ const QB_ATT_COMP = {
 const DEF_RUN_LEAK = {ARI:[4,470,112], ATL:[4,193,71], BAL:[4,400,103], BUF:[4,464,115], CAR:[4,626,116], CHI:[4,410,83], CIN:[4,398,88], CLE:[4,453,99], DAL:[4,601,126], DEN:[4,571,120], DET:[4,479,108], GB:[4,557,133], HOU:[4,335,100], IND:[4,524,109], JAX:[4,297,91], KC:[4,371,104], LAC:[4,487,129], LAR:[4,408,103], LV:[4,538,104], MIA:[4,436,120], MIN:[4,378,91], NE:[4,416,95], NO:[4,591,117], NYG:[4,436,93], NYJ:[4,494,116], PHI:[4,488,121], PIT:[4,451,104], SEA:[4,408,112], SF:[4,399,107], TB:[4,314,98], TEN:[4,491,134], WSH:[4,374,94]};
 const DEF_RUN_LEAK_LG_YPC = (()=>{let r=0,c=0;for(const k in DEF_RUN_LEAK){r+=DEF_RUN_LEAK[k][1];c+=DEF_RUN_LEAK[k][2]}return r/c})();
 const QB_RUSH_LEAK_PASS = 0.5;
-function qbRushLeakMult(ab){const d=DEF_RUN_LEAK[ab];if(!d)return 1;const leak=(d[1]/d[2])/DEF_RUN_LEAK_LG_YPC-1;return 1+QB_RUSH_LEAK_PASS*leak*d[0]/(d[0]+2)}
+function qbRushLeakMult(ab){const d=DEF_RUN_LEAK[ab==="WAS"?"WSH":ab];if(!d)return 1;const leak=(d[1]/d[2])/DEF_RUN_LEAK_LG_YPC-1;return 1+QB_RUSH_LEAK_PASS*leak*d[0]/(d[0]+2)}
 const QB_ATT_COMP_LEAGUE_AVG = {attPerGame:29.4,compPct:65.7};
 
 const PFF_QB = {
