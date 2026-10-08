@@ -3645,7 +3645,66 @@ const QB_2025_GAMES = {'Aaron Rodgers':17, 'Baker Mayfield':17, 'Bo Nix':18, 'Br
 // limited starts) gets meaningfully corrected by a real, complete 2024 season instead
 // of being taken at face value. Falls back to pure 2025 when no 2024 match exists
 // (rookies, or anyone below the games floor those tables were built with).
+/* QB 2026 GAME LOG (added Oct 9, 2026). The QB baseline above is 2024+2025 only, so a QB's actual 2026 games
+   never reached his projection -- Jayden Daniels' two 2026 games (164 yds; 96 yds before leaving) were ignored.
+   Source: ESPN box scores, Weeks 1-4 (passing yards/TD/INT per game-equivalent, where one game-equivalent = 30 attempts,
+   so a half game or a relief appearance counts for what it was). Blended into the baseline in getBlendedBaseline() at
+   QB_2026_WEIGHT per game-equivalent (2024 counts 1.0 per game, 2025 1.5). Weight chosen by backtest: predicting each
+   QB's next-game passing yards from only earlier weeks (91 starts, Weeks 2-4), MAE 56.59 with no 2026 data, 56.30 at
+   weight 2, 56.29 at 3, 56.55 at 4, 57.1 at 6 -- so a modest weight, not a big one. QBs under 10 attempts are left out.
+   REFRESH weekly with the box scores. */
+const QB_2026_WEIGHT = 2.5;
+const QB_2026_LINES = {
+'Lamar Jackson':{eq:3.20,passYd:302.2,passTD:1.88,int:0.31},
+'Daniel Jones':{eq:4.40,passYd:171.4,passTD:0.68,int:0.91},
+'Cooper Rush':{eq:1.30,passYd:176.2,passTD:0.77,int:3.08},
+'Aaron Rodgers':{eq:5.10,passYd:195.9,passTD:1.37,int:0.78},
+'Josh Allen':{eq:3.97,passYd:261.9,passTD:1.51,int:0.76},
+'C.J. Stroud':{eq:5.03,passYd:226.7,passTD:0.99,int:0.00},
+'Jacoby Brissett':{eq:5.07,passYd:161.4,passTD:1.18,int:0.79},
+'Justin Herbert':{eq:3.97,passYd:205.7,passTD:1.01,int:1.51},
+'Bo Nix':{eq:4.50,passYd:182.0,passTD:1.11,int:0.67},
+'Patrick Mahomes':{eq:4.27,passYd:243.0,passTD:2.11,int:0.47},
+'Caleb Williams':{eq:1.83,passYd:222.0,passTD:1.09,int:0.55},
+'Bryce Young':{eq:5.40,passYd:234.8,passTD:1.67,int:0.37},
+'Drake Maye':{eq:3.90,passYd:219.0,passTD:1.03,int:1.79},
+'Drew Lock':{eq:1.60,passYd:263.8,passTD:2.50,int:0.00},
+'Sam Darnold':{eq:2.30,passYd:243.5,passTD:2.61,int:1.30},
+'Baker Mayfield':{eq:3.20,passYd:192.2,passTD:0.62,int:0.62},
+'Joe Burrow':{eq:5.23,passYd:223.8,passTD:1.34,int:0.57},
+'Deshaun Watson':{eq:3.83,passYd:223.0,passTD:1.57,int:0.52},
+'Trevor Lawrence':{eq:3.47,passYd:243.2,passTD:2.31,int:0.58},
+'Geno Smith':{eq:3.90,passYd:231.3,passTD:1.28,int:0.00},
+'Cam Ward':{eq:3.97,passYd:183.0,passTD:0.76,int:0.50},
+'Dak Prescott':{eq:5.00,passYd:213.0,passTD:1.60,int:0.20},
+'Malik Willis':{eq:3.43,passYd:207.4,passTD:0.29,int:0.58},
+'Kirk Cousins':{eq:4.80,passYd:213.8,passTD:2.29,int:0.83},
+'Brock Purdy':{eq:3.77,passYd:267.3,passTD:2.92,int:0.27},
+'Matthew Stafford':{eq:5.40,passYd:220.2,passTD:1.11,int:1.11},
+'Jordan Love':{eq:5.13,passYd:202.8,passTD:1.56,int:0.58},
+'Kyler Murray':{eq:2.37,passYd:183.0,passTD:0.42,int:0.85},
+'Tyler Shough':{eq:6.00,passYd:200.5,passTD:1.50,int:0.50},
+'Jared Goff':{eq:5.37,passYd:226.2,passTD:1.68,int:0.00},
+'Jayden Daniels':{eq:1.70,passYd:152.9,passTD:1.76,int:0.00},
+'Jalen Hurts':{eq:3.80,passYd:187.6,passTD:1.84,int:0.79},
+'Marcus Mariota':{eq:1.70,passYd:200.0,passTD:2.35,int:0.00},
+'Jameis Winston':{eq:2.60,passYd:184.2,passTD:1.15,int:1.15},
+'Tyson Bagent':{eq:1.43,passYd:224.7,passTD:0.00,int:0.70},
+'Michael Penix Jr.':{eq:1.50,passYd:319.3,passTD:1.33,int:0.67},
+'Case Keenum':{eq:1.13,passYd:217.9,passTD:1.76,int:0.00},
+'Jalon Daniels':{eq:1.00,passYd:148.0,passTD:1.00,int:3.00},
+'Athan Kaliakmanis':{eq:1.10,passYd:169.1,passTD:0.91,int:0.91}
+};
 function getBlendedBaseline(p){
+  const r = getBlendedBaselineBase(p);
+  const l26 = (p.p==='QB') ? QB_2026_LINES[p.n] : null;
+  if(!l26) return r;
+  const g25 = r.games2025 || QB_2025_GAMES[p.n] || 6, g24 = r.games2024 || 0;
+  const wBase = g25*1.5 + g24, w26 = QB_2026_WEIGHT * l26.eq;
+  const mix = k => (r.blended[k]*wBase + l26[k]*w26) / (wBase + w26);
+  return { ...r, blended: { ...r.blended, passYd: mix('passYd'), passTD: mix('passTD'), int: mix('int') }, games2026eq: l26.eq };
+}
+function getBlendedBaselineBase(p){
   const b25 = p.b;
   let b24 = null;
   if(p.p==='QB') b24 = QB_2024_BASELINE[p.n];
@@ -3775,7 +3834,10 @@ function computeProjectionRaw(p, opts){
   // same reasonable range the tool's other skill multipliers naturally fall in, so a real
   // but small-sample outlier can meaningfully move the projection without being able to
   // dominate it outright.
-  const qbSackSkillMultRaw = 1 + qbP2SVsAvg * 0.15;
+  // Oct 9, 2026: weight cut from 0.15 to 0.03. Test on 120 real QB starts (Weeks 1-4): actual-vs-baseline passing yards
+  // regressed on this pressure-to-sack gap gave a slope of -0.049 (+/- 0.043), so the old 0.15 was not supported (3.7 standard
+  // errors away) and let small-sample extremes (Daniels' 4.3% rate = +11% to his pass yards) inflate projections.
+  const qbSackSkillMultRaw = 1 + qbP2SVsAvg * 0.03;
   const qbSackSkillMult = Math.max(0.85, Math.min(1.15, qbSackSkillMultRaw));
   // Real Cover-0 (all-out blitz, no deep safety) rate, per opponent -- found unused in
   // the audit alongside c1-c4 (this is the one with the clearest, most defensible real

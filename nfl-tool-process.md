@@ -185,3 +185,7 @@ Run by scheduled tasks. Sources allowed for these runs: espn.com (injuries API s
 2. Trades / signings / releases (ESPN transactions, NFL.com transactions): if a rostered player moved teams, update his t field and flag it; do not invent a role. A move that needs a judgement call (new baseline, role) is listed in the commit message under "NEEDS REVIEW" and left unchanged.
 3. Run: node tools/validate.js (must print ALL OK) and node tools/audit.js (0 diffs, no page errors). If either fails, do not push; fix or revert.
 4. Commit with a message listing what changed (players and statuses), push to main.
+
+## QB 2026 game log (added Oct 9, 2026)
+- QB_2026_LINES: ESPN box scores (scoreboard seasontype=2&week=N&dates=2026 then summary?event=ID, boxscore.players passing: C/ATT, YDS, TD, INT) summed per QB; eq = attempts/30; per-game-equivalent yards/TD/INT. Blended into getBlendedBaseline at QB_2026_WEIGHT 2.5 (backtest-picked). Refresh weekly with the new week's box scores.
+- The pressure-to-sack skill multiplier weight is 0.03 (test slope -0.049 +/- 0.043); re-test with more weeks (script: regress actual-vs-baseline pass yards on the P2S gap).
