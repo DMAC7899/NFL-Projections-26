@@ -1500,12 +1500,13 @@ const DEF_ROSTER = {
   WAS:[['K\'Lavon Chaisson','ED',42,57],['Odafe Oweh','ED',42,71],['Dorance Armstrong','ED',28,68],['Daron Payne','DI',44,61],['Javon Kinlaw','DI',39,51],['Charles Omenihu','DI',28,57],['Sonny Styles','LB',55,70],['Frankie Luvu','LB',46,55],['Kain Medrano','LB',33,65],['Amik Robertson','CB',60,57],['Rasul Douglas','CB',36,71],['Mike Sainristil','CB',33,46],['Fabian Moreau','CB',23,66],['Jeremy Reaves','S',55,63],['Nick Cross','S',55,54],['Quan Martin','S',42,49]],
 };
 
-/* DEF_AVAILABILITY: ESPN injury report, Thursday Oct 8, 2026 (Week 5). OUT/IR = out; DOUBTFUL counts 75%,
+/* DEF_AVAILABILITY: ESPN injury report, Friday Oct 9, 2026 (Week 5). OUT/IR = out; DOUBTFUL counts 75%,
    QUESTIONABLE 20% (expected-loss, because the tool cannot know who plays). Only listed defenders matter.
    MUST be refreshed every Friday. */
 const DEF_AVAILABILITY = {
   "Andrew Wingard":{team:"ARI",status:"QUESTIONABLE",note:"ESPN injury report Oct 8: questionable, Knee"},
   "Will Johnson":{team:"ARI",status:"OUT",note:"ESPN injury report Oct 8: injured reserve"},
+  "Walter Nolen":{team:"ARI",status:"QUESTIONABLE",note:"ESPN injury report Oct 9: questionable, Calf"},
   "A.J. Terrell":{team:"ATL",status:"OUT",note:"ESPN injury report Oct 8: injured reserve"},
   "Divine Deablo":{team:"ATL",status:"QUESTIONABLE",note:"ESPN injury report Oct 8: questionable, Hamstring"},
   "Samson Ebukam":{team:"ATL",status:"QUESTIONABLE",note:"ESPN injury report Oct 8: questionable, Hamstring"},
@@ -1531,6 +1532,7 @@ const DEF_AVAILABILITY = {
   "Cobie Durant":{team:"DAL",status:"OUT",note:"ESPN injury report Oct 8: out, Hamstring"},
   "DeMarvion Overshown":{team:"DAL",status:"OUT",note:"ESPN injury report Oct 8: out, Hamstring"},
   "Jalen Thompson":{team:"DAL",status:"OUT",note:"ESPN injury report Oct 8: injured reserve, Hamstring"},
+  "Joey Porter Jr.":{team:"DAL",status:"OUT",note:"ESPN injury report Oct 9: out, Illness (traded PIT to DAL Oct 7)"},
   "Pat Surtain II":{team:"DEN",status:"DOUBTFUL",note:"ESPN injury report Oct 8: doubtful, Ankle"},
   "Riley Moss":{team:"DEN",status:"QUESTIONABLE",note:"ESPN injury report Oct 8: questionable, Ribs"},
   "Avonte Maddox":{team:"DET",status:"OUT",note:"ESPN injury report Oct 8: injured reserve"},
@@ -1541,10 +1543,8 @@ const DEF_AVAILABILITY = {
   "Edgerrin Cooper":{team:"GB",status:"OUT",note:"ESPN injury report Oct 8: injured reserve, Achilles"},
   "Lukas Van Ness":{team:"GB",status:"QUESTIONABLE",note:"ESPN injury report Oct 8: questionable, Shoulder"},
   "Azeez Al-Shaair":{team:"HOU",status:"QUESTIONABLE",note:"ESPN injury report Oct 8: questionable, Groin"},
-  "Jadeveon Clowney":{team:"HOU",status:"QUESTIONABLE",note:"ESPN injury report Oct 8: questionable, Knee"},
   "Jaylin Smith":{team:"HOU",status:"OUT",note:"ESPN injury report Oct 8: injured reserve, Hamstring"},
   "Kenneth Murray Jr.":{team:"HOU",status:"QUESTIONABLE",note:"ESPN injury report Oct 8: questionable"},
-  "Logan Hall":{team:"HOU",status:"QUESTIONABLE",note:"ESPN injury report Oct 8: questionable, Knee"},
   "Will Anderson Jr.":{team:"HOU",status:"QUESTIONABLE",note:"ESPN injury report Oct 8: questionable, Ankle"},
   "Arden Key":{team:"IND",status:"OUT",note:"ESPN injury report Oct 8: out, Hamstring"},
   "Charvarius Ward":{team:"IND",status:"QUESTIONABLE",note:"ESPN injury report Oct 8: questionable, Groin"},
@@ -1559,10 +1559,13 @@ const DEF_AVAILABILITY = {
   "Cam Hart":{team:"LAC",status:"QUESTIONABLE",note:"ESPN injury report Oct 8: questionable, Knee"},
   "Derwin James Jr.":{team:"LAC",status:"QUESTIONABLE",note:"ESPN injury report Oct 8: questionable, Hamstring"},
   "Donte Jackson":{team:"LAC",status:"QUESTIONABLE",note:"ESPN injury report Oct 8: questionable, Hamstring"},
+  "Deane Leonard":{team:"LAC",status:"QUESTIONABLE",note:"ESPN injury report Oct 9: questionable, Ribs"},
   "Aaron Donald":{team:"LAR",status:"QUESTIONABLE",note:"ESPN injury report Oct 8: questionable, Back"},
   "Jaylen Watson":{team:"LAR",status:"QUESTIONABLE",note:"ESPN injury report Oct 8: questionable, Shoulder"},
   "Myles Garrett":{team:"LAR",status:"OUT",note:"ESPN injury report Oct 8: injured reserve"},
-  "Foley Fatukasi":{team:"LV",status:"QUESTIONABLE",note:"ESPN injury report Oct 8: questionable, Shoulder"},
+  "Josaiah Stewart":{team:"LAR",status:"QUESTIONABLE",note:"ESPN injury report Oct 9: questionable, Groin"},
+  "Nate Landman":{team:"LAR",status:"QUESTIONABLE",note:"ESPN injury report Oct 9: questionable, Shoulder"},
+  "Quentin Lake":{team:"LAR",status:"QUESTIONABLE",note:"ESPN injury report Oct 9: questionable, Hip"},
   "Dante Trader Jr.":{team:"MIA",status:"QUESTIONABLE",note:"ESPN injury report Oct 8: questionable, Shin"},
   "JuJu Brents":{team:"MIA",status:"QUESTIONABLE",note:"ESPN injury report Oct 8: questionable, Heel"},
   "Carlton Davis III":{team:"NE",status:"QUESTIONABLE",note:"ESPN injury report Oct 8: questionable, Neck"},
@@ -1590,7 +1593,6 @@ const DEF_AVAILABILITY = {
   "Jamel Dean":{team:"PIT",status:"DOUBTFUL",note:"ESPN injury report Oct 8: doubtful, Ankle"},
   "Leonard Williams":{team:"SEA",status:"QUESTIONABLE",note:"ESPN injury report Oct 8: questionable, Ankle"},
   "Nehemiah Pritchett":{team:"SEA",status:"QUESTIONABLE",note:"ESPN injury report Oct 8: questionable, Ankle"},
-  "Tyrice Knight":{team:"SEA",status:"QUESTIONABLE",note:"ESPN injury report Oct 8: questionable, Ankle"},
   "Marques Sigle":{team:"SF",status:"OUT",note:"ESPN injury report Oct 8: out, Ankle"},
   "Nick Bosa":{team:"SF",status:"DOUBTFUL",note:"ESPN injury report Oct 8: doubtful, Calf"},
   "Upton Stout":{team:"SF",status:"QUESTIONABLE",note:"ESPN injury report Oct 8: questionable, Shoulder - AC Joint"},
@@ -1603,7 +1605,7 @@ const DEF_AVAILABILITY = {
   "Marcus Harris":{team:"TEN",status:"QUESTIONABLE",note:"ESPN injury report Oct 8: questionable, Knee"},
   "Charles Omenihu":{team:"WAS",status:"QUESTIONABLE",note:"ESPN injury report Oct 8: questionable"},
   "Frankie Luvu":{team:"WAS",status:"QUESTIONABLE",note:"ESPN injury report Oct 8: questionable, Groin"},
-  "Sonny Styles":{team:"WAS",status:"QUESTIONABLE",note:"ESPN injury report Oct 8: questionable, Groin"},
+  "Nick Cross":{team:"WAS",status:"QUESTIONABLE",note:"ESPN injury report Oct 9: questionable, Illness"},
 };
 const DEF_INJ_STATUS_WEIGHT = {OUT:1, DOUBTFUL:0.75, QUESTIONABLE:0.2};
 const DEF_POS_WEIGHTS = {ED:{pass:0.6,run:0.4}, DI:{pass:0.5,run:0.5}, LB:{pass:0.4,run:0.6}, CB:{pass:0.9,run:0.1}, S:{pass:0.65,run:0.35}};
@@ -4053,7 +4055,6 @@ const PLAYER_AVAILABILITY = {
   "Alvin Kamara": {status:"QUESTIONABLE", note:"questionable - back, ESPN return date 2026-10-11 (ESPN Oct 8)"},
   "Cam Skattebo": {status:"QUESTIONABLE", note:"questionable - shoulder, ESPN return date 2026-10-11 (ESPN Oct 8)"},
   "Saquon Barkley": {status:"QUESTIONABLE", note:"questionable - hamstring, ESPN return date 2026-10-11 (ESPN Oct 8)"},
-  "Kaelon Black": {status:"QUESTIONABLE", note:"questionable - illness, ESPN return date 2026-10-11 (ESPN Oct 8)"},
   "George Holani": {status:"QUESTIONABLE", note:"questionable - ribs, ESPN return date 2026-10-11 (ESPN Oct 8)"},
   "Jacory Croskey-Merritt": {status:"QUESTIONABLE", note:"questionable - groin, ESPN return date 2026-10-11 (ESPN Oct 8)"},
   "Jaylen Wright": {status:"QUESTIONABLE", note:"questionable - foot, ESPN return date 2026-10-11 (ESPN Oct 8)"},
@@ -4063,6 +4064,7 @@ const PLAYER_AVAILABILITY = {
   "Zay Flowers": {status:"QUESTIONABLE", note:"questionable - foot, ESPN return date 2026-10-11 (ESPN Oct 8)"},
   "D.J. Moore": {status:"QUESTIONABLE", note:"questionable - shoulder - ac joint, ESPN return date 2026-10-12 (ESPN Oct 8)"},
   "Jalen Coker": {status:"QUESTIONABLE", note:"questionable - quadriceps, ESPN return date 2026-10-18 (ESPN Oct 8); CAR on bye Week 5"},
+  "CeeDee Lamb": {status:"QUESTIONABLE", note:"questionable - quadriceps, ESPN return date 2026-10-18 (ESPN Oct 9); DAL played Thursday Oct 8 (Week 5), so this applies to Week 6"},
   "Ja'Marr Chase": {status:"QUESTIONABLE", note:"questionable - concussion, ESPN return date 2026-10-11 (ESPN Oct 8)"},
   "Tee Higgins": {status:"QUESTIONABLE", note:"questionable - groin, ESPN return date 2026-10-11 (ESPN Oct 8)"},
   "Dontayvion Wicks": {status:"QUESTIONABLE", note:"questionable - hamstring, ESPN return date 2026-10-11 (ESPN Oct 8)"},
@@ -4080,7 +4082,6 @@ const PLAYER_AVAILABILITY = {
   "Mike Evans": {status:"QUESTIONABLE", note:"questionable - ribs, ESPN return date 2026-10-11 (ESPN Oct 8)"},
   "Carnell Tate": {status:"QUESTIONABLE", note:"questionable - back, ESPN return date 2026-10-11 (ESPN Oct 8)"},
   "Terry McLaurin": {status:"QUESTIONABLE", note:"questionable - hamstring, ESPN return date 2026-10-11 (ESPN Oct 8)"},
-  "Brock Bowers": {status:"QUESTIONABLE", note:"questionable - knee, ESPN return date 2026-10-11 (ESPN Oct 8)"},
   "Colby Parkinson": {status:"QUESTIONABLE", note:"questionable - shoulder - ac joint, ESPN return date 2026-10-12 (ESPN Oct 8)"},
   "Noah Fant": {status:"QUESTIONABLE", note:"questionable - abdomen, ESPN return date 2026-10-11 (ESPN Oct 8)"},
   "Isaiah Likely": {status:"QUESTIONABLE", note:"questionable - knee, ESPN return date 2026-10-11 (ESPN Oct 8)"},
@@ -4090,7 +4091,7 @@ const PLAYER_AVAILABILITY = {
   "Adonai Mitchell": {status:"QUESTIONABLE", note:"doubtful - finger, ESPN return date 2026-10-11 (ESPN Oct 8); listed DOUBTFUL, not \"out\", so counted as questionable"},
   "Chris Bell": {status:"QUESTIONABLE", note:"questionable - knee, ESPN return date 2026-10-11 (ESPN Oct 8)"},
 };
-const AVAILABILITY_LAST_VERIFIED = 'Oct 8, 2026';  // real, current date this table (and its Week 3+ overrides) was last checked against actual injury reports -- shown on the Betting tab itself, not just in this comment, since this is manually maintained and WILL go stale
+const AVAILABILITY_LAST_VERIFIED = 'Oct 9, 2026';  // real, current date this table (and its Week 3+ overrides) was last checked against actual injury reports -- shown on the Betting tab itself, not just in this comment, since this is manually maintained and WILL go stale
 const AVAILABILITY_FROM_WEEK = 5;   // table reflects status going into Week 5; earlier weeks are history, and the season-average view has no week
 function availabilityOf(p){ return PLAYER_AVAILABILITY[p.n] || null; }
 // Games NOT yet played when the table was last updated: these statuses apply even though the week is before
