@@ -216,3 +216,6 @@ The "Data & methodology" panels were removed from every page of the site at the 
 
 ## Defense v Position tab (Oct 14, 2026)
 `DVP_2026` is refreshed every week from the ESPN box scores (positions from ESPN, per game played): qb = QB passing yards allowed per game, wr/te = receiving yards, rb = RB rushing yards only, rbrec = RB receiving yards only (kept separate from Oct 14, never combined). QB column added Oct 14. It was still on Weeks 1-4 until this refresh, so add it to the weekly checklist.
+
+## Removed players (Oct 14, 2026)
+At the user's request these QBs were removed from the tool entirely (roster rows, their data-table entries and availability lines): Tyson Bagent, Cooper Rush, Drew Lock, Shedeur Sanders, Athan Kaliakmanis, Carson Wentz. Do not re-add them in weekly scans.
