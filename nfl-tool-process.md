@@ -215,4 +215,4 @@ The "Data & methodology" panels were removed from every page of the site at the 
 `ROLE_2026_PRIOR_G_OVERRIDE` lets one player's 2026 role line carry more weight than the global 6 prior games. Brock Bowers = 4 (2026 share 3/9 to 3/7) on 2.79 YPRR and 11.7 targets/game. Not back-tested; revisit after Week 7.
 
 ## Defense v Position tab (Oct 14, 2026)
-`DVP_2026` is refreshed every week from the ESPN box scores (positions from ESPN, per game played): qb = QB passing yards allowed per game, wr/te = receiving yards, rb = rushing + receiving yards. QB column added Oct 14. It was still on Weeks 1-4 until this refresh, so add it to the weekly checklist.
+`DVP_2026` is refreshed every week from the ESPN box scores (positions from ESPN, per game played): qb = QB passing yards allowed per game, wr/te = receiving yards, rb = rushing + receiving yards, rbrec = RB receiving yards only (added Oct 14). QB column added Oct 14. It was still on Weeks 1-4 until this refresh, so add it to the weekly checklist.

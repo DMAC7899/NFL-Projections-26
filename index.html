@@ -526,7 +526,9 @@
           <th class="dvp-sortable" data-sort="te" style="text-align:right;cursor:pointer;">TE Rank<span class="dvp-sort-arrow"></span></th>
           <th style="text-align:right;">TE Yds/G</th>
           <th class="dvp-sortable" data-sort="rb" style="text-align:right;cursor:pointer;">RB Rank<span class="dvp-sort-arrow"></span></th>
-          <th style="text-align:right;">RB Yds/G</th>
+          <th style="text-align:right;">RB Rush+Rec Yds/G</th>
+          <th class="dvp-sortable" data-sort="rbrec" style="text-align:right;cursor:pointer;">RB Rec Rank<span class="dvp-sort-arrow"></span></th>
+          <th style="text-align:right;">RB Rec Yds/G</th>
         </tr></thead>
         <tbody id="dvpBody"></tbody>
       </table>
@@ -5563,19 +5565,19 @@ function renderBetting(){
    yards in each of 2026 Weeks 1-4 are credited to the opposing defense by the player's ESPN roster
    position, then divided by games played. wr = WR receiving yards/game allowed. te = TE receiving
    yards/game allowed. rb = RB rushing + receiving yards/game allowed. Rank 1 = most yards allowed.
-   REFRESHED Oct 14, 2026 to Weeks 1-5 (ESPN box scores, ESPN positions; per game played, so CAR and KC are over 4). Added qb = passing yards per game allowed to opposing QBs.
+   REFRESHED Oct 14, 2026 to Weeks 1-5 (ESPN box scores, ESPN positions; per game played, so CAR and KC are over 4). Added qb = passing yards per game allowed to opposing QBs and rbrec = receiving yards per game allowed to opposing RBs (rb stays rushing + receiving).
    Five games is a small sample (a single shootout moves a team a lot), so read it as "what has happened",
    not "what will happen" -- the projection engine uses the 2025-weighted DEFENSE-VS-POSITION multipliers
    above, not this raw table. Refresh weekly. */
 const DVP_2026 = {
-  ARI:{qb:252.4,wr:156.6,te:72.6,rb:133.2}, ATL:{qb:261.4,wr:181,te:53.8,rb:100.4}, BAL:{qb:238,wr:182.8,te:40,rb:97.6}, BUF:{qb:295.8,wr:187.4,te:60,rb:134.8},
-  CAR:{qb:242.5,wr:151.8,te:53.3,rb:157.5}, CHI:{qb:228.6,wr:160.2,te:40.6,rb:109.6}, CIN:{qb:245,wr:123,te:90.2,rb:114.2}, CLE:{qb:239.8,wr:166.8,te:53.8,rb:126},
-  DAL:{qb:231.8,wr:161.6,te:48.2,rb:139.2}, DEN:{qb:220.4,wr:117.8,te:62.6,rb:151}, DET:{qb:321.4,wr:194.8,te:109,rb:100.6}, GB:{qb:199.4,wr:132,te:32,rb:136.2},
-  HOU:{qb:256.2,wr:193.4,te:45.8,rb:89}, IND:{qb:268,wr:149,te:53,rb:152.4}, JAX:{qb:277.2,wr:203.8,te:33.8,rb:81.6}, KC:{qb:229,wr:104.8,te:82.3,rb:107.3},
-  LAC:{qb:205,wr:132,te:47.8,rb:124}, LAR:{qb:165,wr:102.4,te:19.6,rb:130.6}, LV:{qb:253.2,wr:167.2,te:57,rb:145}, MIA:{qb:226,wr:106.8,te:76.2,rb:140.8},
-  MIN:{qb:195.4,wr:132.8,te:44.2,rb:90.8}, NE:{qb:222.6,wr:137.6,te:45,rb:119.8}, NO:{qb:228.2,wr:128.4,te:71.2,rb:160.8}, NYG:{qb:209.6,wr:139,te:51.8,rb:119.2},
-  NYJ:{qb:195.4,wr:130.4,te:36.6,rb:130.6}, PHI:{qb:248.4,wr:172.4,te:48.8,rb:127.6}, PIT:{qb:233.6,wr:144,te:49.6,rb:130.8}, SEA:{qb:166.8,wr:109,te:28,rb:107.6},
-  SF:{qb:210.8,wr:111.4,te:35.6,rb:135.4}, TB:{qb:234.6,wr:138.8,te:60.2,rb:95.6}, TEN:{qb:228.6,wr:173.6,te:29.4,rb:120}, WAS:{qb:268.8,wr:164.2,te:74.4,rb:103.8},
+  ARI:{qb:252.4,wr:156.6,te:72.6,rb:133.2,rbrec:23.2}, ATL:{qb:261.4,wr:181,te:53.8,rb:100.4,rbrec:26.6}, BAL:{qb:238,wr:182.8,te:40,rb:97.6,rbrec:13.8}, BUF:{qb:295.8,wr:187.4,te:60,rb:134.8,rbrec:48.4},
+  CAR:{qb:242.5,wr:151.8,te:53.3,rb:157.5,rbrec:37.5}, CHI:{qb:228.6,wr:160.2,te:40.6,rb:109.6,rbrec:27.8}, CIN:{qb:245,wr:123,te:90.2,rb:114.2,rbrec:31.8}, CLE:{qb:239.8,wr:166.8,te:53.8,rb:126,rbrec:19.2},
+  DAL:{qb:231.8,wr:161.6,te:48.2,rb:139.2,rbrec:21.2}, DEN:{qb:220.4,wr:117.8,te:62.6,rb:151,rbrec:40}, DET:{qb:321.4,wr:194.8,te:109,rb:100.6,rbrec:16.2}, GB:{qb:199.4,wr:132,te:32,rb:136.2,rbrec:35.4},
+  HOU:{qb:256.2,wr:193.4,te:45.8,rb:89,rbrec:17}, IND:{qb:268,wr:149,te:53,rb:152.4,rbrec:52.8}, JAX:{qb:277.2,wr:203.8,te:33.8,rb:81.6,rbrec:39.6}, KC:{qb:229,wr:104.8,te:82.3,rb:107.3,rbrec:38.3},
+  LAC:{qb:205,wr:132,te:47.8,rb:124,rbrec:25}, LAR:{qb:165,wr:102.4,te:19.6,rb:130.6,rbrec:42.6}, LV:{qb:253.2,wr:167.2,te:57,rb:145,rbrec:29}, MIA:{qb:226,wr:106.8,te:76.2,rb:140.8,rbrec:39.4},
+  MIN:{qb:195.4,wr:132.8,te:44.2,rb:90.8,rbrec:18.4}, NE:{qb:222.6,wr:137.6,te:45,rb:119.8,rbrec:40}, NO:{qb:228.2,wr:128.4,te:71.2,rb:160.8,rbrec:27.4}, NYG:{qb:209.6,wr:139,te:51.8,rb:119.2,rbrec:18.8},
+  NYJ:{qb:195.4,wr:130.4,te:36.6,rb:130.6,rbrec:28.4}, PHI:{qb:248.4,wr:172.4,te:48.8,rb:127.6,rbrec:27.2}, PIT:{qb:233.6,wr:144,te:49.6,rb:130.8,rbrec:40}, SEA:{qb:166.8,wr:109,te:28,rb:107.6,rbrec:29.8},
+  SF:{qb:210.8,wr:111.4,te:35.6,rb:135.4,rbrec:48.4}, TB:{qb:234.6,wr:138.8,te:60.2,rb:95.6,rbrec:35.6}, TEN:{qb:228.6,wr:173.6,te:29.4,rb:120,rbrec:25.6}, WAS:{qb:268.8,wr:164.2,te:74.4,rb:103.8,rbrec:30.2},
 };
 
 function renderDefProfile(){
@@ -5622,7 +5624,7 @@ function renderDvP(){
     sorted.forEach((t,i) => ranks[t] = i+1);
     return ranks;
   };
-  const qbRank = rankOf('qb'), wrRank = rankOf('wr'), teRank = rankOf('te'), rbRank = rankOf('rb');
+  const qbRank = rankOf('qb'), wrRank = rankOf('wr'), teRank = rankOf('te'), rbRank = rankOf('rb'), rbRecRank = rankOf('rbrec');
   const pillClass = (rank) => rank <= 10 ? 't4' : (rank >= 23 ? 't0' : 't2');
 
   // Update header arrows/active state to reflect the current sort
@@ -5660,7 +5662,9 @@ function renderDvP(){
       <td style="text-align:right;"><span class="glog-pill ${pillClass(teRank[t])}">#${teRank[t]}</span></td>
       <td style="text-align:right;font-family:'IBM Plex Mono',monospace;">${d.te}</td>
       <td style="text-align:right;"><span class="glog-pill ${pillClass(rbRank[t])}">#${rbRank[t]}</span></td>
-      <td style="text-align:right;font-family:'IBM Plex Mono',monospace;">${d.rb}</td>`;
+      <td style="text-align:right;font-family:'IBM Plex Mono',monospace;">${d.rb}</td>
+      <td style="text-align:right;"><span class="glog-pill ${pillClass(rbRecRank[t])}">#${rbRecRank[t]}</span></td>
+      <td style="text-align:right;font-family:'IBM Plex Mono',monospace;">${d.rbrec}</td>`;
     body.appendChild(tr);
   });
 }
