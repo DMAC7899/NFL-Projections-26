@@ -705,7 +705,7 @@
     Year-1 role — one lead player per role plus real committee backfields/WR depth, not literal full rosters.
     <b>Rosters:</b> reflect confirmed 2026 trades, free-agency moves and coaching hires as of early August
     2026. <b>Schedule:</b> official 2026 NFL regular-season grid. <b>Defense tiers:</b> passD derived from each
-    team's ESPN passing yards allowed per game, 2025 full season plus 2026 Weeks 1-4 (refreshed Oct 7, 2026). rushD is a real, weighted 2024+2025+2026 blend (1.5x weight
+    team's ESPN passing yards allowed per game, 2025 full season plus 2026 Weeks 1-5 (refreshed Oct 14, 2026). rushD is a real, weighted 2024+2025+2026 blend (1.5x weight
     on 2025 and on 2026, matching the same weighting already used for player baselines; CLE/LAR pass tiers keep the manual Garrett-trade adjustment) after finding the 2025-only tier
     moved 20 of 32 teams once 2024 was properly incorporated — a real, meaningful shift, not noise (e.g. New
     Orleans and Carolina's real, historically poor 2024 run defense was invisible in a 2025-only view).
@@ -873,9 +873,9 @@ BUF:{name:'Bills',hc:'Joe Brady',note:"Joe Brady promoted to HC after Sean McDer
  sch:['@HOU','vs DET','vs LAC','vs NE','@LAR','@LV','BYE','vs BAL','@MIN','@NYJ','vs MIA','vs KC','@NE','@GB','vs CHI','@DEN','@MIA','vs NYJ']},
 CAR:{name:'Panthers',hc:'Dave Canales',note:"Canales retained. Timing-based West Coast passing scheme; run game leans on zone stretch.",newHC:false,passD:2,rushD:4,cb:'Mike Jackson',cbGrade:85.8,vegasWinTotal:6.5,vegasMult:0.9412,olPassMult:0.9752,olRunMult:1.0177,olPbe:82.38,olRunGrade:68.8,sacksAllowed:35,
  sch:['vs CHI','@ATL','@CLE','vs DET','BYE','@PHI','vs TB','@GB','vs DEN','@NO','vs BAL','@TB','@MIN','vs NO','vs CIN','@PIT','vs SEA','vs ATL']},
-CHI:{name:'Bears',hc:'Ben Johnson',note:"Ben Johnson enters year two after a strong 2025 debut. Motion-heavy, explosive-play-focused scheme adapted from his Lions background.",newHC:false,passD:2,rushD:4,cb:'Nahshon Wright',cbGrade:64.8,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:1.0089,olRunMult:1.0335,olPbe:85.53,olRunGrade:71.4,sacksAllowed:24,
+CHI:{name:'Bears',hc:'Ben Johnson',note:"Ben Johnson enters year two after a strong 2025 debut. Motion-heavy, explosive-play-focused scheme adapted from his Lions background.",newHC:false,passD:3,rushD:3,cb:'Nahshon Wright',cbGrade:64.8,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:1.0089,olRunMult:1.0335,olPbe:85.53,olRunGrade:71.4,sacksAllowed:24,
  sch:['@CAR','vs MIN','vs PHI','vs NYJ','@GB','@ATL','vs NE','@SEA','vs TB','BYE','vs NO','@DET','vs JAX','@MIA','@BUF','vs GB','vs DET','@MIN']},
-CIN:{name:'Bengals',hc:'Zac Taylor',note:"Taylor retained. Spread passing attack built around Burrow-to-Chase; Burrow's health (8 starts in 2025) is the swing factor.",newHC:false,passD:4,rushD:4,cb:'DJ Turner II',cbGrade:78.1,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:0.9659,olRunMult:0.9568,olPbe:81.5,olRunGrade:58.8,sacksAllowed:36,
+CIN:{name:'Bengals',hc:'Zac Taylor',note:"Taylor retained. Spread passing attack built around Burrow-to-Chase; Burrow's health (8 starts in 2025) is the swing factor.",newHC:false,passD:3,rushD:4,cb:'DJ Turner II',cbGrade:78.1,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:0.9659,olRunMult:0.9568,olPbe:81.5,olRunGrade:58.8,sacksAllowed:36,
  sch:['vs TB','@HOU','@PIT','vs JAX','@MIA','BYE','@BAL','vs TEN','@ATL','vs PIT','@WAS','vs NO','@CLE','vs KC','@CAR','@IND','vs BAL','vs CLE']},
 CLE:{name:'Browns',hc:'Todd Monken',note:"New HC (ex-Ravens OC) after Kevin Stefanski's firing. Monken's system leans on play-action shots and a vertical passing tree — new fit for Cleveland's personnel.",newHC:true,passD:2,rushD:3,cb:'Tyson Campbell',cbGrade:66.5,vegasWinTotal:5.5,vegasMult:0.9118,olPassMult:0.9434,olRunMult:0.9695,olPbe:79.4,olRunGrade:60.9,sacksAllowed:51,
  sch:['@JAX','@TB','vs CAR','vs PIT','@NYJ','vs BAL','@TEN','@PIT','@NO','vs HOU','BYE','vs LV','vs CIN','vs ATL','@NYG','@BAL','vs IND','@CIN']},
@@ -893,15 +893,15 @@ IND:{name:'Colts',hc:'Shane Steichen',note:"Steichen retained. Zone-run scheme w
  sch:['vs BAL','@KC','vs HOU','@WAS','@PIT','vs TEN','@MIN','@JAX','vs DAL','vs MIA','@HOU','vs NYG','BYE','@PHI','@TEN','vs CIN','@CLE','vs JAX']},
 JAX:{name:'Jaguars',hc:'Liam Coen',note:"Coen retained after a breakout 2025 debut. Motion-and-tempo scheme borrowed from the McVay/LaFleur coaching tree. Traded lead back Travis Etienne to New Orleans.",newHC:false,passD:3,rushD:0,cb:'Jarrian Jones',cbGrade:74.5,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:0.9624,olRunMult:0.9829,olPbe:81.18,olRunGrade:63.1,sacksAllowed:41,
  sch:['vs CLE','@DEN','vs NE','@CIN','vs PHI','vs HOU','BYE','vs IND','@BAL','@TEN','@NYG','vs TEN','@CHI','vs PIT','@HOU','@DAL','vs WAS','@IND']},
-KC:{name:'Chiefs',hc:'Andy Reid',note:"Reid retained — the league's longest-running stable system. West Coast timing concepts with heavy motion. Added RB Kenneth Walker III via trade from Seattle.",newHC:false,passD:2,rushD:0,cb:'Nohl Williams',cbGrade:75.6,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:0.9847,olRunMult:0.9884,olPbe:83.27,olRunGrade:64.0,sacksAllowed:47,
+KC:{name:'Chiefs',hc:'Andy Reid',note:"Reid retained — the league's longest-running stable system. West Coast timing concepts with heavy motion. Added RB Kenneth Walker III via trade from Seattle.",newHC:false,passD:1,rushD:0,cb:'Nohl Williams',cbGrade:75.6,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:0.9847,olRunMult:0.9884,olPbe:83.27,olRunGrade:64.0,sacksAllowed:47,
  sch:['vs DEN','vs IND','@MIA','@LV','BYE','vs LAC','@SEA','@DEN','vs NYJ','@ATL','vs ARI','@BUF','@LAR','@CIN','vs NE','vs SF','@LAC','vs LV']},
-LV:{name:'Raiders',hc:'Klint Kubiak',note:"New HC (ex-Seahawks OC) after Pete Carroll's firing following a 3-14 season. Signed veteran Kirk Cousins to bridge/mentor No.1 overall pick Fernando Mendoza (Indiana), who has no NFL statistical baseline yet.",newHC:true,passD:1,rushD:2,cb:'Eric Stokes',cbGrade:75.2,vegasWinTotal:6.5,vegasMult:0.9412,olPassMult:0.9361,olRunMult:0.9598,olPbe:78.71,olRunGrade:59.3,sacksAllowed:64,
+LV:{name:'Raiders',hc:'Klint Kubiak',note:"New HC (ex-Seahawks OC) after Pete Carroll's firing following a 3-14 season. Signed veteran Kirk Cousins to bridge/mentor No.1 overall pick Fernando Mendoza (Indiana), who has no NFL statistical baseline yet.",newHC:true,passD:2,rushD:3,cb:'Eric Stokes',cbGrade:75.2,vegasWinTotal:6.5,vegasMult:0.9412,olPassMult:0.9361,olRunMult:0.9598,olPbe:78.71,olRunGrade:59.3,sacksAllowed:64,
  sch:['vs MIA','@LAC','@NO','vs KC','@NE','vs BUF','vs LAR','@NYJ','@SF','vs SEA','@DEN','@CLE','BYE','vs LAC','vs DEN','vs TEN','@ARI','@KC']},
 LAC:{name:'Chargers',hc:'Jim Harbaugh',note:"Harbaugh retained; DC Jesse Minter left to become Ravens HC. Physical, run-heavy identity with Herbert operating an efficient play-action game. Added TE David Njoku via trade.",newHC:false,passD:0,rushD:1,cb:'Donte Jackson',cbGrade:73.4,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:0.9049,olRunMult:0.919,olPbe:75.79,olRunGrade:52.6,sacksAllowed:60,
  sch:['vs ARI','vs LV','@BUF','@SEA','vs DEN','@KC','BYE','@LAR','vs HOU','@BAL','vs NYJ','vs NE','@TB','@LV','vs SF','@MIA','vs KC','@DEN']},
 LAR:{name:'Rams',hc:'Sean McVay',note:"McVay retained; OC Nate Scheelhaase promoted in-house but McVay keeps play-calling. Wide-zone run scheme, heavy pre-snap motion, quick-rhythm passing with play-action shots.",newHC:false,passD:1,rushD:2,cb:'Trent McDuffie',cbGrade:74.7,vegasWinTotal:11.5,vegasMult:1.0882,olPassMult:0.9547,olRunMult:1.0621,olPbe:80.45,olRunGrade:76.1,sacksAllowed:23,
  sch:['vs SF','vs NYG','@DEN','@PHI','vs BUF','vs ARI','@LV','vs LAC','@WAS','@ARI','BYE','vs GB','vs KC','@SF','vs DAL','@SEA','@TB','vs SEA']},
-MIA:{name:'Dolphins',hc:'Jeff Hafley',note:"New HC (ex-Packers DC) after Mike McDaniel's firing. Traded away WR Jaylen Waddle; receiver room is thin heading into 2026 — treat as a rebuild year.",newHC:true,passD:3,rushD:3,cb:'Rasul Douglas',cbGrade:72.6,vegasWinTotal:3.5,vegasMult:0.8529,olPassMult:0.9101,olRunMult:0.9604,olPbe:76.27,olRunGrade:59.4,sacksAllowed:38,
+MIA:{name:'Dolphins',hc:'Jeff Hafley',note:"New HC (ex-Packers DC) after Mike McDaniel's firing. Traded away WR Jaylen Waddle; receiver room is thin heading into 2026 — treat as a rebuild year.",newHC:true,passD:2,rushD:2,cb:'Rasul Douglas',cbGrade:72.6,vegasWinTotal:3.5,vegasMult:0.8529,olPassMult:0.9101,olRunMult:0.9604,olPbe:76.27,olRunGrade:59.4,sacksAllowed:38,
  sch:['@LV','@SF','vs KC','@MIN','vs CIN','BYE','@NYJ','vs NE','vs DET','@IND','@BUF','vs NYJ','@DEN','vs CHI','@GB','vs LAC','vs BUF','@NE']},
 MIN:{name:'Vikings',hc:'Kevin O\u2019Connell',note:"O'Connell retained. Traded for QB Kyler Murray from Arizona — a major offensive-identity swing alongside Justin Jefferson. Zone-run/play-action scheme.",newHC:false,passD:0,rushD:1,cb:'Isaiah Rodgers',cbGrade:74.1,vegasWinTotal:8.5,vegasMult:1.0,olPassMult:0.9895,olRunMult:0.9909,olPbe:83.72,olRunGrade:64.4,sacksAllowed:60,
  sch:['vs GB','@CHI','@TB','vs MIA','@NO','BYE','vs IND','@DET','vs BUF','@GB','@SF','vs ATL','vs CAR','@NE','vs DET','vs WAS','@NYJ','vs CHI']},
@@ -911,7 +911,7 @@ NO:{name:'Saints',hc:'Kellen Moore',note:"Moore's system leans on quick-rhythm p
  sch:['@DET','@BAL','vs LV','vs ATL','vs MIN','@NYG','vs PIT','BYE','vs CLE','vs CAR','@CHI','@CIN','vs GB','@CAR','@TB','vs ARI','@ATL','vs TB']},
 NYG:{name:'Giants',hc:'John Harbaugh',note:"John Harbaugh hired as new HC after being fired by Baltimore — a striking reunion story. New offensive system entirely for 2026.",newHC:true,passD:2,rushD:4,cb:'Dru Phillips',cbGrade:65.4,vegasWinTotal:7.5,vegasMult:0.9706,olPassMult:0.9886,olRunMult:0.9726,olPbe:83.63,olRunGrade:61.4,sacksAllowed:48,
  sch:['vs DAL','@LAR','vs TEN','vs ARI','@WAS','vs NO','@HOU','BYE','@PHI','vs WAS','vs JAX','@IND','vs SF','@SEA','vs CLE','@DET','@DAL','vs PHI']},
-NYJ:{name:'Jets',hc:'Aaron Glenn',note:"Glenn retained for year two. Justin Fields traded away to Kansas City (Mar 2026) — Geno Smith is now the real, unchallenged starter.",newHC:false,passD:2,rushD:3,cb:'Brandon Stephens',cbGrade:63.0,vegasWinTotal:5.5,vegasMult:0.9118,olPassMult:0.987,olRunMult:0.9781,olPbe:83.48,olRunGrade:62.3,sacksAllowed:60,
+NYJ:{name:'Jets',hc:'Aaron Glenn',note:"Glenn retained for year two. Justin Fields traded away to Kansas City (Mar 2026) — Geno Smith is now the real, unchallenged starter.",newHC:false,passD:2,rushD:4,cb:'Brandon Stephens',cbGrade:63.0,vegasWinTotal:5.5,vegasMult:0.9118,olPassMult:0.987,olRunMult:0.9781,olPbe:83.48,olRunGrade:62.3,sacksAllowed:60,
  sch:['@TEN','vs GB','@DET','@CHI','vs CLE','@NE','vs MIA','vs LV','@KC','vs BUF','@LAC','@MIA','BYE','vs DEN','@ARI','vs NE','vs MIN','@BUF']},
 PHI:{name:'Eagles',hc:'Nick Sirianni',note:"Sirianni retained. Run-first, tush-push-centric identity that suppresses receiver target volume league-wide; added WR Marquise Brown via trade for depth.",newHC:false,passD:1,rushD:2,cb:'Quinyon Mitchell',cbGrade:80.2,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:0.9959,olRunMult:1.0231,olPbe:84.32,olRunGrade:69.7,sacksAllowed:35,
  sch:['vs WAS','@TEN','@CHI','vs LAR','@JAX','vs CAR','vs DAL','@WAS','vs NYG','BYE','vs PIT','@DAL','@ARI','vs IND','vs SEA','vs HOU','@SF','@NYG']},
@@ -921,7 +921,7 @@ SF:{name:'49ers',hc:'Kyle Shanahan',note:"Shanahan retained. Wide-zone run schem
  sch:['@LAR','vs MIA','vs ARI','vs DEN','@SEA','vs WAS','@ATL','BYE','vs LV','@DAL','vs MIN','vs SEA','@NYG','vs LAR','@LAC','@KC','vs PHI','@ARI']},
 SEA:{name:'Seahawks',hc:'Mike Macdonald',note:"Macdonald retained after a Super Bowl-winning 2025; OC Klint Kubiak left to become Raiders HC, so Seattle has a new play-caller — the identity that made this passing game elite is the thing to watch in camp.",newHC:false,passD:0,rushD:1,cb:'Devon Witherspoon',cbGrade:83.6,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:0.9462,olRunMult:1.0055,olPbe:79.66,olRunGrade:66.8,sacksAllowed:27,
  sch:['vs NE','@ARI','@WAS','vs LAC','vs SF','@DEN','vs KC','vs CHI','vs ARI','@LV','BYE','@SF','vs DAL','vs NYG','@PHI','vs LAR','@CAR','@LAR']},
-TB:{name:'Buccaneers',hc:'Todd Bowles',note:"Bowles retained. Traded away Mike Evans to San Francisco, clearing the WR1 role for Emeka Egbuka. Added RB Kenneth Gainwell via trade for pass-catching work.",newHC:false,passD:3,rushD:0,cb:'Jamel Dean',cbGrade:75.9,vegasWinTotal:8.5,vegasMult:1.0,olPassMult:0.9921,olRunMult:0.9464,olPbe:83.96,olRunGrade:57.1,sacksAllowed:38,
+TB:{name:'Buccaneers',hc:'Todd Bowles',note:"Bowles retained. Traded away Mike Evans to San Francisco, clearing the WR1 role for Emeka Egbuka. Added RB Kenneth Gainwell via trade for pass-catching work.",newHC:false,passD:4,rushD:0,cb:'Jamel Dean',cbGrade:75.9,vegasWinTotal:8.5,vegasMult:1.0,olPassMult:0.9921,olRunMult:0.9464,olPbe:83.96,olRunGrade:57.1,sacksAllowed:38,
  sch:['@CIN','vs CLE','vs MIN','vs GB','@DAL','vs PIT','@CAR','vs ATL','@CHI','BYE','@DET','vs CAR','vs LAC','@BAL','vs NO','@ATL','vs LAR','@NO']},
 TEN:{name:'Titans',hc:'Robert Saleh',note:"New HC after Brian Callahan's in-season firing. Added WR Wan'Dale Robinson via trade from the Giants.",newHC:true,passD:3,rushD:3,cb:'Alontae Taylor',cbGrade:66.8,vegasWinTotal:6.5,vegasMult:0.9412,olPassMult:1.003,olRunMult:0.9756,olPbe:84.98,olRunGrade:61.9,sacksAllowed:56,
  sch:['vs NYJ','vs PHI','@NYG','@BAL','vs HOU','@IND','vs CLE','@CIN','BYE','vs JAX','@DAL','@JAX','vs WAS','@DET','vs IND','@LV','vs PIT','@HOU']},
@@ -1190,6 +1190,62 @@ const P = [
 {n:'Mike Washington Jr.',p:'RB',t:'LV',b:{rushAtt:6,rushYd:30,rushTD:0.24,rec:0.3,recYd:0,recTD:0.01},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (6 att/30 rush yd, 0.3 rec/0 rec yd per game over 4 games); TD rate shrunk 50% toward a typical RB rate. Small sample, low confidence.',c:'balanced',s:'balanced-back'},
 {n:'Jalon Daniels',p:'QB',t:'TB',b:{passYd:205.6,passTD:1.32,int:1.04,rushYd:24.6,rushTD:0.12},f:'Real, current (Oct 7): starts Thursday night at DAL with Baker Mayfield out (thumb, ~3+ weeks). Only one real start (Wk4: 19/27, 148 yd, 1 TD, 2 INT, 8 rush for 55 yd) plus a relief appearance in Wk3 -- baseline blends that start 1:4 with the tool\'s league-average QB line. Low-confidence.',c:'balanced',s:'rush-heavy-qb'},
 {n:'Athan Kaliakmanis',p:'QB',t:'WAS',b:{passYd:213.2,passTD:1.32,int:0.84,rushYd:16.8,rushTD:0.12},f:'Real, current (Oct 7): replaced Mariota in Wk4 (15/33, 186 yd, 1 TD, 1 INT, 3 rush for 16 yd). Mariota is out (MCL sprain) and Jayden Daniels is questionable (elbow), so Kaliakmanis starts if Daniels cannot. Baseline blends that one real game 1:4 with the tool\'s league-average QB line. Low-confidence.',c:'balanced',s:'pass-neutral'},
+{n:'CJ Donaldson',p:'RB',t:'NO',b:{rushAtt:2.2,rushYd:8.4,rushTD:0.0,rec:0.8,recYd:2.0,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 11 car / 5 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'balanced-back'},
+{n:'Bryce Lance',p:'WR',t:'NO',b:{tgt:3.2,rec:1.0,recYd:11.4,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 16 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Sione Vaki',p:'RB',t:'DET',b:{rushAtt:3.0,rushYd:10.2,rushTD:0.0,rec:0.8,recYd:10.4,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 15 car / 5 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'rush-volume'},
+{n:'Tez Johnson',p:'WR',t:'TB',b:{tgt:2.0,rec:1.0,recYd:27.6,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 2 car / 10 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Samaje Perine',p:'RB',t:'CIN',b:{rushAtt:5.4,rushYd:22.0,rushTD:0.0,rec:1.4,recYd:12.2,recTD:0.2},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 27 car / 10 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'rush-volume'},
+{n:'Justice Hill',p:'RB',t:'BAL',b:{rushAtt:3.6,rushYd:26.6,rushTD:0.0,rec:1.4,recYd:9.8,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 18 car / 10 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'rush-volume'},
+{n:'Seth McGowan',p:'RB',t:'IND',b:{rushAtt:3.4,rushYd:12.2,rushTD:0.0,rec:0.6,recYd:2.0,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 17 car / 4 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'rush-volume'},
+{n:'Pat Bryant',p:'WR',t:'DEN',b:{tgt:2.4,rec:1.8,recYd:26.6,recTD:0.2},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 1 car / 12 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Emmett Johnson',p:'RB',t:'KC',b:{rushAtt:4.0,rushYd:14.0,rushTD:0.0,rec:1.25,recYd:18.5,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 16 car / 5 tgt over 4 team games; no prior-season baseline, low confidence.',c:'balanced',s:'rush-volume'},
+{n:'Noah Gray',p:'TE',t:'KC',b:{tgt:2.0,rec:1.5,recYd:15.25,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 8 tgt over 4 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Tyquan Thornton',p:'WR',t:'KC',b:{tgt:3.75,rec:2.75,recYd:54.75,recTD:0.5},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 15 tgt over 4 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Kendrick Bourne',p:'WR',t:'ARI',b:{tgt:4.4,rec:3.4,recYd:35.6,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 22 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Darnell Washington',p:'TE',t:'PIT',b:{tgt:3.2,rec:2.2,recYd:26.2,recTD:0.2},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 16 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Cole Kmet',p:'TE',t:'CHI',b:{tgt:1.8,rec:1.0,recYd:11.2,recTD:0.2},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 9 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'AJ Dillon',p:'RB',t:'CAR',b:{rushAtt:4.25,rushYd:10.75,rushTD:0.0,rec:0.5,recYd:0.75,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 17 car / 2 tgt over 4 team games; no prior-season baseline, low confidence.',c:'balanced',s:'rush-volume'},
+{n:'Zachariah Branch',p:'WR',t:'ATL',b:{tgt:1.6,rec:1.4,recYd:9.2,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 8 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Tank Bigsby',p:'RB',t:'PHI',b:{rushAtt:5.6,rushYd:18.2,rushTD:0.2,rec:0.6,recYd:2.0,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 28 car / 4 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'rush-volume'},
+{n:'Calvin Ridley',p:'WR',t:'TEN',b:{tgt:1.6,rec:1.0,recYd:16.2,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 8 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Ameer Abdullah',p:'RB',t:'JAX',b:{rushAtt:2.0,rushYd:9.0,rushTD:0.0,rec:0.4,recYd:0.4,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 10 car / 3 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'balanced-back'},
+{n:'Joshua Palmer',p:'WR',t:'BUF',b:{tgt:1.8,rec:0.6,recYd:16.0,recTD:0.4},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 9 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Dawson Knox',p:'TE',t:'BUF',b:{tgt:1.8,rec:1.4,recYd:7.2,recTD:0.2},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 1 car / 9 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Elijah Higgins',p:'TE',t:'ARI',b:{tgt:1.6,rec:1.6,recYd:19.2,recTD:0.2},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 8 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Skyy Moore',p:'WR',t:'GB',b:{tgt:2.8,rec:1.4,recYd:7.0,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 14 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Bo Melton',p:'WR',t:'GB',b:{tgt:1.6,rec:0.8,recYd:6.0,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 8 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Germie Bernard',p:'WR',t:'PIT',b:{tgt:4.0,rec:2.6,recYd:28.0,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 1 car / 20 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Raheim Sanders',p:'RB',t:'CLE',b:{rushAtt:1.8,rushYd:8.6,rushTD:0.0,rec:2.2,recYd:14.8,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 9 car / 12 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'balanced-back'},
+{n:'Isaiah Bond',p:'WR',t:'CLE',b:{tgt:1.8,rec:1.0,recYd:17.2,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 9 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Konata Mumpfield',p:'WR',t:'LAR',b:{tgt:2.8,rec:1.2,recYd:22.4,recTD:0.2},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 14 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Davis Allen',p:'TE',t:'LAR',b:{tgt:1.8,rec:1.2,recYd:12.6,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 9 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Kimani Vidal',p:'RB',t:'LAC',b:{rushAtt:2.8,rushYd:17.6,rushTD:0.2,rec:0.8,recYd:4.8,recTD:0.2},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 14 car / 8 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'balanced-back'},
+{n:'Ty Johnson',p:'RB',t:'BUF',b:{rushAtt:0.2,rushYd:0.6,rushTD:0.0,rec:2.0,recYd:26.2,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 1 car / 10 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'balanced-back'},
+{n:'Kevin Coleman Jr.',p:'WR',t:'MIA',b:{tgt:3.4,rec:1.0,recYd:7.2,recTD:0.2},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 17 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Jalen Brooks',p:'WR',t:'ARI',b:{tgt:1.6,rec:0.4,recYd:3.2,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 8 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Roschon Johnson',p:'RB',t:'CHI',b:{rushAtt:1.8,rushYd:4.4,rushTD:0.0,rec:1.2,recYd:8.2,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 9 car / 8 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'balanced-back'},
+{n:'Greg Dulcich',p:'TE',t:'MIA',b:{tgt:3.4,rec:2.6,recYd:25.4,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 17 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Terrance Ferguson',p:'TE',t:'LAR',b:{tgt:2.4,rec:1.4,recYd:12.6,recTD:0.2},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 12 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Jalen Nailor',p:'WR',t:'LV',b:{tgt:2.2,rec:1.0,recYd:10.4,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 11 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Cody White',p:'WR',t:'LV',b:{tgt:2.8,rec:1.4,recYd:21.6,recTD:0.6},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 14 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Malik Benson',p:'WR',t:'LV',b:{tgt:1.6,rec:0.4,recYd:2.4,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 1 car / 8 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Corey Kiner',p:'RB',t:'NE',b:{rushAtt:4.0,rushYd:16.2,rushTD:0.0,rec:0.4,recYd:3.2,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 20 car / 2 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'rush-volume'},
+{n:'Efton Chism III',p:'WR',t:'NE',b:{tgt:2.6,rec:1.8,recYd:19.6,recTD:0.2},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 1 car / 13 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Kyle Williams',p:'WR',t:'NE',b:{tgt:2.0,rec:1.0,recYd:27.0,recTD:0.2},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 10 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Eli Raridon',p:'TE',t:'NE',b:{tgt:1.8,rec:1.6,recYd:20.2,recTD:0.2},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 9 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Caleb Douglas',p:'WR',t:'MIA',b:{tgt:2.0,rec:1.4,recYd:22.6,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 10 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Jaylin Noel',p:'WR',t:'HOU',b:{tgt:3.4,rec:2.6,recYd:45.4,recTD:0.2},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 4 car / 17 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Kayshon Boutte',p:'WR',t:'HOU',b:{tgt:3.6,rec:2.4,recYd:30.6,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 18 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Isaiah Williams',p:'WR',t:'NYJ',b:{tgt:2.8,rec:2.2,recYd:30.2,recTD:0.2},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 2 car / 14 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Jeremy Ruckert',p:'TE',t:'NYJ',b:{tgt:1.6,rec:1.6,recYd:9.6,recTD:0.2},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 8 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Josh Cameron',p:'WR',t:'JAX',b:{tgt:2.4,rec:1.6,recYd:23.4,recTD:0.4},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 12 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Jared Wayne',p:'WR',t:'HOU',b:{tgt:2.4,rec:0.8,recYd:13.0,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 12 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Kaytron Allen',p:'RB',t:'WAS',b:{rushAtt:2.4,rushYd:8.2,rushTD:0.0,rec:0.0,recYd:0.0,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 12 car / 0 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'balanced-back'},
+{n:'Dyami Brown',p:'WR',t:'WAS',b:{tgt:3.0,rec:1.6,recYd:17.6,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 15 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Treylon Burks',p:'WR',t:'WAS',b:{tgt:2.2,rec:1.0,recYd:17.2,recTD:0.4},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 11 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Chig Okonkwo',p:'TE',t:'WAS',b:{tgt:2.6,rec:1.6,recYd:16.2,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 13 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
+{n:'Tyler Huntley',p:'QB',t:'BAL',b:{passYd:190.0,passTD:1.0,int:0.7,rushYd:14.0,rushTD:0.12},f:'Real, current (Oct 14): Lamar Jackson\'s backup; played Week 5 with Jackson out (24/32, 201 yd, 2 TD, 0 INT, 38 att across Wks 4-5 incl. relief). Starter-level prior of 190 yd/g blended with his real 2026 games via QB_2026_LINES. Starts only if Jackson (QUESTIONABLE, ankle) is ruled out.',c:'balanced',s:'pass-neutral'},
+{n:'Carson Wentz',p:'QB',t:'MIN',b:{passYd:195.0,passTD:1.2,int:0.8,rushYd:8.0,rushTD:0.08},f:'Real, current (Oct 14): Kyler Murray\'s backup; started Week 2 while Murray was in concussion protocol (19 att relief in Wk1). Starter-level prior blended with his real 2026 games via QB_2026_LINES. Starts only if Murray misses time.',c:'balanced',s:'pass-neutral'},
 ];
 
 /* ============== multiplier tables (same engine as before) ============== */
@@ -1236,11 +1292,14 @@ const scriptLabels = ['Trailing Big','Trailing','Neutral','Leading','Leading Big
    QB +0.89 (n=31, mean proj 16.0), RB -2.03 (n=42, 12.5), WR -0.35 (n=56, 12.4). Each multiplier moved by the same 20% damping as before, scaled
    by Week 4's share of the pooled sample (QB 37%, RB 37%, WR 38%): QB 0.9834->0.9794, RB 0.9715->0.9831, WR 0.9681->0.9701. Week 3 box scores
    were not pulled, so weeksOfData counts Weeks 1, 2 and 4. */
+/* WEEKLY CALIBRATION refreshed Oct 14, 2026: Week 5 added (live engine, played players only). Residual PPR bias (proj - actual):
+   QB -2.03 (n=29, mean proj 15.6), RB -0.13 (n=50, 11.0), WR +0.59 (n=67, 11.4), TE +0.51 (n=35, not calibrated). Same 20% damping, scaled by
+   Week 5's ~25% share of the pooled sample: QB 0.9794->0.9859, RB 0.9831->0.9837, WR 0.9701->0.9675. */
 const WEEKLY_CALIBRATION = {
-  weeksOfData: 3,
-  qbMult: 0.9794, // was 0.9834
-  wrMult: 0.9701, // was 0.9681
-  rbMult: 0.9831, // was 0.9715
+  weeksOfData: 4,
+  qbMult: 0.9859, // was 0.9794
+  wrMult: 0.9675, // was 0.9701
+  rbMult: 0.9837, // was 0.9831
 };
 
 /* BETTING TAB SUPPORT DATA (real, disclosed):
@@ -1500,7 +1559,7 @@ const DEF_ROSTER = {
   WAS:[['K\'Lavon Chaisson','ED',42,57],['Odafe Oweh','ED',42,71],['Dorance Armstrong','ED',28,68],['Daron Payne','DI',44,61],['Javon Kinlaw','DI',39,51],['Charles Omenihu','DI',28,57],['Sonny Styles','LB',55,70],['Frankie Luvu','LB',46,55],['Kain Medrano','LB',33,65],['Amik Robertson','CB',60,57],['Rasul Douglas','CB',36,71],['Mike Sainristil','CB',33,46],['Fabian Moreau','CB',23,66],['Jeremy Reaves','S',55,63],['Nick Cross','S',55,54],['Quan Martin','S',42,49]],
 };
 
-/* DEF_AVAILABILITY: ESPN injury report, Friday Oct 9, 2026 (Week 5). OUT/IR = out; DOUBTFUL counts 75%,
+/* DEF_AVAILABILITY: ESPN injury report, maintained by the daily task through Wed Oct 14, 2026 (Week 6 next); originally built Fri Oct 9 (Week 5). OUT/IR = out; DOUBTFUL counts 75%,
    QUESTIONABLE 20% (expected-loss, because the tool cannot know who plays). Only listed defenders matter.
    MUST be refreshed every Friday. */
 const DEF_AVAILABILITY = {
@@ -1626,44 +1685,44 @@ function defenderInjuryFactors(teamAb, wk){
    (The previous version of these four tables came from DraftEdge fantasy-points-allowed, which is
    outside the ESPN/PFF-only sourcing rule; it has been replaced entirely.)
    Source: ESPN full box scores (site.api.espn.com summary endpoint), every regular-season game of
-   2025 (17 per team) and Weeks 1-4 of 2026. Each offensive player's yards are credited to the
+   2025 (17 per team) and Weeks 1-5 of 2026 (refreshed Oct 14; CAR and KC were on bye in Week 5 and keep n=4). Each offensive player's yards are credited to the
    opposing defense by the player's ESPN roster position: QB = passing yards allowed; RB = rushing
    + receiving yards by RBs/FBs; WR and TE = receiving yards. Yards, not fantasy points.
    Method: per-game yards allowed = (1-w) x 2025 per-game + w x 2026 per-game, w = n/(n+12) where n is
-   2026 games played (w = 0.25 after 4 games; w was chosen by back-testing weeks 2-4 -- a pure
+   2026 games played (w = 0.25 after 4 games, 0.29 after 5; w was chosen by back-testing weeks 2-4 -- a pure
    2026-only view had essentially zero predictive value this early, while a 2025-heavy blend did).
-   Ratio vs the league mean is then damped toward 1.0: QB 0.35, RB 0.35, WR 0.50, TE 0.75, from a
-   pooled regression of actual week-N yards on predicted yards (weeks 2-4: slopes QB 0.23, RB 0.22,
-   WR 0.49, TE 1.13; the TE slope is capped because 31 players a week is a noisy sample). The engine
+   Ratio vs the league mean is then damped toward 1.0: QB 0.30, RB 0.35, WR 0.55, TE 0.80, from a
+   pooled regression of actual week-N yards on predicted yards (weeks 2-5: slopes QB 0.31, RB 0.36,
+   WR 0.56, TE 0.87; weeks 2-4 were 0.23, 0.22, 0.49, 1.13; the TE slope is capped because 31 players a week is a noisy sample). The engine
    then applies MATCHUP_SHRINK on top. Honest caveat: back-tested on Week 4, these tables perform the
    same as the old ones and barely better than no matchup adjustment at all -- positional defense
    yardage is a weak week-to-week signal. Refresh weekly by re-pulling ESPN box scores. */
 const TE_MATCHUP_ADJ = {
-  ARI:1.204,ATL:0.941,BAL:0.884,BUF:0.746,CAR:1.082,CHI:0.906,CIN:1.508,CLE:1.033,
-  DAL:0.976,DEN:1.128,DET:1.203,GB:0.837,HOU:0.928,IND:1.174,JAX:0.988,KC:1.023,
-  LAC:0.86,LAR:0.806,LV:0.821,MIA:1.243,MIN:0.875,NE:0.978,NO:1.057,NYG:0.939,
-  NYJ:0.988,PHI:0.699,PIT:1.041,SEA:1.015,SF:0.99,TB:1.101,TEN:0.924,WAS:1.101,
+  ARI:1.241,ATL:0.939,BAL:0.882,BUF:0.792,CAR:1.086,CHI:0.912,CIN:1.496,CLE:1.008,
+  DAL:0.953,DEN:1.117,DET:1.274,GB:0.811,HOU:0.883,IND:1.174,JAX:0.972,KC:1.023,
+  LAC:0.859,LAR:0.768,LV:0.859,MIA:1.236,MIN:0.846,NE:1.034,NO:1.051,NYG:0.943,
+  NYJ:0.943,PHI:0.726,PIT:1.08,SEA:0.987,SF:0.959,TB:1.076,TEN:0.908,WAS:1.163,
 };
 
 const QB_MATCHUP_ADJ = {
-  ARI:1.026,ATL:1.013,BAL:1.037,BUF:0.952,CAR:0.992,CHI:1.001,CIN:1.038,CLE:0.966,
-  DAL:1.05,DEN:0.989,DET:1.049,GB:0.966,HOU:0.994,IND:1.059,JAX:1.029,KC:0.975,
-  LAC:0.962,LAR:0.98,LV:0.983,MIA:1.007,MIN:0.94,NE:0.968,NO:0.964,NYG:0.997,
-  NYJ:0.99,PHI:0.974,PIT:1.038,SEA:0.958,SF:1.012,TB:1.027,TEN:1.021,WAS:1.045,
+  ARI:1.024,ATL:1.008,BAL:1.033,BUF:0.973,CAR:0.992,CHI:1.011,CIN:1.023,CLE:0.969,
+  DAL:1.037,DEN:0.983,DET:1.045,GB:0.97,HOU:0.99,IND:1.048,JAX:1.023,KC:0.978,
+  LAC:0.961,LAR:0.982,LV:0.997,MIA:1.002,MIN:0.941,NE:0.978,NO:0.971,NYG:0.995,
+  NYJ:0.986,PHI:0.986,PIT:1.033,SEA:0.963,SF:1.007,TB:1.028,TEN:1.02,WAS:1.043,
 };
 
 const RB_MATCHUP_ADJ = {
-  ARI:1.05,ATL:0.982,BAL:0.962,BUF:1.009,CAR:1.049,CHI:1,CIN:1.077,CLE:1.005,
-  DAL:1.018,DEN:0.939,DET:0.971,GB:1.019,HOU:0.936,IND:0.964,JAX:0.918,KC:0.967,
-  LAC:0.975,LAR:0.991,LV:1,MIA:1.051,MIN:0.98,NE:0.969,NO:1.041,NYG:1.044,
-  NYJ:1.064,PHI:1.021,PIT:1.014,SEA:0.965,SF:1.018,TB:0.991,TEN:0.975,WAS:1.034,
+  ARI:1.063,ATL:0.996,BAL:0.967,BUF:1.013,CAR:1.049,CHI:0.993,CIN:1.069,CLE:1.007,
+  DAL:1.034,DEN:0.943,DET:0.96,GB:1.017,HOU:0.933,IND:0.979,JAX:0.906,KC:0.967,
+  LAC:0.971,LAR:1.009,LV:1.011,MIA:1.051,MIN:0.97,NE:0.969,NO:1.041,NYG:1.04,
+  NYJ:1.051,PHI:1.018,PIT:1.01,SEA:0.963,SF:1.014,TB:0.983,TEN:0.973,WAS:1.031,
 };
 
 const WR_MATCHUP_ADJ = {
-  ARI:1.008,ATL:1.049,BAL:1.106,BUF:0.969,CAR:0.96,CHI:1.039,CIN:0.92,CLE:0.932,
-  DAL:1.101,DEN:0.959,DET:1.091,GB:0.982,HOU:1.016,IND:1.099,JAX:1.05,KC:0.935,
-  LAC:0.966,LAR:0.988,LV:1.025,MIA:0.928,MIN:0.935,NE:0.93,NO:0.925,NYG:1.022,
-  NYJ:0.969,PHI:1.004,PIT:1.069,SEA:0.878,SF:1.003,TB:0.98,TEN:1.087,WAS:1.074,
+  ARI:1.002,ATL:1.046,BAL:1.12,BUF:0.98,CAR:0.956,CHI:1.073,CIN:0.906,CLE:0.931,
+  DAL:1.104,DEN:0.938,DET:1.095,GB:0.972,HOU:1.015,IND:1.091,JAX:1.059,KC:0.929,
+  LAC:0.947,LAR:0.975,LV:1.045,MIA:0.918,MIN:0.916,NE:0.918,NO:0.926,NYG:1.017,
+  NYJ:0.968,PHI:1.02,PIT:1.067,SEA:0.875,SF:1.002,TB:1.008,TEN:1.102,WAS:1.079,
 };
 
 const scriptTable = {
@@ -2066,54 +2125,59 @@ const RECV_2024_BASELINE = {
    scaled by the same volume multipliers as pass yards; completion% held as this
    QB's own real rate. Falls back to real league averages for players without a
    qualifying 2025 sample (true rookies with negligible 2025 snaps). */
-/* REFRESHED Oct 7, 2026: each QB's 2025 attempts/game and completion % blended with his 2026 Weeks 1-4 ESPN box-score figures, weighted by 2026 games / (17 + 2026 games)
+/* REFRESHED Oct 7, 2026: each QB's 2025 attempts/game and completion % blended with his 2026 Weeks 1-5 ESPN box-score figures (re-blended Oct 14), weighted by 2026 games / (17 + 2026 games)
    (4 starts = 19%, 2 appearances = 10%). QBs with no 2025 line but 30+ 2026 attempts were added from 2026 alone. */
 const QB_ATT_COMP = {
-'Aaron Rodgers':{attPerGame:35.1,compPct:62.0},
+'Aaron Rodgers':{attPerGame:34.9,compPct:62.3},
 'Baker Mayfield':{attPerGame:32.6,compPct:70.6},
-'Bo Nix':{attPerGame:32.9,compPct:64.9},
-'Brock Purdy':{attPerGame:29.9,compPct:66.7},
+'Bo Nix':{attPerGame:32.6,compPct:64.6},
+'Brock Purdy':{attPerGame:29.9,compPct:66.6},
 'Bryce Young':{attPerGame:29.9,compPct:61.2},
-'C.J. Stroud':{attPerGame:32.4,compPct:63.2},
+'C.J. Stroud':{attPerGame:32.5,compPct:63.7},
 'Caleb Williams':{attPerGame:32.5,compPct:62.8},
-'Cam Ward':{attPerGame:29.8,compPct:63.0},
+'Cam Ward':{attPerGame:31.0,compPct:63.2},
 'Cooper Rush':{attPerGame:19.5,compPct:56.4},
-'Dak Prescott':{attPerGame:36.1,compPct:65.7},
-'Daniel Jones':{attPerGame:33.9,compPct:63.4},
-'Deshaun Watson':{attPerGame:30.5,compPct:64.6},
-'Drake Maye':{attPerGame:26.6,compPct:65.8},
+'Dak Prescott':{attPerGame:36.4,compPct:65.3},
+'Daniel Jones':{attPerGame:34.4,compPct:62.9},
+'Deshaun Watson':{attPerGame:30.6,compPct:63.6},
+'Drake Maye':{attPerGame:26.9,compPct:66.4},
 'Drew Lock':{attPerGame:24.0,compPct:72.9},
-'Geno Smith':{attPerGame:29.8,compPct:68.4},
-'Jacoby Brissett':{attPerGame:25.9,compPct:60.7},
-'Jalen Hurts':{attPerGame:24.7,compPct:67.4},
-'Jalon Daniels':{attPerGame:27.0,compPct:70.4},
-'Jameis Winston':{attPerGame:26.0,compPct:55.1},
-'Jared Goff':{attPerGame:33.7,compPct:70.6},
-'Jayden Daniels':{attPerGame:29.3,compPct:67.2},
-'Joe Burrow':{attPerGame:38.6,compPct:70.7},
-'Jordan Love':{attPerGame:30.5,compPct:61.7},
-'Josh Allen':{attPerGame:29.7,compPct:64.9},
+'Geno Smith':{attPerGame:29.8,compPct:67.9},
+'Jacoby Brissett':{attPerGame:26.9,compPct:60.7},
+'Jalen Hurts':{attPerGame:25.4,compPct:66.6},
+'Jalon Daniels':{attPerGame:26.9,compPct:70.9},
+'Jameis Winston':{attPerGame:33.0,compPct:57.6},
+'Jared Goff':{attPerGame:33.5,compPct:70.3},
+'Jayden Daniels':{attPerGame:29.1,compPct:67.2},
+'Joe Burrow':{attPerGame:38.3,compPct:70.7},
+'Jordan Love':{attPerGame:30.5,compPct:62.4},
+'Josh Allen':{attPerGame:29.2,compPct:64.9},
 'Justin Fields':{attPerGame:20.2,compPct:65.4},
-'Justin Herbert':{attPerGame:29.8,compPct:63.7},
-'Kirk Cousins':{attPerGame:33.1,compPct:66.5},
-'Kyler Murray':{attPerGame:31.9,compPct:68.3},
+'Justin Herbert':{attPerGame:29.5,compPct:63.5},
+'Kirk Cousins':{attPerGame:32.9,compPct:66.5},
+'Kyler Murray':{attPerGame:31.8,compPct:69.0},
 'Lamar Jackson':{attPerGame:26.8,compPct:68.0},
-'Malik Willis':{attPerGame:12.2,compPct:70.7},
+'Malik Willis':{attPerGame:12.9,compPct:70.0},
 'Marcus Mariota':{attPerGame:23.5,compPct:63.8},
-'Matthew Stafford':{attPerGame:34.2,compPct:64.7},
-'Michael Penix Jr.':{attPerGame:21.2,compPct:59.7},
+'Matthew Stafford':{attPerGame:35.1,compPct:65.3},
+'Michael Penix Jr.':{attPerGame:21.7,compPct:59.5},
 'Patrick Mahomes':{attPerGame:34.3,compPct:66.7},
-'Sam Darnold':{attPerGame:32.6,compPct:66.0},
+'Sam Darnold':{attPerGame:32.4,compPct:65.8},
 'Shedeur Sanders':{attPerGame:26.5,compPct:56.6},
-'Trevor Lawrence':{attPerGame:27.9,compPct:62.2},
-'Tyler Shough':{attPerGame:45.0,compPct:67.2},
-'Tyson Bagent':{attPerGame:34.0,compPct:73.5},
+'Trevor Lawrence':{attPerGame:28.4,compPct:62.0},
+'Tyler Shough':{attPerGame:41.0,compPct:66.8},
+'Tyson Bagent':{attPerGame:33.4,compPct:72.7},
+'Jaxson Dart':{attPerGame:17.0,compPct:76.5},
+'Carson Wentz':{attPerGame:19.5,compPct:59.0},
+'Case Keenum':{attPerGame:26.5,compPct:66.0},
+'Tyler Huntley':{attPerGame:20.5,compPct:78.0},
+'Athan Kaliakmanis':{attPerGame:33.0,compPct:45.5},
 };
 /* Real 2026 rushing leak per defence (ESPN box scores, Wk1-4): [games, rush yards allowed, carries allowed], ALL rushers.
    Used for QB rushing only (QBs had no run-defence adjustment at all). Backtest (leave-one-game-out, 90 QB games):
    defence ypc-allowed vs league -> slope 0.64 (se 0.52); QB-specific rush yards allowed -> -0.12 (se 0.13) = no signal, so not used.
    Pass-through 0.5 and shrunk by games/(games+2). Refresh weekly from ESPN box scores. */
-const DEF_RUN_LEAK = {ARI:[4,470,112], ATL:[4,193,71], BAL:[4,400,103], BUF:[4,464,115], CAR:[4,626,116], CHI:[4,410,83], CIN:[4,398,88], CLE:[4,453,99], DAL:[4,601,126], DEN:[4,571,120], DET:[4,479,108], GB:[4,557,133], HOU:[4,335,100], IND:[4,524,109], JAX:[4,297,91], KC:[4,371,104], LAC:[4,487,129], LAR:[4,408,103], LV:[4,538,104], MIA:[4,436,120], MIN:[4,378,91], NE:[4,416,95], NO:[4,591,117], NYG:[4,436,93], NYJ:[4,494,116], PHI:[4,488,121], PIT:[4,451,104], SEA:[4,408,112], SF:[4,399,107], TB:[4,314,98], TEN:[4,491,134], WSH:[4,374,94]};
+const DEF_RUN_LEAK = {ARI:[5,633,144], ATL:[5,401,106], BAL:[5,510,129], BUF:[5,541,138], CAR:[4,626,116], CHI:[5,480,109], CIN:[5,615,122], CLE:[5,587,131], DAL:[5,842,165], DEN:[5,726,154], DET:[5,535,126], GB:[5,638,157], HOU:[5,392,118], IND:[5,651,131], JAX:[5,319,109], KC:[4,371,104], LAC:[5,593,158], LAR:[5,642,140], LV:[5,703,135], MIA:[5,553,151], MIN:[5,433,108], NE:[5,454,113], NO:[5,744,153], NYG:[5,638,123], NYJ:[5,590,140], PHI:[5,590,148], PIT:[5,517,128], SEA:[5,502,136], SF:[5,488,133], TB:[5,364,111], TEN:[5,570,161], WSH:[5,477,122]};
 const DEF_RUN_LEAK_LG_YPC = (()=>{let r=0,c=0;for(const k in DEF_RUN_LEAK){r+=DEF_RUN_LEAK[k][1];c+=DEF_RUN_LEAK[k][2]}return r/c})();
 const QB_RUSH_LEAK_PASS = 0.5;
 function qbRushLeakMult(ab){const d=DEF_RUN_LEAK[ab==="WAS"?"WSH":ab];if(!d)return 1;const leak=(d[1]/d[2])/DEF_RUN_LEAK_LG_YPC-1;return 1+QB_RUSH_LEAK_PASS*leak*d[0]/(d[0]+2)}
@@ -3642,7 +3706,7 @@ const QB_2025_GAMES = {'Aaron Rodgers':17, 'Baker Mayfield':17, 'Bo Nix':18, 'Br
 // (rookies, or anyone below the games floor those tables were built with).
 /* QB 2026 GAME LOG (added Oct 9, 2026). The QB baseline above is 2024+2025 only, so a QB's actual 2026 games
    never reached his projection -- Jayden Daniels' two 2026 games (164 yds; 96 yds before leaving) were ignored.
-   Source: ESPN box scores, Weeks 1-4 (passing yards/TD/INT per game-equivalent, where one game-equivalent = 30 attempts,
+   Source: ESPN box scores, Weeks 1-5, refreshed Oct 14 (passing yards/TD/INT per game-equivalent, where one game-equivalent = 30 attempts,
    so a half game or a relief appearance counts for what it was). Blended into the baseline in getBlendedBaseline() at
    QB_2026_WEIGHT per game-equivalent (2024 counts 1.0 per game, 2025 1.5). Weight chosen by backtest: predicting each
    QB's next-game passing yards from only earlier weeks (91 starts, Weeks 2-4), MAE 56.59 with no 2026 data, 56.30 at
@@ -3651,40 +3715,44 @@ const QB_2025_GAMES = {'Aaron Rodgers':17, 'Baker Mayfield':17, 'Bo Nix':18, 'Br
 const QB_2026_WEIGHT = 2.5;
 const QB_2026_LINES = {
 'Lamar Jackson':{eq:3.20,passYd:302.2,passTD:1.88,int:0.31},
-'Daniel Jones':{eq:4.40,passYd:171.4,passTD:0.68,int:0.91},
+'Daniel Jones':{eq:5.87,passYd:174.0,passTD:0.51,int:0.68},
 'Cooper Rush':{eq:1.30,passYd:176.2,passTD:0.77,int:3.08},
-'Aaron Rodgers':{eq:5.10,passYd:195.9,passTD:1.37,int:0.78},
-'Josh Allen':{eq:3.97,passYd:261.9,passTD:1.51,int:0.76},
-'C.J. Stroud':{eq:5.03,passYd:226.7,passTD:0.99,int:0.00},
-'Jacoby Brissett':{eq:5.07,passYd:161.4,passTD:1.18,int:0.79},
-'Justin Herbert':{eq:3.97,passYd:205.7,passTD:1.01,int:1.51},
-'Bo Nix':{eq:4.50,passYd:182.0,passTD:1.11,int:0.67},
+'Aaron Rodgers':{eq:6.13,passYd:201.2,passTD:1.63,int:0.65},
+'Josh Allen':{eq:4.60,passYd:271.5,passTD:1.52,int:0.87},
+'C.J. Stroud':{eq:6.17,passYd:227.4,passTD:0.97,int:0.00},
+'Jacoby Brissett':{eq:6.63,passYd:167.3,passTD:1.36,int:0.75},
+'Justin Herbert':{eq:4.77,passYd:196.6,passTD:1.05,int:1.47},
+'Bo Nix':{eq:5.40,passYd:174.4,passTD:1.11,int:0.56},
 'Patrick Mahomes':{eq:4.27,passYd:243.0,passTD:2.11,int:0.47},
 'Caleb Williams':{eq:1.83,passYd:222.0,passTD:1.09,int:0.55},
 'Bryce Young':{eq:5.40,passYd:234.8,passTD:1.67,int:0.37},
-'Drake Maye':{eq:3.90,passYd:219.0,passTD:1.03,int:1.79},
+'Drake Maye':{eq:5.03,passYd:244.0,passTD:1.59,int:1.39},
 'Drew Lock':{eq:1.60,passYd:263.8,passTD:2.50,int:0.00},
-'Sam Darnold':{eq:2.30,passYd:243.5,passTD:2.61,int:1.30},
+'Sam Darnold':{eq:3.27,passYd:231.1,passTD:2.14,int:1.53},
 'Baker Mayfield':{eq:3.20,passYd:192.2,passTD:0.62,int:0.62},
-'Joe Burrow':{eq:5.23,passYd:223.8,passTD:1.34,int:0.57},
-'Trevor Lawrence':{eq:3.47,passYd:243.2,passTD:2.31,int:0.58},
-'Geno Smith':{eq:3.90,passYd:231.3,passTD:1.28,int:0.00},
-'Cam Ward':{eq:3.97,passYd:183.0,passTD:0.76,int:0.50},
-'Dak Prescott':{eq:5.00,passYd:213.0,passTD:1.60,int:0.20},
-'Malik Willis':{eq:3.43,passYd:207.4,passTD:0.29,int:0.58},
-'Kirk Cousins':{eq:4.80,passYd:213.8,passTD:2.29,int:0.83},
-'Brock Purdy':{eq:3.77,passYd:267.3,passTD:2.92,int:0.27},
-'Matthew Stafford':{eq:5.40,passYd:220.2,passTD:1.11,int:1.11},
-'Jordan Love':{eq:5.13,passYd:202.8,passTD:1.56,int:0.58},
-'Kyler Murray':{eq:2.37,passYd:183.0,passTD:0.42,int:0.85},
-'Tyler Shough':{eq:6.00,passYd:200.5,passTD:1.50,int:0.50},
-'Jared Goff':{eq:5.37,passYd:226.2,passTD:1.68,int:0.00},
-'Jayden Daniels':{eq:1.70,passYd:152.9,passTD:1.76,int:0.00},
-'Jalen Hurts':{eq:3.80,passYd:187.6,passTD:1.84,int:0.79},
+'Joe Burrow':{eq:6.30,passYd:216.0,passTD:1.75,int:0.48},
+'Trevor Lawrence':{eq:4.77,passYd:246.3,passTD:2.10,int:0.63},
+'Geno Smith':{eq:4.90,passYd:221.2,passTD:1.22,int:0.00},
+'Cam Ward':{eq:5.17,passYd:173.4,passTD:0.58,int:0.58},
+'Dak Prescott':{eq:6.40,passYd:215.8,passTD:1.41,int:0.47},
+'Jaxson Dart':{eq:1.13,passYd:220.6,passTD:2.65,int:0.00},
+'Malik Willis':{eq:4.33,passYd:195.9,passTD:0.46,int:0.92},
+'Kirk Cousins':{eq:5.73,passYd:221.3,passTD:2.09,int:0.70},
+'Brock Purdy':{eq:4.73,passYd:252.7,passTD:2.75,int:0.42},
+'Matthew Stafford':{eq:7.20,passYd:218.3,passTD:1.25,int:0.83},
+'Jordan Love':{eq:6.17,passYd:228.3,passTD:1.62,int:0.49},
+'Carson Wentz':{eq:1.30,passYd:212.3,passTD:2.31,int:0.00},
+'Kyler Murray':{eq:3.37,passYd:196.6,passTD:0.59,int:0.59},
+'Tyler Shough':{eq:6.83,passYd:190.1,passTD:1.32,int:0.73},
+'Jared Goff':{eq:6.37,passYd:233.2,passTD:1.88,int:0.00},
+'Jayden Daniels':{eq:2.53,passYd:181.2,passTD:1.18,int:0.00},
+'Jalen Hurts':{eq:5.13,passYd:181.8,passTD:1.56,int:0.58},
 'Marcus Mariota':{eq:1.70,passYd:200.0,passTD:2.35,int:0.00},
-'Jameis Winston':{eq:2.60,passYd:184.2,passTD:1.15,int:1.15},
-'Michael Penix Jr.':{eq:1.50,passYd:319.3,passTD:1.33,int:0.67},
-'Case Keenum':{eq:1.13,passYd:217.9,passTD:1.76,int:0.00},
+'Jameis Winston':{eq:4.40,passYd:183.0,passTD:1.36,int:0.68},
+'Jack Strand':{eq:0.50,passYd:118.0,passTD:0.00,int:2.00},
+'Michael Penix Jr.':{eq:2.57,passYd:280.1,passTD:1.17,int:0.39},
+'Case Keenum':{eq:1.77,passYd:200.9,passTD:1.13,int:0.57},
+'Tyler Huntley':{eq:1.37,passYd:193.2,passTD:1.46,int:0.00},
 };
 /* Role-change correction (RB/WR/TE): players whose real 2026 role is far from their preseason line.
    ESPN box scores Wk1-4, per game; blended 6 prior-equivalent games : 4 games played (ROLE_2026_PRIOR_G).
@@ -3692,9 +3760,21 @@ const QB_2026_LINES = {
    accuracy in backtest (406 player-games, MAE worse as the weight rose). Refresh weekly; remove when stale. */
 const ROLE_2026_PRIOR_G = 6;
 const ROLE_2026 = {
- 'Chris Godwin':     {g:4, tgt:4.5, rec:4.0,  recYd:35.5, recTD:0},
- 'Emeka Egbuka':     {g:4, tgt:6.0, rec:3.75, recYd:38.5, recTD:0.25},
- 'Kenneth Gainwell': {g:4, rushAtt:3.25, rushYd:6.5, rushTD:0.125, rec:2.0, recYd:11.0, recTD:0.125}
+ 'Chris Godwin':     {g:5, tgt:4.2, rec:3.8,  recYd:35.8, recTD:0},
+ 'Emeka Egbuka':     {g:5, tgt:6.6, rec:4.2, recYd:38.4, recTD:0.2},
+ 'Kenneth Gainwell': {g:5, rushAtt:3.4, rushYd:8.8, rushTD:0, rec:2.2, recYd:10.8, recTD:0.2},
+ // Added Oct 14 (Wk1-5 scan: 2026 volume differs from blended baseline by >35% over >=3 games, injury-shortened samples excluded)
+ 'Isaiah Likely': {g:5, tgt:9.6, rec:6.6, recYd:56.8, recTD:0.8},
+ 'Brock Bowers': {g:3, tgt:11.67, rec:8.0, recYd:104.0, recTD:1.0},
+ 'Puka Nacua': {g:3, tgt:15.0, rec:10.33, recYd:112.33, recTD:0.33},
+ 'Pat Freiermuth': {g:5, tgt:5.2, rec:3.8, recYd:33.8, recTD:0.8},
+ 'Dontayvion Wicks': {g:5, tgt:5.6, rec:3.4, recYd:52.0, recTD:0.2},
+ 'Rashee Rice': {g:3, tgt:5.67, rec:4.33, recYd:63.33, recTD:0.33},
+ 'Tyrone Tracy Jr.': {g:4, rushAtt:1.75, rushYd:5.5, rushTD:0, rec:0.5, recYd:6.25, recTD:0},
+ 'Braelon Allen': {g:5, rushAtt:11.4, rushYd:47.2, rushTD:0.4, rec:1.4, recYd:3.8, recTD:0},
+ 'Kendre Miller': {g:4, rushAtt:7.25, rushYd:20.75, rushTD:0.5, rec:1.0, recYd:3.75, recTD:0},
+ 'RJ Harvey': {g:4, rushAtt:3.75, rushYd:14.0, rushTD:0, rec:5.0, recYd:33.0, recTD:0},
+ 'J.K. Dobbins': {g:5, rushAtt:12.8, rushYd:45.8, rushTD:0.2, rec:1.0, recYd:4.4, recTD:0}
 };
 /* Players whose 2024 season is not representative (age / role / offence change): skip the 2024 blend. */
 const RECV_2024_EXCLUDE = {'Chris Godwin':'healthy 2024 (82 yd/g, 0.71 TD) no longer matches his role: 35.5 yd/g and 1.04 YPRR in 2026'};
@@ -4016,6 +4096,8 @@ const PLAYER_AVAILABILITY = {
   // --- Healthy backups: not starting ---
   "Cooper Rush": {status:"BACKUP", note:"third string"},
   "Tua Tagovailoa": {status:"BACKUP", note:"backup to Michael Penix Jr."},
+  "Tyler Huntley": {status:"BACKUP", note:"backup to Lamar Jackson (QUESTIONABLE, ankle); starts only if Jackson is ruled out"},
+  "Carson Wentz": {status:"BACKUP", note:"backup to Kyler Murray"},
   "Case Keenum": {status:"BACKUP", note:"QB2 behind Tyson Bagent for Week 5 (did not play in Week 4)"},
   "Shedeur Sanders": {status:"BACKUP", note:"backup to Deshaun Watson"},
   "Justin Fields": {status:"BACKUP", note:"backup to Patrick Mahomes"},

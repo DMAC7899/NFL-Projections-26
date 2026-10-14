@@ -198,3 +198,11 @@ Tested adding each defence's real non-QB ypc allowed (leave-one-game-out) on top
 
 ## Role-change corrections (ROLE_2026 / RECV_2024_EXCLUDE) -- preview branch role-2026-preview
 For RB/WR/TE whose real 2026 role differs sharply from the preseason line (Wk1-4: Godwin, Egbuka, Gainwell), `ROLE_2026` blends per-game ESPN lines 4:6 with the prior; `RECV_2024_EXCLUDE` skips the 2024 blend (Godwin). Refresh weekly from box scores and delete entries once the baseline catches up. A blanket 2026 layer for all skill players was tested and did NOT help (406 player-games). Note ESPN name variants (Kenny Gainwell, Chris Godwin Jr.) when matching box scores.
+
+## Week-6 cycle notes (Oct 14, 2026)
+- Box-score aliasing: ESPN names differ from the roster for some players (Kenny Gainwell vs Kenneth Gainwell, Chris Godwin Jr.); match by normalized name before concluding someone is missing or has no 2026 games.
+- Washington is WAS in the roster/TEAMS and WSH in ESPN and DEF_RUN_LEAK; map when joining.
+- Tier script: `wk4/tiers5.js` (ESPN net pass yards allowed = passing yds minus sack yds; rush yards allowed from DEF_RUN_LEAK). Bye teams use 4 games. CLE and LAR pass tiers stay manual.
+- DvP rebuild: `wk6/dvp_build5.js` with damps from the pooled Wk2-5 slopes (QB 0.30, RB 0.35, WR 0.55, TE 0.80).
+- Missing-player threshold used: add non-QBs with >=10 carries or >=8 targets over the season; lower-volume ones are left out to avoid cluttering Rankings with 2026-only baselines (all added as low-confidence, per-team-game rates).
+- Not done this cycle: PFF refreshes (OL grades, coverage grades, skill grades/elusive, DEF_ROSTER). Run them when the PFF tab is open; a single extra week moves the blended grades very little.
