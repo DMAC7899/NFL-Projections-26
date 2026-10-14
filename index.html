@@ -378,64 +378,6 @@
           </div>
         </div>
 
-        <button type="button" class="controls-toggle" id="methodToggle" style="padding:10px 0 0;">
-          <span style="font-size:15px;">Data &amp; methodology</span>
-          <span class="chev" id="methodChev">▸ Tap to expand</span>
-        </button>
-        <div class="controls-body collapsed" id="methodBody" style="padding:10px 0 0;border-top:none;">
-        <div class="methodology">
-          <b>Baseline.</b> Each player's core stats (passing/rushing/receiving volume) reflect real per-game
-          production. Selecting a <b>Week</b> pulls the true 2026 opponent and site from the
-          official schedule and sets the defense-strength slider from that opponent's 2025 performance —
-          adjust manually as needed.
-          <br><br>
-          <b>Coverage Shell</b> reflects each defense's actual man/zone rate and preferred shell, weighed
-          against the league average. QB efficiency is further adjusted for the opponent's pressure rate.
-          Game script, pace, weather and role share remain manual levers.
-          <br><br>
-          <b>Elite CB Shadow</b> surfaces the opponent's top corner and scales the penalty to their 2025 PFF
-          grade rather than a flat estimate. It activates automatically when a top-third corner faces a
-          man-heavy defense, though field-side alignment isn't publicly tracked and so isn't factored in.
-          <br><br>
-          <b>Coverage splits</b> for 122 of 189 skill-position players draw on two independent sources —
-          nflverse/FTN charting (2023–25) and PFF's Receiving vs. Scheme report (2025) — averaged
-          where both qualify, since the two sources agree on direction only about three times in four.
-          Values are capped to limit small-sample distortion; players without a qualifying sample use a
-          general man-beater/zone-beater tag instead.
-          <br><br>
-          <b>Season Total</b> is a 17-game full-season projection, carrying each team's win total, PFF
-          pass/run-block grade, and sack rate as adjustments to output — not usage. Weekly sportsbook
-          lines aren't posted this far ahead, so this remains a season-level calibration.
-          <br><br>
-          <b>Sack conversion</b> is a real team-defense metric (2025 full season plus 2026 so far), aggregated from every individual
-          pass-rusher's sacks and total pressures (PFF Pass Rush Summary) up to a team total — sacks divided
-          by pressures generated. Two defenses can pressure the QB at the same rate but finish very
-          differently (real 2025 range: 9.4% to 20.5%), so this is layered on top of the existing
-          opponent-pressure effect on QB passing output, not a replacement for it.
-          <br><br>
-          <b>PFF context</b> shown on player cards — passing grade, Big-Time-Throw and Turnover-Worthy-Play
-          rate, route data, ADOT, EPA — largely restates skill already reflected in the underlying stat
-          line, so it informs rather than adjusts the projection.
-          <br><br>
-          <b>2025 Schedule Faced</b>, shown per position, is a genuine full-season average recomputed from
-          PFF's real weekly Strength of Schedule data — describing how tough the schedule was that produced
-          each player's actual 2025 numbers. It's backward-looking only, not a 2026 forecast, so it's shown
-          for context rather than folded into the projection.
-          <br><br>
-          <b>Play-Action Rate</b> (QB cards) is a real 2025 measure of how often each QB used play-action,
-          and how their yards/attempt and grade compared with and without it — informational context, not
-          a projection input.
-        </div>
-        <div class="methodology" style="margin-top:-4px;">
-          Team man/zone rates from PFF's Defense Coverage Scheme report (2025 season, snap-weighted
-          across every real defender who logged a coverage snap). Pressure rate is ESPN sack rate
-          (2025 with 2026 so far); time-to-throw and Cover 0-4 shell rates come from FTN Data via nflverse (2025 full season). Player splits 2023-2025
-          (minimum 30 targets or 60
-          attempts per coverage type). QB grades, pressure metrics, route and efficiency data, red-zone
-          shares, and O-line grades via PFF Premium Stats (2025, minimum 6 games played). Win-total and
-          red-zone data current as of early August 2026; 11 team win totals (and the scoring multiplier built from them) were corrected to the preseason sportsbook consensus on Oct 7, 2026.
-        </div>
-        </div>
       </div>
     </div>
   </div>
@@ -521,12 +463,6 @@
 
   <!-- ===================== WEEKLY SLATE VIEW ===================== -->
   <div id="slateView" style="display:none;">
-    <div class="methodology" style="margin-bottom:16px;">
-      Pick a week above. Every real game and every tracked player from both teams,
-      one table. The Edge column is real, not cosmetic &mdash; positive (green) means
-      their real matchup this week beats their own neutral-matchup baseline, negative
-      (red) means it's below it, using the same calculation as Best Matchups.
-    </div>
     <div class="filter-row">
       <div class="filter-field">
         <label>Position</label>
@@ -560,24 +496,6 @@
 
   <!-- ===================== DEFENSIVE PROFILE VIEW ===================== -->
   <div id="defProfileView" style="display:none;">
-    <button type="button" class="controls-toggle" id="defProfileMethodToggle" style="padding:10px 0;">
-      <span style="font-size:15px;">Data &amp; methodology</span>
-      <span class="chev" id="defProfileMethodChev">▸ Tap to expand</span>
-    </button>
-    <div class="controls-body collapsed" id="defProfileMethodBody" style="padding:8px 0 14px;border-top:none;">
-      <div class="methodology" style="margin:0;">
-        All 32 real defenses, one row each. Pass D / Rush D use real 2025 yards-allowed
-        tiers. Run Stop / Interior are blended across real 2023 and 2024 seasons (Interior
-        = defensive interior linemen specifically, the "up the middle" signal). Man/Zone
-        are blended across real 2024 and 2025 seasons. Blitz is real 2025 per-play charted
-        rate (no second-year source yet). Sack Conv is real 2024-25 pressure-to-sack
-        finishing rate. Slot Weak is real 2025 yards allowed per coverage snap specifically
-        against slot-aligned targets (PFF Slot Coverage, aggregated from individual
-        defensive backs) &mdash; green means genuinely exploitable, red means a real
-        strength there. Matches the Slot Usage badge on WR/RB/TE cards, the offense-side
-        mirror of this same alignment.
-      </div>
-    </div>
     <div style="overflow-x:auto;">
       <table class="rank-table" id="defProfileTable">
         <thead><tr>
@@ -597,19 +515,6 @@
       <label>Team</label>
       <select id="dvpTeamFilter"><option value="">All teams</option></select>
     </div>
-    <button type="button" class="controls-toggle" id="dvpMethodToggle" style="padding:10px 0;">
-      <span style="font-size:15px;">Data &amp; methodology</span>
-      <span class="chev" id="dvpMethodChev">▸ Tap to expand</span>
-    </button>
-    <div class="controls-body collapsed" id="dvpMethodBody" style="padding:8px 0 14px;border-top:none;">
-      <div class="methodology" style="margin:0;">
-        Real yards allowed, from ESPN box scores for 2026 Weeks 1-4. Every receiver's and runner's
-        yards in each game are credited to the opposing defense by the player's ESPN position:
-        WR and TE = receiving yards per game; RB = rushing + receiving yards per game. Rank 1 gives up
-        the most. Four games is a small sample -- one shootout can swing a team a long way.
-        Tap a team to jump to its roster.
-      </div>
-    </div>
     <div style="overflow-x:auto;">
       <table class="rank-table" id="dvpTable">
         <thead><tr id="dvpHeaderRow">
@@ -627,53 +532,6 @@
   </div>
 
   <div id="bettingView" style="display:none;">
-    <button type="button" class="controls-toggle" id="bettingMethodToggle" style="padding:10px 0;">
-      <span style="font-size:15px;">Data &amp; methodology</span>
-      <span class="chev" id="bettingMethodChev">▸ Tap to expand</span>
-    </button>
-    <div class="controls-body collapsed" id="bettingMethodBody" style="padding:8px 0 14px;border-top:none;">
-      <div class="methodology" style="margin:0;">
-        Pick a week and a specific game, then enter the current real Vegas total and
-        spread (this is a static page with no server, so it can't pull live sportsbook
-        lines automatically). The page compares that real line against this tool's own
-        projected total and margin, and colors the comparison green or red depending on
-        which way it points.
-        <b>Our projection here comes from each team's real, current Vegas win total</b>,
-        run through a genuine relationship built from real, complete 2025 season data
-        (every team's real final win total vs. their real average points scored and
-        allowed) &mdash; about half the real variance in scoring is explained by win
-        total alone (R&sup2; = 0.50 offense, 0.60 defense), which is a real, validated
-        signal. It replaced an earlier version that summed individual player
-        projections into a team total, which tested at essentially zero correlation
-        with real results and produced visibly wrong outputs (a bad team shown favored
-        over a good one). This version is meaningfully better, but a win total can
-        itself be wrong, and this doesn't know about a specific week's injuries,
-        weather, or a real line move &mdash; treat it as a real, useful reference point,
-        not a guarantee.
-        <b>Update (Oct 7, 2026):</b> both sides now blend in real, current PFF 2026 team grades through Week 4 (read
-        directly from PFF's own team grades page via Chrome, with the user logged in
-        -- not a screenshot, so no transcription risk) at a real, disclosed 25% weight
-        alongside the season-long win-total estimate: defense checked against real
-        points allowed per game (R&sup2; = 0.08 after four games), offense against real points scored
-        (R&sup2; = 0.66, now stronger than the win-total offense estimate) -- so the weight is
-        still held at 25% for both sides this week and the offense side is the first candidate
-        to be raised if it holds. The defence slope is flatter, so it moves the projection less.
-        <b>Engine layer (Oct 7, 2026):</b> team points now also run through the same player projections used on
-        every other page. (1) <i>Opponent matchup:</i> the team's QB1, RB1-2, WR1-3 and TE1 are projected against the
-        real opponent (defence tiers, run defence, coverage, pressure, sack rate, time-to-throw, OL ratings, corner
-        shadow) and against a neutral defence; half the resulting swing is applied, capped at &plusmn;12%.
-        (2) <i>Injuries:</i> the lineup is rebuilt from the best available players and 60% of the lost projected
-        PPR comes off team points (teammates absorb the rest), floored at -20%; a QB change with real PFF grades still uses
-        the grade ratio instead. Check on Weeks 1-4 results: team-score error 7.63 &rarr; 7.53 pts, total error
-        11.89 &rarr; 11.67, margin error 9.59 &rarr; 9.50 (in-sample, injuries not replayed). Defensive injuries are now covered:
-        every team carries its key defenders (top 3 ED, 3 DI, 3 LB, 4 CB, 3 S by 2026 snaps) valued by blended 2025+2026
-        PFF grade; an out defender costs (grade &minus; 55) &times; snap share, converted at 1.6% per team-grade point, split into
-        pass and run effects, and feeds the player projections (pass yards/TD/receiving and rushing) as well as team points.
-        OUT/IR counts 100%, doubtful 75%, questionable 20% (ESPN report, Oct 7). A star edge or corner out is roughly +0.5 to +1 point
-        allowed. The scale is a judgment call (no past weeks to backtest) so revisit as weeks accumulate. Not covered: weather and stale
-        preseason win totals.
-      </div>
-    </div>
     <div class="filter-row">
       <div class="filter-field">
         <label>Game</label>
@@ -3826,6 +3684,10 @@ const QB_2026_LINES = {
    Judgement call for known role changes only -- a blanket 2026 layer for all skill players did NOT improve
    accuracy in backtest (406 player-games, MAE worse as the weight rose). Refresh weekly; remove when stale. */
 const ROLE_2026_PRIOR_G = 6;
+/* Per-player override of the prior weight. Brock Bowers (Oct 14, on request): 2026 sample is 3 games (missed Wk1-2) but PFF shows
+   2.79 yards per route run on 112 routes and 11.7 targets/game, against 1.70 YPRR in 2025 with a different QB situation, so the 2025/2024
+   blend is weighted 4 game-equivalents instead of 6 (2026 share 3/9 -> 3/7). Judgement call, not back-tested (3-game sample); revisit after Week 7. */
+const ROLE_2026_PRIOR_G_OVERRIDE = {'Brock Bowers':4};
 const ROLE_2026 = {
  'Chris Godwin':     {g:5, tgt:4.2, rec:3.8,  recYd:35.8, recTD:0},
  'Emeka Egbuka':     {g:5, tgt:6.6, rec:4.2, recYd:38.4, recTD:0.2},
@@ -3849,7 +3711,7 @@ function getBlendedBaseline(p){
   const r = getBlendedBaselineBase(p);
   const ro = (p.p!=='QB') ? ROLE_2026[p.n] : null;
   if(ro){
-    const wP = ROLE_2026_PRIOR_G, w26 = ro.g;
+    const wP = ROLE_2026_PRIOR_G_OVERRIDE[p.n] || ROLE_2026_PRIOR_G, w26 = ro.g;
     const mixR = k => (ro[k]===undefined) ? r.blended[k] : (r.blended[k]*wP + ro[k]*w26) / (wP + w26);
     const b2 = { ...r.blended };
     ['tgt','rec','recYd','recTD','rushAtt','rushYd','rushTD'].forEach(k=>{ if(ro[k]!==undefined && r.blended[k]!==undefined) b2[k]=mixR(k); });
@@ -4351,13 +4213,6 @@ const controlsChev = document.getElementById('controlsChev');
 controlsToggle.onclick = ()=>{
   const collapsed = controlsBody.classList.toggle('collapsed');
   controlsChev.textContent = collapsed ? '\u25b8 Tap to adjust' : '\u25be Tap to collapse';
-};
-const methodToggle = document.getElementById('methodToggle');
-const methodBody = document.getElementById('methodBody');
-const methodChev = document.getElementById('methodChev');
-methodToggle.onclick = ()=>{
-  const collapsed = methodBody.classList.toggle('collapsed');
-  methodChev.textContent = collapsed ? '\u25b8 Tap to expand' : '\u25be Tap to collapse';
 };
 const seasonNoteToggle = document.getElementById('seasonNoteToggle');
 const seasonNoteBody = document.getElementById('seasonNoteBody');
@@ -5374,20 +5229,6 @@ document.getElementById('bbScoreToggle').querySelectorAll('button').forEach(btn=
 document.getElementById('bbSearchBox').addEventListener('input', ()=>{ applyBigBoardSearch(); });
 
 const slatePosTabsEl = document.getElementById('slatePosTabs');
-const defProfileMethodToggle = document.getElementById('defProfileMethodToggle');
-const defProfileMethodBody = document.getElementById('defProfileMethodBody');
-const defProfileMethodChev = document.getElementById('defProfileMethodChev');
-defProfileMethodToggle.onclick = ()=>{
-  const collapsed = defProfileMethodBody.classList.toggle('collapsed');
-  defProfileMethodChev.textContent = collapsed ? '\u25b8 Tap to expand' : '\u25be Tap to collapse';
-};
-const dvpMethodToggle = document.getElementById('dvpMethodToggle');
-const dvpMethodBody = document.getElementById('dvpMethodBody');
-const dvpMethodChev = document.getElementById('dvpMethodChev');
-dvpMethodToggle.onclick = ()=>{
-  const collapsed = dvpMethodBody.classList.toggle('collapsed');
-  dvpMethodChev.textContent = collapsed ? '\u25b8 Tap to expand' : '\u25be Tap to collapse';
-};
 let defProfileColsShown = false;
 document.getElementById('defProfileMoreColsBtn').onclick = (e)=>{
   defProfileColsShown = !defProfileColsShown;
@@ -5407,13 +5248,6 @@ document.getElementById('bettingGameFilter').addEventListener('change', ()=>{ re
 document.getElementById('bettingFavTeam').addEventListener('change', ()=>{ renderBetting(); });
 document.getElementById('bettingVegasTotal').addEventListener('input', ()=>{ renderBetting(); });
 document.getElementById('bettingVegasSpread').addEventListener('input', ()=>{ renderBetting(); });
-const bettingMethodToggle = document.getElementById('bettingMethodToggle');
-const bettingMethodBody = document.getElementById('bettingMethodBody');
-const bettingMethodChev = document.getElementById('bettingMethodChev');
-bettingMethodToggle.onclick = ()=>{
-  const collapsed = bettingMethodBody.classList.toggle('collapsed');
-  bettingMethodChev.textContent = collapsed ? '\u25b8 Tap to expand' : '\u25be Tap to collapse';
-};
 
 function renderBigBoard(){
   const wk = globalWeekEl.value ? parseInt(globalWeekEl.value,10) : null;

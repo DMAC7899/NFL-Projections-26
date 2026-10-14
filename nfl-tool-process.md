@@ -207,3 +207,9 @@ Every PFF set is refreshed each week, not only ESPN data. Checklist run this cyc
 4. Man/zone: man rate = PFF man-coverage snaps / ALL coverage snaps (every CB, S, LB), for BOTH years, blended with 2025 at g/(g+8). Do not mix with man/(man+zone). The Oct 7 table did, which overstated 2026 man rates by about 30%; fixed Oct 14.
 5. Pressure = sack rate, 2025 blended with 2026 at dropbacks/(dropbacks+600). ttt and c0-c4 shells are NOT refreshed (only allowed source is FTN, not pulled this cycle).
 6. Scheme-vs-targeting cross-check (Weeks 1-5, n=32 defences): team man rate, shell rates and pressure show no usable relationship with TE/RB/WR target share or yards per target (|r| mostly < 0.2; 0.35 needed for p<.05). The one player-level signal that holds: man-beaters gain about 9 yd/game against high-man defences vs low-man (+2.6 vs -6.3 against their own leave-one-out average), matching the engine's +14%/-10% layer. Zone-beaters show no edge (+1.2 vs -0.7, wrong direction, noise). Engine unchanged. Re-run each week as samples grow.
+
+## Methodology text lives in the back end only (Oct 14, 2026)
+The "Data & methodology" panels were removed from every page of the site at the user's request. The removed wording is archived in `site-methodology-notes.md`; this file and the code comments are the method record. Do not add explanatory panels back to the UI.
+
+## Per-player prior override (Oct 14, 2026)
+`ROLE_2026_PRIOR_G_OVERRIDE` lets one player's 2026 role line carry more weight than the global 6 prior games. Brock Bowers = 4 (2026 share 3/9 to 3/7) on 2.79 YPRR and 11.7 targets/game. Not back-tested; revisit after Week 7.
