@@ -219,3 +219,6 @@ The "Data & methodology" panels were removed from every page of the site at the 
 
 ## Removed players (Oct 14, 2026)
 At the user's request these QBs were removed from the tool entirely (roster rows, their data-table entries and availability lines): Tyson Bagent, Cooper Rush, Drew Lock, Shedeur Sanders, Athan Kaliakmanis, Carson Wentz. Do not re-add them in weekly scans.
+
+## Friday injury refresh method (Oct 16, 2026)
+Pull ESPN `injuries` for all 32 teams, drop rows with status Active, and merge into the existing tables: a listed player is replaced by the new row, a player now Active is removed, and a player the feed omits is kept ONLY if the team roster endpoint still shows him on injured reserve (long-term IR players are missing from the injuries feed). Healthy-backup rows stay. Doubtful offensive players are counted as QUESTIONABLE with the conflict stated in the note (house rule), so check any doubtful QB by hand: Mayfield (TB) and Mariota (WAS) were doubtful on Oct 15. Also scan ESPN transactions since the last run for rostered players (this run: Jared Wayne waived by HOU, claimed by MIA; A.J. Brown designated to return from IR Oct 14).
