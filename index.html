@@ -469,6 +469,9 @@
           <th style="text-align:right;">RB Rec Yds/G</th>
           <th class="dvp-sortable" data-sort="slot" style="text-align:right;cursor:pointer;">Slot WR Rank<span class="dvp-sort-arrow"></span></th>
           <th style="text-align:right;">Slot Yds/Snap</th>
+          <th class="dvp-sortable" data-sort="slotyd" style="text-align:right;cursor:pointer;">Slot Rec Yds/G (est)<span class="dvp-sort-arrow"></span></th>
+          <th class="dvp-sortable" data-sort="wideyd" style="text-align:right;cursor:pointer;">Wide Rec Yds/G (est)<span class="dvp-sort-arrow"></span></th>
+          <th class="dvp-sortable" data-sort="inlyd" style="text-align:right;cursor:pointer;">Inline TE Yds/G (est)<span class="dvp-sort-arrow"></span></th>
         </tr></thead>
         <tbody id="dvpBody"></tbody>
       </table>
@@ -1711,6 +1714,23 @@ const LEAGUE_AVG_SACK_CONV = 14.8;
    aligned targets. This is the defense-side mirror of the offense-side Slot Usage
    badge on player cards -- fills the alignment-specific gap flagged repeatedly in
    Defensive Profile. Higher ypcs = weaker vs slot = favorable for the offense. */
+/* ALIGNMENT DvP (estimate), Oct 28, 2026, Weeks 1-7. Receiving yards each defence allowed per game, split by where the receiver lined up.
+   Built by hand: every ESPN box-score receiving line by a WR or TE (matched by name to the PFF 2026 receiving pages) is split into slot / wide / inline
+   in proportion to that receiver's own PFF pass-snap alignment (SLOT, WIDE, INL snaps over the season so far), summed per opposing defence and divided by games played.
+   RBs are excluded (about 15% of receiving yards). It is an allocation, not a measured number: a receiver's split is assumed the same in every game. */
+const ALIGN_DVP_2026 = {
+  ARI:{slot:70.6,wide:112.8,inl:28.9}, ATL:{slot:83.0,wide:119.3,inl:30.3}, BAL:{slot:69.2,wide:130.7,inl:20.7},
+  BUF:{slot:84.6,wide:126.6,inl:40.1}, CAR:{slot:62.1,wide:91.8,inl:25.4}, CHI:{slot:68.1,wide:108.3,inl:29.7},
+  CIN:{slot:87.2,wide:91.8,inl:43.3}, CLE:{slot:70.2,wide:105.9,inl:23.5}, DAL:{slot:86.1,wide:104.9,inl:18.6},
+  DEN:{slot:66.3,wide:102.0,inl:32.9}, DET:{slot:102.3,wide:133.9,inl:50.9}, GB:{slot:63.1,wide:107.5,inl:19.0},
+  HOU:{slot:82.0,wide:131.2,inl:20.2}, IND:{slot:76.2,wide:90.6,inl:20.1}, JAX:{slot:86.8,wide:140.8,inl:17.1},
+  KC:{slot:61.5,wide:92.1,inl:39.3}, LAC:{slot:68.4,wide:94.4,inl:27.5}, LAR:{slot:57.9,wide:72.5,inl:17.3},
+  LV:{slot:68.4,wide:106.2,inl:33.2}, MIA:{slot:69.6,wide:80.2,inl:40.4}, MIN:{slot:57.7,wide:83.2,inl:21.8},
+  NE:{slot:78.0,wide:101.8,inl:23.7}, NO:{slot:76.9,wide:113.7,inl:20.0}, NYG:{slot:55.3,wide:94.4,inl:21.8},
+  NYJ:{slot:66.2,wide:89.2,inl:25.9}, PHI:{slot:81.6,wide:121.3,inl:24.1}, PIT:{slot:65.9,wide:106.2,inl:17.1},
+  SEA:{slot:44.5,wide:65.3,inl:16.4}, SF:{slot:63.7,wide:88.0,inl:21.6}, TB:{slot:66.1,wide:101.7,inl:28.9},
+  TEN:{slot:80.8,wide:114.4,inl:18.4}, WAS:{slot:77.3,wide:121.6,inl:33.0}
+};
 /* REFRESHED Oct 28, 2026 (Weeks 1-7): rebuilt from PFF Slot Coverage pages for CB and S, pooling 2025 regular season (defenders with 30+ slot coverage snaps) with 2026 Reg+Post (all defenders); ypcs = yards / slot coverage snaps, ydsPerTgt = yards / targets, tds summed. LEAGUE_AVG_SLOT_YPCS = team mean. Display only (Defensive Profile); not used by the engine. */
 const TEAM_SLOT_COVERAGE = {
   ARI:{ypcs:1.065,ydsPerTgt:7.30,tds:9}, ATL:{ypcs:1.245,ydsPerTgt:6.64,tds:1},
@@ -5454,7 +5474,10 @@ function renderDvP(){
   const slotVal = t => (TEAM_SLOT_COVERAGE[t] ? TEAM_SLOT_COVERAGE[t].ypcs : 0);
   const slotSorted = [...teams].sort((a,b) => slotVal(b) - slotVal(a));
   const slotRank = {}; slotSorted.forEach((t,i) => slotRank[t] = i+1);
-  const colVal = (t,c) => c === 'slot' ? slotVal(t) : DVP_2026[t][c];
+  const alignKey = {slotyd:'slot', wideyd:'wide', inlyd:'inl'};
+  const colVal = (t,c) => c === 'slot' ? slotVal(t) : (alignKey[c] ? (ALIGN_DVP_2026[t]||{})[alignKey[c]]||0 : DVP_2026[t][c]);
+  const alignRank = {};
+  Object.keys(alignKey).forEach(c => { const s = [...teams].sort((a,b)=>colVal(b,c)-colVal(a,c)); alignRank[c] = {}; s.forEach((t,i)=>alignRank[c][t]=i+1); });
   const qbRank = rankOf('qb'), wrRank = rankOf('wr'), teRank = rankOf('te'), rbRank = rankOf('rb'), rbRecRank = rankOf('rbrec');
   const pillClass = (rank) => rank <= 10 ? 't4' : (rank >= 23 ? 't0' : 't2');
 
@@ -5497,7 +5520,8 @@ function renderDvP(){
       <td style="text-align:right;"><span class="glog-pill ${pillClass(rbRecRank[t])}">#${rbRecRank[t]}</span></td>
       <td style="text-align:right;font-family:'IBM Plex Mono',monospace;">${d.rbrec}</td>
       <td style="text-align:right;"><span class="glog-pill ${pillClass(slotRank[t])}">#${slotRank[t]}</span></td>
-      <td style="text-align:right;font-family:'IBM Plex Mono',monospace;">${slotVal(t) ? slotVal(t).toFixed(2) : '\u2014'}</td>`;
+      <td style="text-align:right;font-family:'IBM Plex Mono',monospace;">${slotVal(t) ? slotVal(t).toFixed(2) : '\u2014'}</td>
+      ${['slotyd','wideyd','inlyd'].map(c=>`<td style="text-align:right;font-family:'IBM Plex Mono',monospace;"><span class="glog-pill ${pillClass(alignRank[c][t])}">#${alignRank[c][t]}</span> ${colVal(t,c).toFixed(0)}</td>`).join('')}`;
     body.appendChild(tr);
   });
 }
