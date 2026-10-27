@@ -91,19 +91,6 @@
   .flagline{font-size:12px;color:var(--red);margin-top:6px;font-family:'IBM Plex Mono',monospace;}
   .byebanner{background:rgba(213,10,10,0.10);border:1px solid #5a2a2a;border-radius:14px;padding:10px 14px;font-size:13px;color:var(--red);margin-bottom:2px;font-family:'IBM Plex Mono',monospace;}
   .stat-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:9px;}
-  .bigboard-grid{display:grid;grid-template-columns:repeat(4,minmax(220px,1fr));gap:12px;overflow-x:auto;}
-  .bb-column{background:var(--bg-card);border:1px solid var(--line);border-radius:14px;overflow:hidden;min-width:0;}
-  .bb-column h4{margin:0;padding:12px 14px;font-family:'Teko',sans-serif;font-size:20px;letter-spacing:1px;background:var(--bg-panel);border-bottom:1px solid var(--line);}
-  .bb-row{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--line);cursor:pointer;}
-  .bb-row:last-child{border-bottom:none;}
-  .bb-row:hover{background:var(--bg-panel);}
-  .bb-row.bb-dimmed{opacity:0.22;}
-  .bb-row .bb-rank{font-family:'Teko',sans-serif;font-size:16px;color:var(--text-faint);width:20px;flex-shrink:0;text-align:right;}
-  .bb-row .bb-info{flex:1;min-width:0;}
-  .bb-row .bb-name{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .bb-row .bb-team{font-size:9.5px;color:var(--text-faint);}
-  .bb-row .bb-pts{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--amber);flex-shrink:0;}
-  @media (max-width:840px){ .bigboard-grid{grid-template-columns:repeat(4,220px);} }
   .slate-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;}
   .game-card{background:var(--bg-card);border:1px solid var(--line);border-radius:16px;overflow:hidden;}
   .game-card h4{margin:0;padding:12px 16px;font-family:'Teko',sans-serif;font-size:20px;letter-spacing:0.5px;background:var(--bg-panel);border-bottom:1px solid var(--line);}
@@ -200,11 +187,9 @@
   <div class="modebar">
     <div class="modetabs" id="modeTabs">
       <div class="modetab active" data-mode="browse">Browse</div>
-      <div class="modetab" data-mode="rankings">Rankings</div>
       <div class="modetab" data-mode="compare">Compare</div>
       <div class="modetab" data-mode="advantages">Best Matchups</div>
-      <div class="modetab" data-mode="bigboard">Big Board</div>
-      <div class="modetab" data-mode="slate">Weekly Slate</div>
+      <div class="modetab" data-mode="slate">Week Board</div>
       <div class="modetab" data-mode="defprofile">Defensive Profile</div>
       <div class="modetab" data-mode="dvp">Defense v Position</div>
       <div class="modetab" data-mode="betting">Betting</div>
@@ -382,28 +367,6 @@
     </div>
   </div>
 
-  <!-- ===================== RANKINGS VIEW ===================== -->
-  <div id="rankingsView" style="display:none;">
-    <div class="toprow">
-      <div class="tabs" id="rankTabs"></div>
-      <div class="scoretoggle" id="scoreToggle">
-        <button data-fmt="ppr" class="active">PPR</button>
-        <button data-fmt="half">Half</button>
-        <button data-fmt="std">Std</button>
-      </div>
-      <div class="teamfilter">
-        <select id="rankTeamFilter"><option value="">All teams</option></select>
-      </div>
-    </div>
-    <div class="autonote" id="rankAutoNote" style="margin-bottom:10px;">No week selected — ranking by season-baseline per-game average (neutral matchup).</div>
-    <div style="overflow-x:auto;">
-      <table class="rank-table" id="rankTable">
-        <thead><tr id="rankHead"><th>#</th><th>Player</th><th>Team</th><th>Opp</th></tr></thead>
-        <tbody id="rankBody"></tbody>
-      </table>
-    </div>
-  </div>
-
   <!-- ===================== COMPARE VIEW ===================== -->
   <div id="compareView" style="display:none;">
     <div class="toprow">
@@ -447,51 +410,26 @@
     </div>
   </div>
 
-  <!-- ===================== BIG BOARD VIEW ===================== -->
-  <div id="bigBoardView" style="display:none;">
-    <div class="toprow">
-      <input class="searchbox" id="bbSearchBox" placeholder="Search any player across all positions&hellip;" style="flex:1;">
-      <div class="scoretoggle" id="bbScoreToggle">
-        <button data-fmt="ppr" class="active">PPR</button>
-        <button data-fmt="half">Half</button>
-        <button data-fmt="std">Std</button>
-      </div>
-    </div>
-    <div class="autonote" id="bbAutoNote" style="margin-bottom:10px;"></div>
-    <div class="bigboard-grid" id="bbGrid"></div>
-  </div>
-
-  <!-- ===================== WEEKLY SLATE VIEW ===================== -->
+  <!-- ===================== WEEK BOARD VIEW (betting board) ===================== -->
   <div id="slateView" style="display:none;">
     <div class="filter-row">
-      <div class="filter-field">
-        <label>Position</label>
-        <div class="tabs" id="slatePosTabs">
-          <div class="tab active" data-pos="ALL">All</div>
-          <div class="tab" data-pos="QB">QB</div>
-          <div class="tab" data-pos="RB">RB</div>
-          <div class="tab" data-pos="WR">WR</div>
-          <div class="tab" data-pos="TE">TE</div>
-        </div>
-      </div>
       <div class="filter-field">
         <label>Game</label>
         <select id="slateGameFilter" style="min-width:180px;">
           <option value="ALL">All games</option>
         </select>
       </div>
-      <div class="filter-field" style="flex:1;min-width:160px;">
-        <label>Search</label>
-        <input class="searchbox" id="slateSearchBox" placeholder="Search player…" style="width:100%;">
+      <div class="filter-field">
+        <label>Show top</label>
+        <select id="slateTopN" style="min-width:90px;">
+          <option value="10">10</option>
+          <option value="15" selected>15</option>
+          <option value="25">25</option>
+        </select>
       </div>
     </div>
     <div class="autonote" id="slateAutoNote" style="margin-bottom:12px;"></div>
-    <div style="overflow-x:auto;">
-      <table class="rank-table" id="slateTable">
-        <thead><tr><th>Game</th><th>Player</th><th>Team</th><th>Pos</th><th style="text-align:right;">Proj PPR</th><th style="text-align:right;">Edge</th></tr></thead>
-        <tbody id="slateBody"></tbody>
-      </table>
-    </div>
+    <div id="wbSections"></div>
   </div>
 
   <!-- ===================== DEFENSIVE PROFILE VIEW ===================== -->
@@ -4195,18 +4133,14 @@ const modeTabsEl = document.getElementById('modeTabs');
     appMode = t.dataset.mode;
     [...modeTabsEl.children].forEach(x=>x.classList.toggle('active', x===t));
     document.getElementById('browseView').style.display = appMode==='browse' ? '' : 'none';
-    document.getElementById('rankingsView').style.display = appMode==='rankings' ? '' : 'none';
     document.getElementById('compareView').style.display = appMode==='compare' ? '' : 'none';
     document.getElementById('advantagesView').style.display = appMode==='advantages' ? '' : 'none';
-    document.getElementById('bigBoardView').style.display = appMode==='bigboard' ? '' : 'none';
     document.getElementById('slateView').style.display = appMode==='slate' ? '' : 'none';
     document.getElementById('defProfileView').style.display = appMode==='defprofile' ? '' : 'none';
     document.getElementById('dvpView').style.display = appMode==='dvp' ? '' : 'none';
     document.getElementById('bettingView').style.display = appMode==='betting' ? '' : 'none';
-    if(appMode==='rankings') renderRankings();
     if(appMode==='compare') renderCompareGrid();
     if(appMode==='advantages') renderAdvantages();
-    if(appMode==='bigboard') renderBigBoard();
     if(appMode==='slate') renderSlate();
     if(appMode==='defprofile') renderDefProfile();
     if(appMode==='dvp') renderDvP();
@@ -4227,10 +4161,8 @@ function setWeek(wk){
   applyWeekAutofill();
   compute();
   if(currentPlayer) renderScheduleStrip(currentPlayer);
-  if(appMode==='rankings') renderRankings();
   if(appMode==='compare') renderCompareTable();
   if(appMode==='advantages') renderAdvantages();
-  if(appMode==='bigboard') renderBigBoard();
   if(appMode==='slate') renderSlate();
   if(appMode==='betting') renderBetting();
 }
@@ -4926,90 +4858,6 @@ function renderGameLog(p){
 }
 
 /* ====================================================================
-   RANKINGS VIEW
-==================================================================== */
-let rankPos = 'QB';
-let rankFmt = 'ppr';
-const rankTabsEl = document.getElementById('rankTabs');
-buildPosTabs(rankTabsEl, (pos)=>{ rankPos = pos; refreshPosTabs(rankTabsEl,rankPos); renderRankings(); }, ()=>rankPos);
-
-const rankTeamFilterEl = document.getElementById('rankTeamFilter');
-Object.keys(TEAMS).sort().forEach(ab=>{
-  const o = document.createElement('option'); o.value=ab; o.textContent = ab+' — '+TEAMS[ab].name;
-  rankTeamFilterEl.appendChild(o);
-});
-rankTeamFilterEl.onchange = renderRankings;
-
-document.getElementById('scoreToggle').querySelectorAll('button').forEach(btn=>{
-  btn.onclick = ()=>{
-    rankFmt = btn.dataset.fmt;
-    document.getElementById('scoreToggle').querySelectorAll('button').forEach(b=>b.classList.toggle('active', b===btn));
-    renderRankings();
-  };
-});
-
-// Shared core ranking computation -- used by both the per-position Rankings
-// table and the multi-position Big Board, so the numbers are always identical
-// between the two views (one calculation, not two copies that could drift).
-function computeRankedList(pos, wk, fmt){
-  const rows = P.filter(p=>p.p===pos).map(p=>{
-    const {opts, isBye, oppAb, isOut, avail} = neutralOptsFor(p, wk);
-    if(isBye) return {p, isBye:true, pts:-1, oppAb:null};
-    if(isOut) return {p, isBye:false, isOut:true, avail, pts:-1, oppAb};
-    const result = computeProjection(p, opts);
-    return {p, isBye:false, pts:result[fmt], oppAb, avail};
-  });
-  rows.sort((a,b)=> b.pts - a.pts);
-  return rows;
-}
-
-function renderRankings(){
-  const wk = globalWeekEl.value ? parseInt(globalWeekEl.value,10) : null;
-  const teamF = rankTeamFilterEl.value;
-  document.getElementById('rankAutoNote').textContent = wk
-    ? `Ranking Week ${wk} projections \u2014 real opponent & site auto-applied per player, other situational inputs held neutral.`
-    : 'No week selected \u2014 ranking by season-baseline per-game average (neutral matchup).';
-
-  const cols = GAME_LOG_COLS[rankPos];
-  const head = document.getElementById('rankHead');
-  head.innerHTML = `<th>#</th><th>Player</th><th>Team</th><th>Opp</th>` + cols.map(([,short])=>`<th style="text-align:right;">${short}</th>`).join('') + `<th style="text-align:right;">Pts</th><th></th>`;
-
-  let rows = computeRankedList(rankPos, wk, rankFmt);
-  if(teamF) rows = rows.filter(r=>r.p.t===teamF);
-  rows = rows.map(r=>{
-    if(r.isBye || r.isOut) return r;
-    const result = computeProjection(r.p, neutralOptsFor(r.p, wk).opts);
-    const statVals = cols.map(([label])=>{
-      const line = result.lines.find(l=>l.label===label);
-      return line ? fmtN(line.val,1) : '\u2014';
-    });
-    return {...r, statVals};
-  });
-
-  const tbody = document.getElementById('rankBody');
-  tbody.innerHTML = '';
-  rows.forEach((r,i)=>{
-    const tr = document.createElement('tr');
-    if(r.isBye || r.isOut) tr.className = 'byerow';
-    const oppText = r.isBye ? 'BYE' : r.isOut ? r.avail.status : (r.oppAb ? ((TEAMS[r.p.t].sch[wk-1].startsWith('@')?'@':'vs ')+r.oppAb) : '\u2014');
-    const statCells = (r.isBye || r.isOut)
-      ? cols.map(()=>'<td style="text-align:right;">\u2014</td>').join('')
-      : r.statVals.map(v=>`<td style="text-align:right;font-family:'IBM Plex Mono',monospace;">${v}</td>`).join('');
-    tr.innerHTML = `<td class="rk">${i+1}</td>
-      <td class="nm" title="${r.avail?r.avail.note:''}">${r.p.n}${r.p.f?' \u26a0':''}${(r.avail&&r.avail.status==='QUESTIONABLE')?' ?':''}</td>
-      <td class="tm">${r.p.t}</td>
-      <td class="oppcell" title="${r.avail?r.avail.note:''}">${oppText}</td>
-      ${statCells}
-      <td class="pts">${(r.isBye||r.isOut)?'\u2014':fmtN(r.pts,1)}</td>
-      <td><button class="addbtn ${compareSet.has(r.p.n)?'on':''}" data-nm="${r.p.n}">${compareSet.has(r.p.n)?'Added':'+ Compare'}</button></td>`;
-    tbody.appendChild(tr);
-  });
-  tbody.querySelectorAll('.addbtn').forEach(btn=>{
-    btn.onclick = ()=>{ toggleCompare(btn.dataset.nm); renderRankings(); };
-  });
-}
-
-/* ====================================================================
    COMPARE VIEW
 ==================================================================== */
 let compareSet = new Set();
@@ -5252,83 +5100,19 @@ function renderAdvantages(){
   });
 }
 
-/* ====================================================================
-   BIG BOARD -- all 4 positions ranked side by side, one screen, with a
-   search box that filters across every column at once. Reuses the exact
-   same computeRankedList() logic as the per-position Rankings table, so
-   the numbers here always match what Rankings would show for that
-   position -- one calculation, not a second copy that could drift.
-==================================================================== */
-let bbFmt = 'ppr';
-const POSITIONS_ORDER = ['QB','RB','WR','TE'];
-
-document.getElementById('bbScoreToggle').querySelectorAll('button').forEach(btn=>{
-  btn.onclick = ()=>{
-    bbFmt = btn.dataset.fmt;
-    document.getElementById('bbScoreToggle').querySelectorAll('button').forEach(b=>b.classList.toggle('active', b===btn));
-    renderBigBoard();
-  };
-});
-document.getElementById('bbSearchBox').addEventListener('input', ()=>{ applyBigBoardSearch(); });
-
-const slatePosTabsEl = document.getElementById('slatePosTabs');
 let defProfileColsShown = false;
 document.getElementById('defProfileMoreColsBtn').onclick = (e)=>{
   defProfileColsShown = !defProfileColsShown;
   document.querySelectorAll('.dp-adv-col').forEach(el=>{ el.style.display = defProfileColsShown ? '' : 'none'; });
   e.target.textContent = defProfileColsShown ? 'Show fewer columns' : 'Show more columns';
 };
-[...slatePosTabsEl.children].forEach(t=>{
-  t.onclick = ()=>{
-    slatePos = t.dataset.pos;
-    [...slatePosTabsEl.children].forEach(x=>x.classList.toggle('active', x===t));
-    renderSlate();
-  };
-});
-document.getElementById('slateSearchBox').addEventListener('input', ()=>{ renderSlate(); });
+document.getElementById('slateTopN').addEventListener('change', ()=>{ renderSlate(); });
 document.getElementById('slateGameFilter').addEventListener('change', ()=>{ renderSlate(); });
 document.getElementById('bettingGameFilter').addEventListener('change', ()=>{ renderBetting(); });
 document.getElementById('bettingFavTeam').addEventListener('change', ()=>{ renderBetting(); });
 document.getElementById('bettingVegasTotal').addEventListener('input', ()=>{ renderBetting(); });
 document.getElementById('bettingVegasSpread').addEventListener('input', ()=>{ renderBetting(); });
 
-function renderBigBoard(){
-  const wk = globalWeekEl.value ? parseInt(globalWeekEl.value,10) : null;
-  document.getElementById('bbAutoNote').textContent = wk
-    ? `Week ${wk} projections \u2014 real opponent & site auto-applied per player, other situational inputs held neutral.`
-    : 'No week selected \u2014 ranking by season-baseline per-game average (neutral matchup).';
-
-  const grid = document.getElementById('bbGrid');
-  grid.innerHTML = '';
-  POSITIONS_ORDER.forEach(pos=>{
-    const rows = computeRankedList(pos, wk, bbFmt).filter(r=>!r.isBye && !r.isOut);
-    const col = document.createElement('div');
-    col.className = 'bb-column';
-    col.dataset.pos = pos;
-    let html = `<h4>${pos}</h4>`;
-    rows.forEach((r,i)=>{
-      html += `<div class="bb-row" data-name="${r.p.n.toLowerCase()}" onclick="selectPlayerByName('${r.p.n.replace(/'/g,"\\'")}')">
-        <div class="bb-rank">${i+1}</div>
-        <div class="bb-info"><div class="bb-name">${r.p.n}</div><div class="bb-team">${r.p.t}</div></div>
-        <div class="bb-pts">${fmtN(r.pts,1)}</div>
-      </div>`;
-    });
-    col.innerHTML = html;
-    grid.appendChild(col);
-  });
-  applyBigBoardSearch();
-}
-
-function applyBigBoardSearch(){
-  const q = document.getElementById('bbSearchBox').value.trim().toLowerCase();
-  document.querySelectorAll('#bbGrid .bb-row').forEach(row=>{
-    const match = !q || row.dataset.name.includes(q);
-    row.classList.toggle('bb-dimmed', !match);
-  });
-}
-
-// Jumps to Browse mode with a specific player pre-selected, used when tapping
-// a row on the Big Board.
 /* ====================================================================
    WEEKLY SLATE -- reconstructs the real unique games for a selected week
    from the per-team schedules (each game is stored once per team, so
@@ -5723,65 +5507,80 @@ function jumpToTeamRoster(teamAb){
   renderGrid();
 }
 
-let slatePos = 'ALL';
+/* WEEK BOARD (betting view) -- one pass over every available player for the
+   selected week, then four ranked lists: rushing yards, receiving yards,
+   anytime TD and QB passing. Uses the same computeProjection()/neutralOptsFor()
+   as Browse, so numbers match everywhere. Anytime TD: P(>=1 TD) =
+   1 - exp(-(Rush TD + Rec TD)) (Poisson), fair decimal odds = 1/P. QB rushing
+   TDs are not modelled so QBs are not in the TD list. OUT/BACKUP/bye excluded
+   by neutralOptsFor. */
+function wbLine(res, label){ const l = res.lines.find(x=>x.label===label); return l ? l.val : 0; }
+function wbSection(title, sub, heads, rows, rowFn){
+  let h = `<div class="wb-sec" style="margin-bottom:22px;"><h3 style="font-family:'Teko',sans-serif;font-size:22px;letter-spacing:1px;margin:0 0 2px;">${title}</h3><div class="autonote" style="margin-bottom:8px;">${sub}</div><div style="overflow-x:auto;"><table class="rank-table"><thead><tr><th>#</th><th>Player</th><th>Team</th><th>Opp</th>${heads.map(x=>`<th style="text-align:right;">${x}</th>`).join('')}</tr></thead><tbody>`;
+  if(!rows.length) h += `<tr><td colspan="${heads.length+4}" style="color:var(--text-faint);">No players for this selection.</td></tr>`;
+  rows.forEach((r,i)=>{
+    h += `<tr class="wb-row" data-nm="${r.p.n.replace(/"/g,'&quot;')}" style="cursor:pointer;"><td class="rk">${i+1}</td><td class="nm">${r.p.n}${r.p.f?' ⚠':''}${(r.avail&&r.avail.status==='QUESTIONABLE')?' ?':''}</td><td class="tm">${r.p.t}</td><td class="oppcell">${r.opp}</td>${rowFn(r)}</tr>`;
+  });
+  return h + '</tbody></table></div></div>';
+}
 function renderSlate(){
   const wk = globalWeekEl.value ? parseInt(globalWeekEl.value,10) : null;
-  const body = document.getElementById('slateBody');
+  const box = document.getElementById('wbSections');
   const note = document.getElementById('slateAutoNote');
   const gameFilterEl = document.getElementById('slateGameFilter');
-  body.innerHTML = '';
+  box.innerHTML = '';
   if(!wk){
-    note.textContent = 'Pick a Week above to see that week\u2019s real slate.';
+    note.textContent = 'Pick a Week above to see that week’s betting board.';
     gameFilterEl.innerHTML = '<option value="ALL">All games</option>';
     return;
   }
   const allGames = getRealGamesForWeek(wk);
-
-  // Repopulate the game dropdown for this week, preserving the current
-  // selection if that same matchup still exists (e.g. after a week change
-  // where the user hasn't touched the dropdown yet, it resets to All).
-  const prevSelection = gameFilterEl.value;
+  const prev = gameFilterEl.value;
   gameFilterEl.innerHTML = '<option value="ALL">All games</option>' +
     allGames.map(g => `<option value="${g.away}@${g.home}">${g.away} @ ${g.home}</option>`).join('');
-  const stillExists = [...gameFilterEl.options].some(o => o.value === prevSelection);
-  gameFilterEl.value = stillExists ? prevSelection : 'ALL';
+  gameFilterEl.value = [...gameFilterEl.options].some(o=>o.value===prev) ? prev : 'ALL';
+  const sel = gameFilterEl.value;
+  const teams = new Set();
+  (sel==='ALL' ? allGames : allGames.filter(g=>`${g.away}@${g.home}`===sel)).forEach(g=>{ teams.add(g.away); teams.add(g.home); });
+  const topN = parseInt(document.getElementById('slateTopN').value,10) || 15;
+  note.textContent = (sel==='ALL' ? `Week ${wk} — all ${allGames.length} games` : `Week ${wk} — ${sel.replace('@',' @ ')}`) +
+    `. Projected stats only; TD probability and fair odds come from our projections, not bookmaker prices.`;
 
-  const selectedGame = gameFilterEl.value;
-  const games = selectedGame === 'ALL' ? allGames : allGames.filter(g => `${g.away}@${g.home}` === selectedGame);
-
-  note.textContent = selectedGame === 'ALL'
-    ? `Week ${wk} \u2014 ${allGames.length} real games, ranked by projected points within each team.`
-    : `Week ${wk} \u2014 ${selectedGame.replace('@',' @ ')}, ranked by projected points within each team.`;
-  const neutral = {oppTier:2, script:2, cov:1, pace:1, site:0, wx:0, role:0, cbShadow:0, split:0, pressure:null, sackConv:null, ttt:null, c0:null, runDefOverall:null, runDefInterior:null, cbGrade:null};
-  const searchQ = document.getElementById('slateSearchBox').value.trim().toLowerCase();
-
-  games.forEach(g=>{
-    const gameLabel = `${g.away} @ ${g.home}`;
-    [g.away, g.home].forEach(teamAb=>{
-      const teamPlayers = P.filter(p=>p.t===teamAb && (slatePos==='ALL' || p.p===slatePos) && (!searchQ || p.n.toLowerCase().includes(searchQ)));
-      const rows = teamPlayers.map(p=>{
-        const {opts, isBye, isOut} = neutralOptsFor(p, wk);
-        if(isBye || isOut) return null;
-        const real = computeProjection(p, opts);
-        const base = computeProjection(p, neutral);
-        const delta = real.ppr - base.ppr;
-        const edgeCls = delta > 0.75 ? 'up' : (delta < -0.75 ? 'down' : 'flat');
-        return { p, pts: real.ppr, delta, edgeCls };
-      }).filter(Boolean).sort((a,b)=>b.pts-a.pts);
-      rows.forEach(r=>{
-        const tr = document.createElement('tr');
-        tr.style.cursor = 'pointer';
-        tr.onclick = ()=>selectPlayerByName(r.p.n);
-        tr.innerHTML = `<td class="tm">${gameLabel}</td>
-          <td class="nm">${r.p.n}</td>
-          <td class="tm">${r.p.t}</td>
-          <td>${r.p.p}</td>
-          <td class="pts" style="text-align:right;">${fmtN(r.pts,1)}</td>
-          <td class="delta ${r.edgeCls}" style="text-align:right;font-family:'IBM Plex Mono',monospace;font-size:12px;">${r.delta>=0?'+':''}${fmtN(r.delta,1)}</td>`;
-        body.appendChild(tr);
-      });
-    });
+  const all = [];
+  P.forEach(p=>{
+    if(!teams.has(p.t)) return;
+    const {opts, isBye, isOut, oppAb, avail} = neutralOptsFor(p, wk);
+    if(isBye || isOut) return;
+    const res = computeProjection(p, opts);
+    const sch = TEAMS[p.t].sch[wk-1] || '';
+    const opp = oppAb ? ((sch.startsWith('@')?'@':'vs ')+oppAb) : '—';
+    const rushY = wbLine(res,'Rush Yards'), rushA = wbLine(res,'Rush Attempts');
+    const recY = wbLine(res,'Rec Yards'), rec = wbLine(res,'Receptions'), tgt = wbLine(res,'Targets');
+    const rtd = wbLine(res,'Rush TD'), ctd = wbLine(res,'Rec TD');
+    all.push({p, opp, avail, rushY, rushA, recY, rec, tgt, rtd, ctd,
+      passY: wbLine(res,'Pass Yards'), passTD: wbLine(res,'Pass TD'), int: wbLine(res,'Interceptions'),
+      att: wbLine(res,'Pass Attempts'), cmp: wbLine(res,'Completions'),
+      tdp: p.p==='QB' ? 0 : 1 - Math.exp(-(rtd+ctd)), ppr: res.ppr});
   });
+  const mono = "font-family:'IBM Plex Mono',monospace;text-align:right;";
+  const c = v=>`<td style="${mono}">${v}</td>`;
+  const hi = v=>`<td class="pts" style="text-align:right;">${v}</td>`;
+
+  const rush = all.filter(r=>r.rushY>0).sort((a,b)=>b.rushY-a.rushY).slice(0,topN);
+  const recv = all.filter(r=>r.p.p!=='QB' && r.recY>0).sort((a,b)=>b.recY-a.recY).slice(0,topN);
+  const td = all.filter(r=>r.p.p!=='QB').sort((a,b)=>b.tdp-a.tdp).slice(0,topN);
+  const qbs = all.filter(r=>r.p.p==='QB').sort((a,b)=>b.passY-a.passY).slice(0,topN);
+
+  box.innerHTML =
+    wbSection('Top Rushing Yards','Projected rushing yards (QBs included).',['Rush Att','Rush Yds'],rush,
+      r=>c(fmtN(r.rushA,1))+hi(fmtN(r.rushY,1))) +
+    wbSection('Top Receiving Yards','Projected receiving yards, all positions.',['Targets','Rec','Rec Yds'],recv,
+      r=>c(fmtN(r.tgt,1))+c(fmtN(r.rec,1))+hi(fmtN(r.recY,1))) +
+    wbSection('Anytime TD','Chance of at least one rushing or receiving TD, with fair decimal odds (1 ÷ chance). Bet only where bookmaker odds beat the fair price.',['Rush TD','Rec TD','Chance','Fair odds'],td,
+      r=>c(fmtN(r.rtd,2))+c(fmtN(r.ctd,2))+hi(fmtN(r.tdp*100,0)+'%')+c((1/r.tdp).toFixed(2))) +
+    wbSection('Passing Yards (QB)','Projected quarterback passing, ranked by yards. QB rushing yards are in the rushing list.',['Att','Comp','Pass Yds','Pass TD','INT'],qbs,
+      r=>c(fmtN(r.att,1))+c(fmtN(r.cmp,1))+hi(fmtN(r.passY,0))+c(fmtN(r.passTD,2))+c(fmtN(r.int,2)));
+  box.querySelectorAll('.wb-row').forEach(tr=>{ tr.onclick = ()=>selectPlayerByName(tr.dataset.nm); });
 }
 
 function selectPlayerByName(name){
