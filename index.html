@@ -1113,6 +1113,8 @@ const P = [
 {n:'Treylon Burks',p:'WR',t:'WAS',b:{tgt:2.2,rec:1.0,recYd:17.2,recTD:0.4},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 11 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
 {n:'Chig Okonkwo',p:'TE',t:'WAS',b:{tgt:2.6,rec:1.6,recYd:16.2,recTD:0.0},f:'Real 2026 line only (Oct 14 box-score scan, ESPN): 0 car / 13 tgt over 5 team games; no prior-season baseline, low confidence.',c:'balanced',s:'target-volatile'},
 {n:'Tyler Huntley',p:'QB',t:'BAL',b:{passYd:190.0,passTD:1.0,int:0.7,rushYd:14.0,rushTD:0.12},f:'Real, current (Oct 14): Lamar Jackson\'s backup; played Week 5 with Jackson out (24/32, 201 yd, 2 TD, 0 INT, 38 att across Wks 4-5 incl. relief). Starter-level prior of 190 yd/g blended with his real 2026 games via QB_2026_LINES. Starts only if Jackson (QUESTIONABLE, ankle) is ruled out.',c:'balanced',s:'pass-neutral'},
+{n:'J.J. McCarthy',p:'QB',t:'NYG',b:{passYd:163.2,passTD:1.1,int:1.2,rushYd:6.0,rushTD:0.05},f:'Real, current (Oct 28): started NYG Weeks 6-7 (Winston did not play Week 7; ESPN lists neither as injured). Baseline = real PFF 2025 regular season (10 games, 243 att, 1,632 yd, 11 TD, 12 INT) blended with his 2026 games via QB_2026_LINES; rushing is a placeholder (5 carries, 29 yd in 2026). Small sample, low confidence.',c:'balanced',s:'pass-neutral'},
+{n:'Tanner McKee',p:'QB',t:'PHI',b:{passYd:190.0,passTD:1.0,int:0.7,rushYd:4.0,rushTD:0.03},f:'Real, current (Oct 28): started PHI Weeks 6-7 with Hurts on injured reserve (49/80, 426 yd, 2 TD, 1 INT). Starter-level prior of 190 yd/g (same prior as Huntley) blended with his real 2026 games via QB_2026_LINES; his 2025 sample was only 2 games (43 att). Small sample, low confidence.',c:'balanced',s:'pass-neutral'},
 ];
 
 /* ============== multiplier tables (same engine as before) ============== */
@@ -2042,6 +2044,8 @@ const QB_ATT_COMP = {
 'Jaxson Dart':{attPerGame:17.0,compPct:76.5},
 'Case Keenum':{attPerGame:26.5,compPct:66.0},
 'Tyler Huntley':{attPerGame:26.5,compPct:69.8},
+'J.J. McCarthy':{attPerGame:24.5,compPct:63.3},
+'Tanner McKee':{attPerGame:40.0,compPct:61.2},
 };
 /* Real 2026 rushing leak per defence (ESPN box scores, Wk1-7, refreshed Oct 28): [games, rush yards allowed, carries allowed], ALL rushers.
    Used for QB rushing only (QBs had no run-defence adjustment at all). Backtest (leave-one-game-out, 90 QB games):
@@ -2053,7 +2057,7 @@ const QB_RUSH_LEAK_PASS = 0.5;
 function qbRushLeakMult(ab){const d=DEF_RUN_LEAK[ab==="WAS"?"WSH":ab];if(!d)return 1;const leak=(d[1]/d[2])/DEF_RUN_LEAK_LG_YPC-1;return 1+QB_RUSH_LEAK_PASS*leak*d[0]/(d[0]+2)}
 const QB_ATT_COMP_LEAGUE_AVG = {attPerGame:29.4,compPct:65.7};
 
-/* REFRESHED Oct 28, 2026 through Week 7 (PFF 2026 passing page: OFF and PASS grades, BTT%, TWP%, games). J.J. McCarthy (NYG, 3 games) and Tanner McKee (PHI, 2 games) are not in this table; Justin Fields has no PFF row and is unchanged. */
+/* REFRESHED Oct 28, 2026 through Week 7 (PFF 2026 passing page: OFF and PASS grades, BTT%, TWP%, games). J.J. McCarthy (NYG, 3 games) and Tanner McKee (PHI, 2 games) were added Oct 28; Justin Fields has no PFF row and is unchanged. */
 const PFF_QB = {
 'Jameis Winston':{gradeOff:54.0,gradePass:50.4,btt:4.2,twp:4.2,games:5},
 'Deshaun Watson':{gradeOff:56.8,gradePass:56.5,btt:3.1,twp:4.3,games:7},
@@ -2090,6 +2094,8 @@ const PFF_QB = {
 'Baker Mayfield':{gradeOff:61.0,gradePass:61.7,btt:3.4,twp:4.2,games:4},
 'Cam Ward':{gradeOff:68.9,gradePass:70.5,btt:1.8,twp:2.8,games:7},
 'Jayden Daniels':{gradeOff:79.5,gradePass:72.2,btt:1.6,twp:1.3,games:4},
+'J.J. McCarthy':{gradeOff:80.8,gradePass:77.4,btt:9.1,twp:1.7,games:3},
+'Tanner McKee':{gradeOff:65.9,gradePass:65.9,btt:1.2,twp:1.1,games:2},
 };
 const PFF_LEAGUE_AVG = {gradePass:68.9, btt:4.3, twp:3.4};
 
@@ -3636,7 +3642,7 @@ function realQBCovMultFor(p, ci){
    The counts below are the original 2025 sample sizes (recovered from the Aug 26 version of
    this file, before any in-season overwrite). PFF_QB.games now safely means 2026 games
    played and is no longer read by the blend at all. */
-const QB_2025_GAMES = {'Aaron Rodgers':17, 'Baker Mayfield':17, 'Bo Nix':18, 'Brock Purdy':11, 'Bryce Young':17, 'C.J. Stroud':16, 'Caleb Williams':19, 'Cam Ward':17, 'Dak Prescott':17, 'Daniel Jones':13, 'Dillon Gabriel':10, 'Drake Maye':21, 'Jacoby Brissett':13, 'Jalen Hurts':17, 'Jared Goff':17, 'Jayden Daniels':7, 'Joe Burrow':8, 'Jordan Love':16, 'Josh Allen':18, 'Justin Fields':9, 'Justin Herbert':17, 'Kirk Cousins':10, 'Kyler Murray':5, 'Lamar Jackson':13, 'Malik Willis':4, 'Matthew Stafford':20, 'Michael Penix Jr.':9, 'Patrick Mahomes':14, 'Sam Darnold':20, 'Trevor Lawrence':18, 'Tyler Shough':11};
+const QB_2025_GAMES = {'Aaron Rodgers':17, 'Baker Mayfield':17, 'Bo Nix':18, 'Brock Purdy':11, 'Bryce Young':17, 'C.J. Stroud':16, 'Caleb Williams':19, 'Cam Ward':17, 'Dak Prescott':17, 'Daniel Jones':13, 'Dillon Gabriel':10, 'Drake Maye':21, 'Jacoby Brissett':13, 'Jalen Hurts':17, 'Jared Goff':17, 'Jayden Daniels':7, 'J.J. McCarthy':10, 'Joe Burrow':8, 'Jordan Love':16, 'Josh Allen':18, 'Justin Fields':9, 'Justin Herbert':17, 'Kirk Cousins':10, 'Kyler Murray':5, 'Lamar Jackson':13, 'Malik Willis':4, 'Matthew Stafford':20, 'Michael Penix Jr.':9, 'Patrick Mahomes':14, 'Sam Darnold':20, 'Trevor Lawrence':18, 'Tyler Shough':11};
 
 // Blends a player's real 2025 baseline with real 2024 data where available, weighted
 // by games played in each season (more games = more signal) with a 1.5x recency bonus
@@ -3690,6 +3696,8 @@ const QB_2026_LINES = {
 'Michael Penix Jr.':{eq:4.80,passYd:241.0,passTD:1.88,int:0.21},
 'Case Keenum':{eq:1.77,passYd:200.9,passTD:1.13,int:0.57},
 'Tyler Huntley':{eq:3.53,passYd:205.8,passTD:1.13,int:0.28},
+'J.J. McCarthy':{eq:1.63,passYd:303.1,passTD:0.61,int:0.61},
+'Tanner McKee':{eq:2.67,passYd:159.8,passTD:0.75,int:0.38},
 };
 /* Role-change correction (RB/WR/TE): players whose real 2026 role is far from their preseason line.
    ESPN box scores Wk1-4, per game; blended 6 prior-equivalent games : 4 games played (ROLE_2026_PRIOR_G).
@@ -4026,7 +4034,7 @@ function computeProjectionRaw(p, opts){
    MUST be refreshed in each week's injury sweep (verified news only). As of: Thursday of Week 5 (Oct 8, 2026). */
 const PLAYER_AVAILABILITY = {
   // --- Out / injured reserve / PUP / exempt / released: cannot play (ESPN, Oct 28) ---
-  "Jalen Hurts": {"status": "OUT", "note": "injured reserve - calf, ESPN return date 2027-02-15 (ESPN Oct 19); backup Tanner McKee (started Weeks 6-7) is not in the tool, so PHI team points are NOT adjusted for the QB change"},
+  "Jalen Hurts": {"status": "OUT", "note": "injured reserve - calf, ESPN return date 2027-02-15 (ESPN Oct 19); Tanner McKee has started Weeks 6-7 (now in the tool)"},
   "James Conner": {"status": "OUT", "note": "injured reserve - surgery, ESPN return date 2026-11-01 (ESPN Oct 26)"},
   "Isiah Pacheco": {"status": "OUT", "note": "IR - injury not specified (ESPN Oct 8)"},
   "Chris Brooks": {"status": "OUT", "note": "injured reserve - ankle, ESPN return date 2026-11-08 (ESPN Oct 10)"},
@@ -4061,6 +4069,7 @@ const PLAYER_AVAILABILITY = {
   "Tua Tagovailoa": {"status": "BACKUP", "note": "backup to Michael Penix Jr."},
   "Case Keenum": {"status": "BACKUP", "note": "QB2 behind Caleb Williams; starts only if Williams is ruled out"},
   "Justin Fields": {"status": "BACKUP", "note": "backup to Patrick Mahomes"},
+  "Jameis Winston": {"status": "BACKUP", "note": "backup to J.J. McCarthy (McCarthy started Weeks 6-7; Winston did not play Week 7; ESPN lists no injury)"},
   "Tyler Huntley": {"status": "BACKUP", "note": "backup to Lamar Jackson (QUESTIONABLE, sprain); starts only if Jackson is ruled out"},
   // --- Uncertain (questionable, or doubtful but not ruled out): still counted, shown with a ? badge ---
   "Lamar Jackson": {"status": "QUESTIONABLE", "note": "questionable - sprain, ESPN report Oct 27"},
