@@ -5576,8 +5576,8 @@ function renderSlate(){
       r=>c(fmtN(r.rushA,1))+hi(fmtN(r.rushY,1))) +
     wbSection('Top Receiving Yards','Projected receiving yards, all positions.',['Targets','Rec','Rec Yds'],recv,
       r=>c(fmtN(r.tgt,1))+c(fmtN(r.rec,1))+hi(fmtN(r.recY,1))) +
-    wbSection('Anytime TD','Chance of at least one rushing or receiving TD, with fair decimal odds (1 ÷ chance). Bet only where bookmaker odds beat the fair price.',['Rush TD','Rec TD','Chance','Fair odds'],td,
-      r=>c(fmtN(r.rtd,2))+c(fmtN(r.ctd,2))+hi(fmtN(r.tdp*100,0)+'%')+c((1/r.tdp).toFixed(2))) +
+    wbSection('Anytime TD','Fair decimal odds for at least one rushing or receiving TD, shortest first. Bet only where bookmaker odds are longer than the fair price.',['Rush TD','Rec TD','Fair odds'],td,
+      r=>c(fmtN(r.rtd,2))+c(fmtN(r.ctd,2))+hi((1/r.tdp).toFixed(2))) +
     wbSection('Passing Yards (QB)','Projected quarterback passing, ranked by yards. QB rushing yards are in the rushing list.',['Att','Comp','Pass Yds','Pass TD','INT'],qbs,
       r=>c(fmtN(r.att,1))+c(fmtN(r.cmp,1))+hi(fmtN(r.passY,0))+c(fmtN(r.passTD,2))+c(fmtN(r.int,2)));
   box.querySelectorAll('.wb-row').forEach(tr=>{ tr.onclick = ()=>selectPlayerByName(tr.dataset.nm); });

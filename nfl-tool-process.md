@@ -259,3 +259,10 @@ Same checklist as Week 7 (ESPN rebuilds, then every PFF set, then injuries). Res
 - Anytime TD: P(>=1 TD) = 1 - exp(-(Rush TD + Rec TD)); fair decimal odds = 1/P. QBs are excluded (QB rushing TD is not modelled). These are projection-derived, not bookmaker prices (bet365/Sportsbet prices cannot be pulled).
 - Caution: baselines for Henry/Jacobs carry ~1.0 rush TD per game, so the Poisson TD chance tops out near 69%. TD counts are high-variance and not truly Poisson, so treat the top of that list as an upper bound.
 - tools/audit.js now checks Week Board lists against the engine (rush/rec yards, TD chance, pass yards) and that no OUT/bye player is listed.
+
+## Open-items follow-up (Oct 28, 2026, later)
+- Week Board anytime-TD list now shows fair decimal odds only (no percentage column), shortest first.
+- Injury re-run: ESPN injuries feed re-pulled (800 rows, same as the morning pull) and 32 rosters re-pulled; merge.py shows no status changes, so tables and AVAILABILITY_LAST_VERIFIED are unchanged. Next real change point is the Thursday/Friday reports.
+- McCarthy (2026 weight kept): his two games are 495 yd on 49 attempts (10.1 per attempt) against 6.7 per attempt over 243 attempts in 2025. By attempts the 2026 share is 17%; the current blend uses 21%, so 2026 is already weighted above its attempt share. Doubling to about 35% would rest on 2 games, so not applied. Revisit after 4+ starts.
+- Surtain (grade 67 kept): DEN's Week 8 opponent is KC. Setting him to 72 moves KC players by 0.01 PPR or less, because his grade only feeds the questionable-defender weighting. Immaterial; no change.
+- Harrison (no ROLE_2026 line): since joining HOU he has 4 targets in each of 2 games (4.0 average) against a 4.7 baseline, third behind Collins (7.0) and Hutchinson (5.7); the volume gap is 15-26%, under the 35% rule. HOU is on bye in Week 8, so nothing changes until Week 9.
