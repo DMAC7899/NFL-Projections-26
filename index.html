@@ -467,6 +467,8 @@
           <th style="text-align:right;">RB Rush Yds/G</th>
           <th class="dvp-sortable" data-sort="rbrec" style="text-align:right;cursor:pointer;">RB Rec Rank<span class="dvp-sort-arrow"></span></th>
           <th style="text-align:right;">RB Rec Yds/G</th>
+          <th class="dvp-sortable" data-sort="slot" style="text-align:right;cursor:pointer;">Slot WR Rank<span class="dvp-sort-arrow"></span></th>
+          <th style="text-align:right;">Slot Yds/Snap</th>
         </tr></thead>
         <tbody id="dvpBody"></tbody>
       </table>
@@ -1664,22 +1666,22 @@ const LEAGUE_AVG_MAN = 0.2476, LEAGUE_AVG_PRESSURE = 0.0663, LEAGUE_AVG_TTT = 2.
    an additional real adjustment to QB pass yards/TD, layered on top of (not replacing) the
    existing opponent pressure-rate effect. */
 const TEAM_SACK_DATA = {
-ARI:{sacks:85,pressures:565,sackConvPct:15.0}, ATL:{sacks:103,pressures:677,sackConvPct:15.2},
-BAL:{sacks:108,pressures:714,sackConvPct:15.1}, BUF:{sacks:100,pressures:761,sackConvPct:13.1},
-CAR:{sacks:74,pressures:516,sackConvPct:14.3}, CHI:{sacks:98,pressures:619,sackConvPct:15.8},
-CIN:{sacks:85,pressures:589,sackConvPct:14.4}, CLE:{sacks:88,pressures:623,sackConvPct:14.1},
-DAL:{sacks:101,pressures:721,sackConvPct:14.0}, DEN:{sacks:178,pressures:934,sackConvPct:19.1},
-DET:{sacks:112,pressures:818,sackConvPct:13.7}, GB:{sacks:101,pressures:696,sackConvPct:14.5},
-HOU:{sacks:142,pressures:820,sackConvPct:17.3}, IND:{sacks:97,pressures:617,sackConvPct:15.7},
-JAX:{sacks:82,pressures:688,sackConvPct:11.9}, KC:{sacks:100,pressures:760,sackConvPct:13.2},
-LAC:{sacks:116,pressures:692,sackConvPct:16.8}, LAR:{sacks:146,pressures:971,sackConvPct:15.0},
-LV:{sacks:92,pressures:582,sackConvPct:15.8}, MIA:{sacks:80,pressures:552,sackConvPct:14.5},
-MIN:{sacks:121,pressures:756,sackConvPct:16.0}, NE:{sacks:91,pressures:705,sackConvPct:12.9},
-NO:{sacks:103,pressures:612,sackConvPct:16.8}, NYG:{sacks:92,pressures:587,sackConvPct:15.7},
-NYJ:{sacks:83,pressures:566,sackConvPct:14.7}, PHI:{sacks:116,pressures:907,sackConvPct:12.8},
-PIT:{sacks:117,pressures:743,sackConvPct:15.7}, SEA:{sacks:119,pressures:885,sackConvPct:13.4},
-SF:{sacks:72,pressures:587,sackConvPct:12.3}, TB:{sacks:100,pressures:751,sackConvPct:13.3},
-TEN:{sacks:84,pressures:531,sackConvPct:15.8}, WAS:{sacks:109,pressures:686,sackConvPct:15.9},
+ARI:{sacks:89,pressures:597,sackConvPct:14.9},  ATL:{sacks:114,pressures:733,sackConvPct:15.6},
+BAL:{sacks:117,pressures:764,sackConvPct:15.3},  BUF:{sacks:101,pressures:789,sackConvPct:12.8},
+CAR:{sacks:77,pressures:536,sackConvPct:14.4},  CHI:{sacks:102,pressures:655,sackConvPct:15.6},
+CIN:{sacks:91,pressures:627,sackConvPct:14.5},  CLE:{sacks:97,pressures:671,sackConvPct:14.5},
+DAL:{sacks:107,pressures:774,sackConvPct:13.8},  DEN:{sacks:191,pressures:1024,sackConvPct:18.7},
+DET:{sacks:120,pressures:859,sackConvPct:14.0},  GB:{sacks:106,pressures:747,sackConvPct:14.2},
+HOU:{sacks:148,pressures:875,sackConvPct:16.9},  IND:{sacks:100,pressures:642,sackConvPct:15.6},
+JAX:{sacks:83,pressures:720,sackConvPct:11.5},  KC:{sacks:104,pressures:795,sackConvPct:13.1},
+LAC:{sacks:117,pressures:712,sackConvPct:16.4},  LAR:{sacks:149,pressures:1011,sackConvPct:14.7},
+LV:{sacks:96,pressures:618,sackConvPct:15.5},  MIA:{sacks:82,pressures:575,sackConvPct:14.3},
+MIN:{sacks:127,pressures:793,sackConvPct:16.0},  NE:{sacks:101,pressures:764,sackConvPct:13.2},
+NO:{sacks:116,pressures:659,sackConvPct:17.6},  NYG:{sacks:96,pressures:630,sackConvPct:15.2},
+NYJ:{sacks:92,pressures:618,sackConvPct:14.9},  PHI:{sacks:121,pressures:948,sackConvPct:12.8},
+PIT:{sacks:123,pressures:794,sackConvPct:15.5},  SEA:{sacks:124,pressures:938,sackConvPct:13.2},
+SF:{sacks:82,pressures:638,sackConvPct:12.9},  TB:{sacks:109,pressures:805,sackConvPct:13.5},
+TEN:{sacks:92,pressures:574,sackConvPct:16.0},  WAS:{sacks:113,pressures:716,sackConvPct:15.8}
 };
 const LEAGUE_AVG_SACK_CONV = 14.8;
 
@@ -1709,25 +1711,26 @@ const LEAGUE_AVG_SACK_CONV = 14.8;
    aligned targets. This is the defense-side mirror of the offense-side Slot Usage
    badge on player cards -- fills the alignment-specific gap flagged repeatedly in
    Defensive Profile. Higher ypcs = weaker vs slot = favorable for the offense. */
+/* REFRESHED Oct 28, 2026 (Weeks 1-7): rebuilt from PFF Slot Coverage pages for CB and S, pooling 2025 regular season (defenders with 30+ slot coverage snaps) with 2026 Reg+Post (all defenders); ypcs = yards / slot coverage snaps, ydsPerTgt = yards / targets, tds summed. LEAGUE_AVG_SLOT_YPCS = team mean. Display only (Defensive Profile); not used by the engine. */
 const TEAM_SLOT_COVERAGE = {
-ARI:{ypcs:0.962,ydsPerTgt:6.32,tds:6}, ATL:{ypcs:1.28,ydsPerTgt:6.91,tds:2},
-BAL:{ypcs:0.993,ydsPerTgt:7.01,tds:3}, BUF:{ypcs:0.954,ydsPerTgt:5.32,tds:3},
-CAR:{ypcs:1.219,ydsPerTgt:7.86,tds:2}, CHI:{ypcs:1.325,ydsPerTgt:8.76,tds:5},
-CIN:{ypcs:1.372,ydsPerTgt:7.79,tds:3}, CLE:{ypcs:1.095,ydsPerTgt:6.24,tds:3},
-DAL:{ypcs:1.515,ydsPerTgt:8.16,tds:5}, DEN:{ypcs:1.1,ydsPerTgt:6.38,tds:2},
-DET:{ypcs:1.263,ydsPerTgt:7.54,tds:4}, GB:{ypcs:0.828,ydsPerTgt:5.72,tds:2},
-HOU:{ypcs:1.148,ydsPerTgt:6.92,tds:4}, IND:{ypcs:1.479,ydsPerTgt:8.62,tds:3},
-JAX:{ypcs:0.991,ydsPerTgt:5.68,tds:4}, KC:{ypcs:1.026,ydsPerTgt:5.85,tds:5},
-LAC:{ypcs:0.805,ydsPerTgt:5.15,tds:1}, LAR:{ypcs:1.028,ydsPerTgt:6.64,tds:6},
-LV:{ypcs:1.318,ydsPerTgt:6.48,tds:7}, MIA:{ypcs:1.22,ydsPerTgt:8.62,tds:8},
-MIN:{ypcs:1.214,ydsPerTgt:6.47,tds:6}, NE:{ypcs:1.135,ydsPerTgt:7.84,tds:5},
-NO:{ypcs:0.96,ydsPerTgt:5.74,tds:3}, NYG:{ypcs:1.147,ydsPerTgt:7.02,tds:5},
-NYJ:{ypcs:1.431,ydsPerTgt:8.07,tds:7}, PHI:{ypcs:0.774,ydsPerTgt:5.31,tds:0},
-PIT:{ypcs:1.456,ydsPerTgt:8.36,tds:8}, SEA:{ypcs:1.083,ydsPerTgt:6.61,tds:3},
-SF:{ypcs:1.327,ydsPerTgt:6.89,tds:7}, TB:{ypcs:1.254,ydsPerTgt:7.45,tds:9},
-TEN:{ypcs:1.508,ydsPerTgt:9.19,tds:7}, WAS:{ypcs:1.329,ydsPerTgt:8.56,tds:5},
+  ARI:{ypcs:1.065,ydsPerTgt:7.30,tds:9}, ATL:{ypcs:1.245,ydsPerTgt:6.64,tds:1},
+  BAL:{ypcs:1.053,ydsPerTgt:7.07,tds:6}, BUF:{ypcs:1.219,ydsPerTgt:6.99,tds:6},
+  CAR:{ypcs:1.130,ydsPerTgt:7.32,tds:1}, CHI:{ypcs:1.300,ydsPerTgt:8.16,tds:6},
+  CIN:{ypcs:1.286,ydsPerTgt:8.03,tds:6}, CLE:{ypcs:1.309,ydsPerTgt:7.07,tds:5},
+  DAL:{ypcs:1.565,ydsPerTgt:8.86,tds:5}, DEN:{ypcs:1.028,ydsPerTgt:6.25,tds:2},
+  DET:{ypcs:1.349,ydsPerTgt:7.40,tds:4}, GB:{ypcs:0.655,ydsPerTgt:4.80,tds:3},
+  HOU:{ypcs:1.051,ydsPerTgt:6.92,tds:4}, IND:{ypcs:1.613,ydsPerTgt:8.77,tds:7},
+  JAX:{ypcs:0.953,ydsPerTgt:5.74,tds:5}, KC:{ypcs:1.215,ydsPerTgt:6.11,tds:4},
+  LAC:{ypcs:0.919,ydsPerTgt:5.69,tds:3}, LAR:{ypcs:1.055,ydsPerTgt:6.52,tds:6},
+  LV:{ypcs:1.162,ydsPerTgt:7.47,tds:8}, MIA:{ypcs:1.231,ydsPerTgt:9.34,tds:8},
+  MIN:{ypcs:1.124,ydsPerTgt:6.36,tds:6}, NE:{ypcs:1.215,ydsPerTgt:7.39,tds:6},
+  NO:{ypcs:1.119,ydsPerTgt:6.50,tds:7}, NYG:{ypcs:1.003,ydsPerTgt:6.30,tds:6},
+  NYJ:{ypcs:1.324,ydsPerTgt:7.62,tds:8}, PHI:{ypcs:1.093,ydsPerTgt:7.04,tds:4},
+  PIT:{ypcs:1.399,ydsPerTgt:7.89,tds:12}, SEA:{ypcs:1.072,ydsPerTgt:5.88,tds:3},
+  SF:{ypcs:1.354,ydsPerTgt:7.15,tds:8}, TB:{ypcs:1.143,ydsPerTgt:6.85,tds:8},
+  TEN:{ypcs:1.526,ydsPerTgt:9.43,tds:7}, WAS:{ypcs:1.282,ydsPerTgt:7.81,tds:7},
 };
-const LEAGUE_AVG_SLOT_YPCS = 1.167;
+const LEAGUE_AVG_SLOT_YPCS = 1.189;
 
 /* RUN DEFENSE + PASS RUSH UPDATE Oct 7, 2026 (user request: run defence to 2025 AND 2026; sack/pressure rates with 2026 so far).
    TEAM_RUN_DEFENSE_2024 (name kept so call sites don't change) was a 2023-24 blend; it is now a 2025 + 2026 (Weeks 1-4) blend,
@@ -1741,23 +1744,24 @@ const LEAGUE_AVG_SLOT_YPCS = 1.167;
    sample counts by volume); sackConvPct recomputed; LEAGUE_AVG_SACK_CONV recomputed as the team mean.
    COVERAGE_2025.pressure (ESPN sacks per dropback): 2025 value blended 17 : 4 with 2026 Wk1-4 ESPN defence sack rate
    (sacks / (opponent pass attempts + sacks)); LEAGUE_AVG_PRESSURE recomputed as the team mean. */
+/* REFRESHED Oct 28, 2026 (Weeks 1-7): same method as Oct 7 above. overall = PFF team RDEF 2025 REG blended with 2026 Reg+Post at 17 : games played; interior = run-snap-weighted DI RDEF grade, same blend; both re-expressed to the old table's mean/spread (63.741/2.538 and 54.9/5.773). TEAM_SACK_DATA = the pre-Oct-7 base + 2026 Weeks 1-7 sacks and pressures summed over ED, DI, LB (PFF defense pages); LEAGUE_AVG_SACK_CONV recomputed as the team mean. */
 const TEAM_RUN_DEFENSE_2024 = {
-ARI:{overall:59.86,interior:50.04}, ATL:{overall:63.22,interior:58.35},
-BAL:{overall:65.93,interior:62.34}, BUF:{overall:60.69,interior:51.3},
-CAR:{overall:62.16,interior:57.26}, CHI:{overall:61.95,interior:45.66},
-CIN:{overall:59.79,interior:56.23}, CLE:{overall:66.87,interior:57.17},
-DAL:{overall:61.31,interior:63}, DEN:{overall:66.49,interior:57.82},
-DET:{overall:66.62,interior:58.83}, GB:{overall:62.82,interior:46.97},
-HOU:{overall:65.89,interior:54.86}, IND:{overall:62.44,interior:50.52},
-JAX:{overall:65.77,interior:56.25}, KC:{overall:66.46,interior:49.33},
-LAC:{overall:65.57,interior:63.31}, LAR:{overall:67.8,interior:61.56},
-LV:{overall:60.56,interior:45.74}, MIA:{overall:63.93,interior:53.82},
-MIN:{overall:65.14,interior:58.88}, NE:{overall:62.7,interior:49.75},
-NO:{overall:64.15,interior:50.5}, NYG:{overall:59.56,interior:51.53},
-NYJ:{overall:64.17,interior:59.76}, PHI:{overall:65,interior:57.98},
-PIT:{overall:64.91,interior:57.09}, SEA:{overall:67.89,interior:58.45},
-SF:{overall:58.52,interior:39.21}, TB:{overall:63.52,interior:58.26},
-TEN:{overall:65.87,interior:63.23}, WAS:{overall:62.2,interior:51.8}
+ARI:{overall:59.36,interior:49.08},  ATL:{overall:63.14,interior:59.08},
+BAL:{overall:65.88,interior:61.87},  BUF:{overall:60.53,interior:51.71},
+CAR:{overall:61.49,interior:57.94},  CHI:{overall:61.38,interior:45.78},
+CIN:{overall:60.29,interior:57.02},  CLE:{overall:67.23,interior:56.9},
+DAL:{overall:60.77,interior:61.98},  DEN:{overall:65.83,interior:56.74},
+DET:{overall:67.23,interior:58.94},  GB:{overall:62.58,interior:46.72},
+HOU:{overall:66.33,interior:56.55},  IND:{overall:62.53,interior:50.38},
+JAX:{overall:65.88,interior:55.77},  KC:{overall:66.67,interior:47.74},
+LAC:{overall:65.33,interior:62.33},  LAR:{overall:67.66,interior:62.49},
+LV:{overall:60.21,interior:45.56},  MIA:{overall:63.47,interior:52.69},
+MIN:{overall:65.54,interior:59.94},  NE:{overall:62.15,interior:48.17},
+NO:{overall:64.17,interior:50.78},  NYG:{overall:59.87,interior:52.71},
+NYJ:{overall:64.6,interior:59.14},  PHI:{overall:64.81,interior:58.56},
+PIT:{overall:66.41,interior:59.58},  SEA:{overall:67.1,interior:57.59},
+SF:{overall:60.17,interior:40.49},  TB:{overall:63.58,interior:57.39},
+TEN:{overall:65.28,interior:62.95},  WAS:{overall:62.29,interior:52.22}
 };
 const LEAGUE_AVG_RUN_D_OVERALL = 63.74;
 const LEAGUE_AVG_RUN_D_INTERIOR = 54.9;
@@ -5447,6 +5451,10 @@ function renderDvP(){
     sorted.forEach((t,i) => ranks[t] = i+1);
     return ranks;
   };
+  const slotVal = t => (TEAM_SLOT_COVERAGE[t] ? TEAM_SLOT_COVERAGE[t].ypcs : 0);
+  const slotSorted = [...teams].sort((a,b) => slotVal(b) - slotVal(a));
+  const slotRank = {}; slotSorted.forEach((t,i) => slotRank[t] = i+1);
+  const colVal = (t,c) => c === 'slot' ? slotVal(t) : DVP_2026[t][c];
   const qbRank = rankOf('qb'), wrRank = rankOf('wr'), teRank = rankOf('te'), rbRank = rankOf('rb'), rbRecRank = rankOf('rbrec');
   const pillClass = (rank) => rank <= 10 ? 't4' : (rank >= 23 ? 't0' : 't2');
 
@@ -5465,7 +5473,7 @@ function renderDvP(){
   if(dvpSortCol === 'team'){
     sortedTeams.sort((a,b) => TEAMS[a].name.localeCompare(TEAMS[b].name));
   } else {
-    sortedTeams.sort((a,b) => DVP_2026[b][dvpSortCol] - DVP_2026[a][dvpSortCol]);
+    sortedTeams.sort((a,b) => colVal(b,dvpSortCol) - colVal(a,dvpSortCol));
   }
   if(dvpSortDir === 'desc') sortedTeams.reverse();
 
@@ -5487,7 +5495,9 @@ function renderDvP(){
       <td style="text-align:right;"><span class="glog-pill ${pillClass(rbRank[t])}">#${rbRank[t]}</span></td>
       <td style="text-align:right;font-family:'IBM Plex Mono',monospace;">${d.rb}</td>
       <td style="text-align:right;"><span class="glog-pill ${pillClass(rbRecRank[t])}">#${rbRecRank[t]}</span></td>
-      <td style="text-align:right;font-family:'IBM Plex Mono',monospace;">${d.rbrec}</td>`;
+      <td style="text-align:right;font-family:'IBM Plex Mono',monospace;">${d.rbrec}</td>
+      <td style="text-align:right;"><span class="glog-pill ${pillClass(slotRank[t])}">#${slotRank[t]}</span></td>
+      <td style="text-align:right;font-family:'IBM Plex Mono',monospace;">${slotVal(t) ? slotVal(t).toFixed(2) : '\u2014'}</td>`;
     body.appendChild(tr);
   });
 }
