@@ -3643,54 +3643,60 @@ const QB_2025_GAMES = {'Aaron Rodgers':17, 'Baker Mayfield':17, 'Bo Nix':18, 'Br
 // limited starts) gets meaningfully corrected by a real, complete 2024 season instead
 // of being taken at face value. Falls back to pure 2025 when no 2024 match exists
 // (rookies, or anyone below the games floor those tables were built with).
-/* QB 2026 GAME LOG (added Oct 9, 2026). The QB baseline above is 2024+2025 only, so a QB's actual 2026 games
+/* QB 2026 GAME LOG (added Oct 9, 2026; rebuilt Oct 30, 2026). The QB baseline above is 2024+2025 only, so a QB's actual 2026 games
    never reached his projection -- Jayden Daniels' two 2026 games (164 yds; 96 yds before leaving) were ignored.
-   Source: ESPN box scores, Weeks 1-7, refreshed Oct 28 (passing yards/TD/INT per game-equivalent, where one game-equivalent = 30 attempts,
-   so a half game or a relief appearance counts for what it was). Blended into the baseline in getBlendedBaseline() at
-   QB_2026_WEIGHT per game-equivalent (2024 counts 1.0 per game, 2025 1.5). Weight chosen by backtest: predicting each
-   QB's next-game passing yards from only earlier weeks (91 starts, Weeks 2-4), MAE 56.59 with no 2026 data, 56.30 at
-   weight 2, 56.29 at 3, 56.55 at 4, 57.1 at 6 -- so a modest weight, not a big one. QBs under 10 attempts are left out, and so are QBs whose roster baseline already blends their 2026 games by hand (Bagent, Watson, Jalon Daniels, Kaliakmanis) to avoid counting them twice.
-   REFRESH weekly with the box scores. */
-const QB_2026_WEIGHT = 2.5;
+   Source: ESPN box scores, Weeks 1-7 (passing yards/TD/INT per game-equivalent). Blended into the baseline in getBlendedBaseline()
+   at QB_2026_WEIGHT per game-equivalent (2024 counts 1.0 per game, 2025 1.5).
+   Oct 30 FIX (unit mismatch): a game-equivalent used to be attempts/30, so the 2026 line was yards per 30 attempts while the baseline it
+   is mixed into is yards per GAME. High-volume QBs (Young 38 att, Love 39, Cousins 37) were understated by about 20% and low-volume ones
+   (Murray 25, Daniels 25) overstated; Wk1-7 errors vs actual ran from -108 (Young) to +90 (Mariota) yds. Now one game-equivalent =
+   min(1, attempts/30): a full start counts 1 and a relief appearance counts its fraction, so the line is yards per game.
+   Weight re-tested on 144 QB starts (Weeks 3-7, each predicted from earlier weeks only), mean absolute error / bias: no 2026 data 56.1 / -15.8,
+   old method 54.9 / -18.0, per-game at weight 2.5 53.8 / -10.5, at 4 53.6 / -8.6, at 6 53.5 / -6.7, at 10 53.9 / -4.1 -> weight 6.
+   Single-game QB yardage is noisy (typical miss ~54 yds), so the gain is real but small. Attempts (QB_ATT_COMP) were also tested
+   with 2026 attempts blended in: no MAE gain (6.8 both ways), so left on the 2025 values. QBs under 10 attempts are left out, and so are
+   QBs whose roster baseline already blends their 2026 games by hand (Bagent, Watson, Jalon Daniels, Kaliakmanis).
+   REFRESH weekly with the box scores (eq = sum over games of min(1, att/30); rates = totals / eq). */
+const QB_2026_WEIGHT = 6;
 const QB_2026_LINES = {
-'Lamar Jackson':{eq:3.20,passYd:302.2,passTD:1.88,int:0.31},
-'Daniel Jones':{eq:8.00,passYd:174.8,passTD:0.50,int:0.88},
-'Aaron Rodgers':{eq:8.77,passYd:193.8,passTD:1.48,int:0.57},
-'Josh Allen':{eq:5.70,passYd:263.9,passTD:1.58,int:0.70},
-'C.J. Stroud':{eq:8.23,passYd:226.8,passTD:1.34,int:0.12},
-'Jacoby Brissett':{eq:9.40,passYd:170.2,passTD:1.06,int:0.64},
-'Justin Herbert':{eq:6.00,passYd:190.2,passTD:0.83,int:1.33},
-'Bo Nix':{eq:7.27,passYd:174.9,passTD:0.96,int:0.41},
-'Patrick Mahomes':{eq:6.37,passYd:231.5,passTD:1.41,int:0.63},
-'Caleb Williams':{eq:4.13,passYd:246.8,passTD:1.21,int:0.24},
-'Bryce Young':{eq:7.60,passYd:225.3,passTD:1.58,int:0.53},
-'Drake Maye':{eq:7.13,passYd:250.1,passTD:1.82,int:1.12},
-'Sam Darnold':{eq:5.90,passYd:218.6,passTD:1.36,int:1.36},
-'Baker Mayfield':{eq:3.57,passYd:190.4,passTD:0.84,int:0.56},
-'Joe Burrow':{eq:7.30,passYd:226.4,passTD:2.05,int:0.41},
-'Trevor Lawrence':{eq:6.13,passYd:241.3,passTD:2.28,int:0.65},
-'Geno Smith':{eq:6.90,passYd:235.2,passTD:1.45,int:0.29},
-'Cam Ward':{eq:6.93,passYd:170.0,passTD:0.58,int:0.72},
-'Dak Prescott':{eq:9.10,passYd:203.4,passTD:1.43,int:0.55},
+'Lamar Jackson':{eq:3.17,passYd:305.4,passTD:1.89,int:0.32},
+'Daniel Jones':{eq:6.73,passYd:207.6,passTD:0.59,int:1.04},
+'Aaron Rodgers':{eq:7.00,passYd:242.7,passTD:1.86,int:0.71},
+'Josh Allen':{eq:5.47,passYd:275.1,passTD:1.65,int:0.73},
+'C.J. Stroud':{eq:6.83,passYd:273.2,passTD:1.61,int:0.15},
+'Jacoby Brissett':{eq:6.93,passYd:230.8,passTD:1.44,int:0.87},
+'Justin Herbert':{eq:5.60,passYd:203.8,passTD:0.89,int:1.43},
+'Bo Nix':{eq:6.70,passYd:189.7,passTD:1.04,int:0.45},
+'Patrick Mahomes':{eq:5.70,passYd:258.6,passTD:1.58,int:0.70},
+'Caleb Williams':{eq:3.83,passYd:266.1,passTD:1.30,int:0.26},
+'Bryce Young':{eq:5.90,passYd:290.2,passTD:2.03,int:0.68},
+'Drake Maye':{eq:6.57,passYd:271.7,passTD:1.98,int:1.22},
+'Sam Darnold':{eq:4.70,passYd:274.5,passTD:1.70,int:1.70},
+'Baker Mayfield':{eq:3.30,passYd:205.8,passTD:0.91,int:0.61},
+'Joe Burrow':{eq:6.00,passYd:275.5,passTD:2.50,int:0.50},
+'Trevor Lawrence':{eq:5.47,passYd:270.7,passTD:2.56,int:0.73},
+'Geno Smith':{eq:6.30,passYd:257.6,passTD:1.59,int:0.32},
+'Cam Ward':{eq:6.40,passYd:184.2,passTD:0.62,int:0.78},
+'Dak Prescott':{eq:6.90,passYd:268.3,passTD:1.88,int:0.72},
 'Jaxson Dart':{eq:1.13,passYd:220.6,passTD:2.65,int:0.00},
-'Malik Willis':{eq:5.03,passYd:210.0,passTD:0.79,int:0.79},
-'Kirk Cousins':{eq:8.57,passYd:219.1,passTD:1.87,int:0.58},
-'Brock Purdy':{eq:7.03,passYd:248.5,passTD:2.13,int:0.57},
-'Matthew Stafford':{eq:9.27,passYd:214.6,passTD:1.51,int:0.76},
-'Jordan Love':{eq:9.03,passYd:216.8,passTD:1.44,int:0.55},
-'Kyler Murray':{eq:4.17,passYd:194.9,passTD:0.72,int:0.48},
-'Tyler Shough':{eq:9.10,passYd:189.1,passTD:1.43,int:0.66},
-'Jared Goff':{eq:7.43,passYd:240.5,passTD:1.88,int:0.00},
-'Jayden Daniels':{eq:3.87,passYd:196.3,passTD:1.29,int:0.00},
-'Jalen Hurts':{eq:5.13,passYd:181.8,passTD:1.56,int:0.58},
-'Marcus Mariota':{eq:1.70,passYd:200.0,passTD:2.35,int:0.00},
-'Jameis Winston':{eq:5.27,passYd:181.7,passTD:1.33,int:0.95},
+'Malik Willis':{eq:4.83,passYd:218.7,passTD:0.83,int:0.83},
+'Kirk Cousins':{eq:6.90,passYd:272.0,passTD:2.32,int:0.72},
+'Brock Purdy':{eq:6.57,passYd:266.2,passTD:2.28,int:0.61},
+'Matthew Stafford':{eq:6.80,passYd:292.5,passTD:2.06,int:1.03},
+'Jordan Love':{eq:6.97,passYd:281.1,passTD:1.87,int:0.72},
+'Kyler Murray':{eq:3.93,passYd:206.4,passTD:0.76,int:0.51},
+'Tyler Shough':{eq:6.83,passYd:251.9,passTD:1.90,int:0.88},
+'Jared Goff':{eq:6.00,passYd:298.0,passTD:2.33,int:0.00},
+'Jayden Daniels':{eq:3.40,passYd:223.2,passTD:1.47,int:0.00},
+'Jalen Hurts':{eq:4.57,passYd:204.3,passTD:1.75,int:0.66},
+'Marcus Mariota':{eq:1.67,passYd:204.0,passTD:2.40,int:0.00},
+'Jameis Winston':{eq:4.47,passYd:214.3,passTD:1.57,int:1.12},
 'Jack Strand':{eq:0.50,passYd:118.0,passTD:0.00,int:2.00},
-'Michael Penix Jr.':{eq:4.80,passYd:241.0,passTD:1.88,int:0.21},
-'Case Keenum':{eq:1.77,passYd:200.9,passTD:1.13,int:0.57},
-'Tyler Huntley':{eq:3.53,passYd:205.8,passTD:1.13,int:0.28},
+'Michael Penix Jr.':{eq:4.50,passYd:257.1,passTD:2.00,int:0.22},
+'Case Keenum':{eq:1.63,passYd:217.3,passTD:1.22,int:0.61},
+'Tyler Huntley':{eq:3.30,passYd:220.3,passTD:1.21,int:0.30},
 'J.J. McCarthy':{eq:1.63,passYd:303.1,passTD:0.61,int:0.61},
-'Tanner McKee':{eq:2.67,passYd:159.8,passTD:0.75,int:0.38},
+'Tanner McKee':{eq:2.00,passYd:213.0,passTD:1.00,int:0.50},
 };
 /* Role-change correction (RB/WR/TE): players whose real 2026 role is far from their preseason line.
    ESPN box scores Wk1-4, per game; blended 6 prior-equivalent games : 4 games played (ROLE_2026_PRIOR_G).

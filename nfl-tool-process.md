@@ -295,3 +295,10 @@ Same checklist as Week 7 (ESPN rebuilds, then every PFF set, then injuries). Res
 - Tonight's CAR @ GB (Thu 8:15pm ET / Fri 11:15am Melbourne): only Matthew Golden (GB WR, QUESTIONABLE, shoulder) flagged on offence; Chuba Hubbard, McMillan, Coker, Love, Kraft, Watson all Active. Defence: GB Parsons OUT (ACL), Franklin OUT; CAR Jaelan Phillips OUT, Evans on IR, OL Lewis and Simpkins OUT.
 - Transaction applied: Jeffery Simmons TEN -> CHI (DEF_ROSTER moved). Jonah Laulu, Bullard, Kerby Joseph and Norman-Lott returns noted, not applied.
 - QUESTIONABLE players are still counted in projections, so no Week 8 projection moved (Kelce 15.9, Gibbs 23.4 PPR before and after); only the status badges changed. AVAILABILITY_LAST_VERIFIED = Oct 30, 2026. Next: Sunday inactives about 90 minutes before each kickoff. Byes Week 8: NO, NYG, SF, HOU.
+
+## QB passing-yards fix (Oct 30, 2026)
+- Problem: QB_2026_LINES stored yards per 30 attempts (game-equivalent = attempts/30) but was mixed into a baseline of yards per game. High-volume QBs were understated ~20%, low-volume overstated. Week 1-7 errors ran from -108 (Young) to +90 (Mariota); league-wide mean error only -7, so it was a pattern by volume, not a general bias.
+- Fix: game-equivalent = min(1, attempts/30), so lines are yards per game; QB_2026_WEIGHT 2.5 -> 6. All 38 table rows rebuilt from ESPN box scores (old values reproduced exactly before rebuilding).
+- Backtest, 144 QB starts Weeks 3-7 predicted from earlier weeks only (MAE / bias): no 2026 data 56.1 / -15.8; old 54.9 / -18.0; per-game w2.5 53.8 / -10.5; w4 53.6 / -8.6; w6 53.5 / -6.7; w10 53.9 / -4.1. Gain is real but small (single-game QB yards are noisy, typical miss ~54).
+- Also tested blending 2026 attempts into QB_ATT_COMP: no MAE gain (6.8 both ways), left unchanged.
+- Week 8 effect: Young 177 -> 210 pass yd (PPR 12.8 -> 14.9), Love 218 -> 249 (14.8 -> 16.7), Cousins 204 -> 228, Brissett 173 -> 203; Murray, Allen, Mariota about flat.
