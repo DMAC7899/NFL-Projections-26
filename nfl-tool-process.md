@@ -302,3 +302,10 @@ Same checklist as Week 7 (ESPN rebuilds, then every PFF set, then injuries). Res
 - Backtest, 144 QB starts Weeks 3-7 predicted from earlier weeks only (MAE / bias): no 2026 data 56.1 / -15.8; old 54.9 / -18.0; per-game w2.5 53.8 / -10.5; w4 53.6 / -8.6; w6 53.5 / -6.7; w10 53.9 / -4.1. Gain is real but small (single-game QB yards are noisy, typical miss ~54).
 - Also tested blending 2026 attempts into QB_ATT_COMP: no MAE gain (6.8 both ways), left unchanged.
 - Week 8 effect: Young 177 -> 210 pass yd (PPR 12.8 -> 14.9), Love 218 -> 249 (14.8 -> 16.7), Cousins 204 -> 228, Brissett 173 -> 203; Murray, Allen, Mariota about flat.
+
+## RB/WR/TE review (Oct 30, 2026)
+- Bias check, Week 8 projections vs Weeks 1-7 per-game actuals: no volume pattern like the QB one. Mean error RB rush yd +1.3, WR rec yd -0.7, TE rec yd +1.6; by actual-volume bucket all within about 5 yd. Players with a ROLE_2026 override and without have the same MAE (11.2 yd per game).
+- Extra 2026 blending for players without an override: backtest 802 yardage games and 800+ volume games (Weeks 3-7, earlier weeks only). No gain at any weight for yards (MAE 24.7 none vs 24.8-25.4 blended), targets or carries (WR targets 2.19 vs 2.16, RB carries 3.57 vs 3.55). Left unchanged; ROLE_2026 prior_g 6 is fine.
+- Matchup strength: MATCHUP_SHRINK 0.6 -> 0.3 for RB/WR/TE (QB already 0.3). 1,387 player-games; ideal strength slope 0.19 +/- 0.07 (RB 0.25, WR 0.08, TE 0.35); MAE 23.36 at 0.6 -> 23.20 at 0.3. Defence profiles include the tested weeks, so the true effect is probably lower still.
+- Week 8 effect: mean absolute PPR change 0.34. Swift 14.6 -> 16.7, Kraft 8.6 -> 10.4, Jacobs 19.8 -> 18.3.
+- Still open: the within-team backfield/target totals are not re-balanced (e.g. GB projected 38 carries vs ~21 actual), which inflates Jacobs' rush TD (1.01 a game).

@@ -3798,7 +3798,12 @@ function getBlendedBaselineBase(p){
    as more weeks accumulate (pool weeks; see the slope test in the Sept 2026 commit notes). Applies only
    when a real schedule opponent is in play (opts.oppAb set); manual what-if sliders with no week
    selected, and the neutral Season Total baseline, are untouched. */
-const MATCHUP_SHRINK = 0.6;
+/* RB/WR/TE (Oct 30, 2026): re-tested on 1,387 real player-games, Weeks 1-7 (rush + receiving yards, full opponent model vs the neutral
+   version; defence profiles include the tested weeks, so this flatters the matchup effect). Mean absolute error at strength 0 / 0.3 / 0.6 / 1:
+   all 23.28 / 23.20 / 23.36 / 23.91; RB 23.30 / 23.01 / 23.01 / 23.51; WR 24.86 / 24.96 / 25.23 / 25.85; TE 19.68 / 19.53 / 19.66 / 20.13.
+   Regression slope of actual-minus-neutral on the effect (ideal strength): all 0.19 +/- 0.07, RB 0.25 +/- 0.12, WR 0.08 +/- 0.11, TE 0.35 +/- 0.13,
+   so the old 0.6 was about 6 standard errors too strong. Now 0.3 for every position (same as QB), a modest compromise. */
+const MATCHUP_SHRINK = 0.3;
 /* QBs only (Oct 9, 2026): re-tested on 126 real QB starts, Weeks 1-4 (opponent effect on pass yards): mean absolute error
    62.9 yds with no opponent effect, 63.3 at strength 0.3, 64.2 at 0.5, 64.7 at the old 0.6, 67.7 undamped; regression slope of
    actual-minus-neutral on the damped effect 0.53 +/- 0.28 (i.e. ideal strength ~0.3 of the undamped effect). The week-3 test
@@ -4847,7 +4852,7 @@ function compute(){
       const cls = pct > 0 ? 'up' : 'down';
       const oppName = (TEAMS[opts.oppAb] && TEAMS[opts.oppAb].name) || opts.oppAb;
       matchupBox.innerHTML = `<span class="delta ${cls}" style="font-size:13px;">
-        Real matchup signal: ${oppName} ${dir} ${p.p}s (${pct>0?'+':''}${pct}% vs. league average, ESPN box-score yards allowed to the position; applied to the projection at ${Math.round(MATCHUP_SHRINK*100)}% strength)
+        Real matchup signal: ${oppName} ${dir} ${p.p}s (${pct>0?'+':''}${pct}% vs. league average, ESPN box-score yards allowed to the position; applied to the projection at ${Math.round((p.p==='QB'?MATCHUP_SHRINK_QB:MATCHUP_SHRINK)*100)}% strength)
       </span>`;
     }
   }
