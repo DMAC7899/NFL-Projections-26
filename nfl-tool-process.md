@@ -288,3 +288,10 @@ Same checklist as Week 7 (ESPN rebuilds, then every PFF set, then injuries). Res
 - Also added to the PFF grade tables (and Coleman to the elusive table). ESPN lists all three Active (Oct 25-27).
 - Week 8 projections: Cooper (NYJ vs LV) 4.4 tgt / 54.2 yd / 0.4 TD, 11.1 PPR; Coleman (DEN vs KC) 6.1 att / 26.0 yd, 6.4 PPR; Lane (BAL vs BUF) 4.3 tgt / 26.3 yd, 5.7 PPR. Backfield and target totals for DEN, NYJ, BAL are not re-balanced (same as earlier sweep additions).
 - Other names from the Oct 29 sweep list (Goodson, Tucker, Isaiah Davis, Van Jefferson, Ekeler, Grandy, Blue, Sampson) were left out on request.
+
+## Friday availability refresh (Oct 30, 2026)
+- ESPN injuries (feed timestamp Oct 29 21:07 UTC, Thursday practice reports), 32 rosters and transactions re-pulled. Offence 85 -> 83 listed, defence 97 -> 96.
+- Cleared (full participants Thursday): Chase, Amon-Ra St. Brown, Gibbs, Braelon Allen; Bowers back to Active. Newly QUESTIONABLE: Travis Kelce (ankle), TreVeyon Henderson (illness, did not practise), Ray Davis (illness, did not practise). James Conner IR return date moved to Nov 8.
+- Tonight's CAR @ GB (Thu 8:15pm ET / Fri 11:15am Melbourne): only Matthew Golden (GB WR, QUESTIONABLE, shoulder) flagged on offence; Chuba Hubbard, McMillan, Coker, Love, Kraft, Watson all Active. Defence: GB Parsons OUT (ACL), Franklin OUT; CAR Jaelan Phillips OUT, Evans on IR, OL Lewis and Simpkins OUT.
+- Transaction applied: Jeffery Simmons TEN -> CHI (DEF_ROSTER moved). Jonah Laulu, Bullard, Kerby Joseph and Norman-Lott returns noted, not applied.
+- QUESTIONABLE players are still counted in projections, so no Week 8 projection moved (Kelce 15.9, Gibbs 23.4 PPR before and after); only the status badges changed. AVAILABILITY_LAST_VERIFIED = Oct 30, 2026. Next: Sunday inactives about 90 minutes before each kickoff. Byes Week 8: NO, NYG, SF, HOU.
