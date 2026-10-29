@@ -309,3 +309,11 @@ Same checklist as Week 7 (ESPN rebuilds, then every PFF set, then injuries). Res
 - Matchup strength: MATCHUP_SHRINK 0.6 -> 0.3 for RB/WR/TE (QB already 0.3). 1,387 player-games; ideal strength slope 0.19 +/- 0.07 (RB 0.25, WR 0.08, TE 0.35); MAE 23.36 at 0.6 -> 23.20 at 0.3. Defence profiles include the tested weeks, so the true effect is probably lower still.
 - Week 8 effect: mean absolute PPR change 0.34. Swift 14.6 -> 16.7, Kraft 8.6 -> 10.4, Jacobs 19.8 -> 18.3.
 - Still open: the within-team backfield/target totals are not re-balanced (e.g. GB projected 38 carries vs ~21 actual), which inflates Jacobs' rush TD (1.01 a game).
+
+## Backfield carry rebalance (Oct 30, 2026)
+- Why: the engine projected each back from his own baseline, so crowded backfields were over-counted (GB Week 8 summed to 38 carries vs 17.7 a game real).
+- How: TEAM_RB_CARRIES (ESPN carries per team game by the backs in the tool, Weeks 1-7) and rbCarryFactor(): each available back's rush attempts, yards and TD x (team average / sum of available backs' baseline carries)^0.5, clamped 0.6-1.3. Availability (OUT/BACKUP) is respected, so an injury raises the others. Receiving is not rebalanced (targets backtest: no gain, 1.92 either way).
+- Backtest 289 back-games (Weeks 3-7, earlier weeks only), carry MAE at strength 0 / 0.5 / 1: 3.56 / 3.39 / 3.58 -> 0.5.
+- Name fixes needed to match box scores to the roster: James Cook III, Aaron Jones Sr., Chris Rodriguez Jr., Travis Etienne Jr., Jonathon Brooks, Kenny Gainwell; WSH = WAS.
+- Week 8 effect (team RB carries before -> after): GB 38.2 -> 26.4 (Jacobs 16.1 -> 11.1 att, PPR 18.3 -> 14.3; Lloyd 9.8 -> 6.8; Strong 8.2 -> 5.7), PIT 29.3 -> 23.9, NYJ 26.8 -> 23.7, DEN 22.6 -> 20.8 (Coleman 6.1 -> 5.6, Dobbins 11.2 -> 10.3, Harvey 5.3 -> 4.9), DET 20.5 -> 23.0 (Gibbs 17.7 -> 19.9), WAS 8.0 -> 10.4 (White).
+- Refresh TEAM_RB_CARRIES weekly with the box scores.
