@@ -345,3 +345,9 @@ The Nov 12 commit only refreshed DEF_RUN_LEAK, DVP_2026 and QB_2026_LINES. This 
 - Defence: newly QUESTIONABLE Cameron Thomas and Kendal Daniels (ATL), Hickman (CLE), Tillery (IND), Quincy Riley (NO), Kevin Winston Jr. (TEN); D.J. Reed (DET) QUESTIONABLE -> OUT (ESPN Nov 12: out, hip).
 - Trades applied to DEF_ROSTER: Jordan Davis PHI -> JAX, Jessie Bates III ATL -> JAX, Amani Hooker TEN -> BUF, Daiyan Henley LAC -> DEN (snaps and grades carried over). Offensive trades (Cousins MIN, Downs KC, Keenan Allen SF) were already in the tool.
 - Effect on Week 10: 21 players moved by more than 0.005 PPR, mostly NE vs DET after Reed went out (Maye 20.66 -> 20.81, A.J. Brown 15.68 -> 15.76).
+
+## PFF_QB refresh (Fri Nov 13, 2026)
+- Gap found: after the Nov 13 PFF refreshes, PFF_QB (OFF and PASS grades, BTT%, TWP%, games) was still the Oct 28 Week 7 version. Re-pulled from premium.pff.com/nfl/positions/2026/REGPO/passing?position=QB (100 rows per page, 61 QBs, columns: G idx 2, OFF 12, PASS 13, BTT% 17, TWP% 19 in the scrolling rows; names are in the sticky rows).
+- 36 existing rows updated (33 changed, games counts now 3-9). Justin Fields has no PFF row; Tagovailoa, Keenum, Mariota, Jalon Daniels and Huntley are in the tool but not in PFF_QB (as before, left alone). PFF still lists Cousins under LV; matched by name.
+- Examples: Jordan Love PASS 72.3 -> 80.8 (games 7 -> 9), Patrick Mahomes 79.1 -> 72.4, Cam Ward 68.9 -> 74.7, Penix 66.7 -> 49.9.
+- Week 10 effect: 21 players moved by more than 0.005 PPR; Josh Allen 30.47 -> 29.49, Jayden Daniels 19.18 -> 18.58, Kyler Murray 15.59 -> 15.91.
