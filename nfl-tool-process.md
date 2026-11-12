@@ -351,3 +351,9 @@ The Nov 12 commit only refreshed DEF_RUN_LEAK, DVP_2026 and QB_2026_LINES. This 
 - 36 existing rows updated (33 changed, games counts now 3-9). Justin Fields has no PFF row; Tagovailoa, Keenum, Mariota, Jalon Daniels and Huntley are in the tool but not in PFF_QB (as before, left alone). PFF still lists Cousins under LV; matched by name.
 - Examples: Jordan Love PASS 72.3 -> 80.8 (games 7 -> 9), Patrick Mahomes 79.1 -> 72.4, Cam Ward 68.9 -> 74.7, Penix 66.7 -> 49.9.
 - Week 10 effect: 21 players moved by more than 0.005 PPR; Josh Allen 30.47 -> 29.49, Jayden Daniels 19.18 -> 18.58, Kyler Murray 15.59 -> 15.91.
+
+## Run-defence table refresh (Fri Nov 13, 2026)
+- Gap found on request ("find the missing PFF set"): TEAM_RUN_DEFENSE_2024 (overall and interior) was still the Oct 28 Weeks 1-7 version.
+- Rebuilt: overall = PFF team RDEF (premium.pff.com/nfl/teams/2025/REG and /2026/REGPO, RDEF column) blended 17 : team games played (record W-L-T sum); interior = run-snap-weighted DI RDEF (defense?position=DI, 2025 REG 2 pages of 200, 2026 REGPO 1 page; columns: TEAM idx 3, run snaps idx 5, RDEF idx 9, skip '-'), same blend. Re-expressed with the population sd to the old mean/spread (63.741/2.538 and 54.9/5.774; the Oct 28 table has exactly those values).
+- New vs Oct 28 table correlation 0.985 overall, 0.972 interior. Biggest moves: ATL overall 63.14 -> 62.05, ATL interior 59.08 -> 62.05, CHI interior 45.78 -> 49.03, TEN interior 62.95 -> 60.28.
+- Week 10 effect is small (6 players move by more than 0.005 PPR): Kyren Williams 18.18 -> 18.17, Tuten 13.19 -> 13.20.

@@ -1826,24 +1826,25 @@ const LEAGUE_AVG_SLOT_YPCS = 1.1863;
    sample counts by volume); sackConvPct recomputed; LEAGUE_AVG_SACK_CONV recomputed as the team mean.
    COVERAGE_2025.pressure (ESPN sacks per dropback): 2025 value blended 17 : 4 with 2026 Wk1-4 ESPN defence sack rate
    (sacks / (opponent pass attempts + sacks)); LEAGUE_AVG_PRESSURE recomputed as the team mean. */
+/* REFRESHED Nov 13, 2026 (Weeks 1-9): TEAM_RUN_DEFENSE_2024 rebuilt with the same method as below (team RDEF from premium.pff.com/nfl/teams 2025 REG and 2026 REGPO, blended 17 : games played; interior = run-snap-weighted DI RDEF from the 2025 REG and 2026 REGPO defense?position=DI pages, same blend; re-expressed to mean/spread 63.741/2.538 and 54.9/5.774). New vs Oct 28 table correlation 0.985 overall, 0.972 interior. */
 /* REFRESHED Oct 28, 2026 (Weeks 1-7): same method as Oct 7 above. overall = PFF team RDEF 2025 REG blended with 2026 Reg+Post at 17 : games played; interior = run-snap-weighted DI RDEF grade, same blend; both re-expressed to the old table's mean/spread (63.741/2.538 and 54.9/5.773). TEAM_SACK_DATA = the pre-Oct-7 base + 2026 Weeks 1-7 sacks and pressures summed over ED, DI, LB (PFF defense pages); LEAGUE_AVG_SACK_CONV recomputed as the team mean. */
 const TEAM_RUN_DEFENSE_2024 = {
-ARI:{overall:59.36,interior:49.08},  ATL:{overall:63.14,interior:59.08},
-BAL:{overall:65.88,interior:61.87},  BUF:{overall:60.53,interior:51.71},
-CAR:{overall:61.49,interior:57.94},  CHI:{overall:61.38,interior:45.78},
-CIN:{overall:60.29,interior:57.02},  CLE:{overall:67.23,interior:56.9},
-DAL:{overall:60.77,interior:61.98},  DEN:{overall:65.83,interior:56.74},
-DET:{overall:67.23,interior:58.94},  GB:{overall:62.58,interior:46.72},
-HOU:{overall:66.33,interior:56.55},  IND:{overall:62.53,interior:50.38},
-JAX:{overall:65.88,interior:55.77},  KC:{overall:66.67,interior:47.74},
-LAC:{overall:65.33,interior:62.33},  LAR:{overall:67.66,interior:62.49},
-LV:{overall:60.21,interior:45.56},  MIA:{overall:63.47,interior:52.69},
-MIN:{overall:65.54,interior:59.94},  NE:{overall:62.15,interior:48.17},
-NO:{overall:64.17,interior:50.78},  NYG:{overall:59.87,interior:52.71},
-NYJ:{overall:64.6,interior:59.14},  PHI:{overall:64.81,interior:58.56},
-PIT:{overall:66.41,interior:59.58},  SEA:{overall:67.1,interior:57.59},
-SF:{overall:60.17,interior:40.49},  TB:{overall:63.58,interior:57.39},
-TEN:{overall:65.28,interior:62.95},  WAS:{overall:62.29,interior:52.22}
+  ARI:{overall:60.08,interior:51.01},  ATL:{overall:62.05,interior:62.05},
+  BAL:{overall:66.22,interior:62.64},  BUF:{overall:60.54,interior:53.92},
+  CAR:{overall:62.06,interior:57.77},  CHI:{overall:60.82,interior:49.03},
+  CIN:{overall:59.99,interior:56.89},  CLE:{overall:66.93,interior:56.57},
+  DAL:{overall:60.66,interior:62.28},  DEN:{overall:65.60,interior:57.15},
+  DET:{overall:67.38,interior:58.45},  GB:{overall:62.53,interior:46.19},
+  HOU:{overall:66.69,interior:58.81},  IND:{overall:62.14,interior:49.75},
+  JAX:{overall:65.17,interior:53.97},  KC:{overall:66.40,interior:47.14},
+  LAC:{overall:65.50,interior:60.97},  LAR:{overall:68.11,interior:63.86},
+  LV:{overall:59.95,interior:45.16},  MIA:{overall:62.85,interior:51.78},
+  MIN:{overall:65.16,interior:60.50},  NE:{overall:62.76,interior:47.21},
+  NO:{overall:64.31,interior:50.49},  NYG:{overall:60.02,interior:51.91},
+  NYJ:{overall:64.43,interior:57.34},  PHI:{overall:65.54,interior:59.16},
+  PIT:{overall:66.62,interior:59.41},  SEA:{overall:66.81,interior:55.76},
+  SF:{overall:60.45,interior:40.36},  TB:{overall:63.99,interior:57.04},
+  TEN:{overall:65.18,interior:60.28},  WAS:{overall:62.77,interior:51.97},
 };
 const LEAGUE_AVG_RUN_D_OVERALL = 63.74;
 const LEAGUE_AVG_RUN_D_INTERIOR = 54.9;
