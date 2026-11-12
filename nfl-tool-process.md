@@ -360,3 +360,8 @@ The Nov 12 commit only refreshed DEF_RUN_LEAK, DVP_2026 and QB_2026_LINES. This 
 
 ## Alignment DvP (estimate) refresh, Nov 13, 2026 (Weeks 1-9)
 ALIGN_DVP_2026 was still the Oct 28 build (Weeks 1-7). Rebuilt with the same method: every ESPN box-score receiving line by a WR or TE in Weeks 1-9 (136 games) is matched by name to the PFF 2026 receiving pages (WR and TE, season to date, SLOT / WIDE / INL pass snaps) and split in proportion to that receiver's own alignment, summed per opposing defence and divided by that defence's games played (8 or 9). RBs excluded (unmatched yards are almost all backs). PFF codes mapped (ARZ, BLT, CLV, HST, LA); WSH written as WAS. Display only, not used in projections. League average total moved 202.9 to 201.5 yards per game.
+
+## Remaining 2025 static sets refreshed, Nov 13, 2026
+- Team top corner (cb, cbGrade on each team): rebuilt from DEF_ROSTER (2026 PFF coverage grades). Top corner = best coverage grade among CBs averaging 45+ snaps per game who are not listed OUT in DEF_AVAILABILITY. CB_LEAGUE_AVG_GRADE 65.6 to 63.6 (mean of those CBs) and ELITE_CB_THRESHOLD 75 to 70 (roughly the top third of team top-corner grades). These feed the Elite CB Shadow penalty. Re-run when DEF_ROSTER or the OUT list changes.
+- QB_PRESSURE and QB_PRESSURE_LEAGUE_AVG: rebuilt from PFF 2026 Passing Pressure (QBs with 60+ dropbacks). pressureRate = pressured dropbacks / dropbacks, sackPct = sacks / dropbacks, pressureToSackRate = sacks / pressured dropbacks, timeToThrow = dropback-weighted blend of pressured and clean time to throw. pressureToSackRate feeds the QB sack projection.
+- PFF_LEAGUE_AVG recomputed from PFF_QB (34 QBs with 4+ games): 68.9/4.3/3.4 to 69.1/4.3/3.2. PFF_DEF_REGRESSION comment corrected.
