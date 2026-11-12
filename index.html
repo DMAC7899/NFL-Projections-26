@@ -2058,7 +2058,7 @@ const QB_ATT_COMP = {
    Used for QB rushing only (QBs had no run-defence adjustment at all). Backtest (leave-one-game-out, 90 QB games):
    defence ypc-allowed vs league -> slope 0.64 (se 0.52); QB-specific rush yards allowed -> -0.12 (se 0.13) = no signal, so not used.
    Pass-through 0.5 and shrunk by games/(games+2). Refresh weekly from ESPN box scores. */
-const DEF_RUN_LEAK = {ARI:[7,884,190], ATL:[7,622,162], BAL:[7,676,178], BUF:[6,606,158], CAR:[6,919,178], CHI:[7,613,138], CIN:[6,698,149], CLE:[7,815,184], DAL:[7,1020,216], DEN:[7,933,204], DET:[6,595,145], GB:[7,805,205], HOU:[7,686,179], IND:[7,871,183], JAX:[6,433,134], KC:[6,597,167], LAC:[6,743,185], LAR:[7,810,192], LV:[7,1005,202], MIA:[6,661,172], MIN:[6,587,141], NE:[7,667,170], NO:[7,976,203], NYG:[7,897,186], NYJ:[7,894,217], PHI:[7,920,219], PIT:[7,637,170], SEA:[7,626,180], SF:[7,623,179], TB:[7,541,151], TEN:[7,918,220], WSH:[6,603,151]};
+const DEF_RUN_LEAK = {ARI:[9,1097,262], ATL:[9,1069,242], BAL:[9,899,249], BUF:[8,733,189], CAR:[8,1067,231], CHI:[9,820,185], CIN:[8,1013,201], CLE:[9,1175,249], DAL:[9,1327,266], DEN:[9,1119,248], DET:[8,753,184], GB:[9,981,244], HOU:[8,824,209], IND:[9,1233,250], JAX:[8,714,194], KC:[8,780,215], LAC:[8,976,240], LAR:[9,934,236], LV:[9,1361,272], MIA:[8,894,236], MIN:[8,951,224], NE:[9,870,225], NO:[8,1071,237], NYG:[8,989,211], NYJ:[9,1152,282], PHI:[9,1135,276], PIT:[8,671,185], SEA:[9,802,233], SF:[8,647,194], TB:[9,712,201], TEN:[8,993,239], WSH:[8,818,209]};
 const DEF_RUN_LEAK_LG_YPC = (()=>{let r=0,c=0;for(const k in DEF_RUN_LEAK){r+=DEF_RUN_LEAK[k][1];c+=DEF_RUN_LEAK[k][2]}return r/c})();
 const QB_RUSH_LEAK_PASS = 0.5;
 function qbRushLeakMult(ab){const d=DEF_RUN_LEAK[ab==="WAS"?"WSH":ab];if(!d)return 1;const leak=(d[1]/d[2])/DEF_RUN_LEAK_LG_YPC-1;return 1+QB_RUSH_LEAK_PASS*leak*d[0]/(d[0]+2)}
@@ -3677,44 +3677,45 @@ const QB_2025_GAMES = {'Aaron Rodgers':17, 'Baker Mayfield':17, 'Bo Nix':18, 'Br
    REFRESH weekly with the box scores (eq = sum over games of min(1, att/30); rates = totals / eq). */
 const QB_2026_WEIGHT = 6;
 const QB_2026_LINES = {
-'Lamar Jackson':{eq:3.17,passYd:305.4,passTD:1.89,int:0.32},
-'Daniel Jones':{eq:6.73,passYd:207.6,passTD:0.59,int:1.04},
-'Aaron Rodgers':{eq:7.00,passYd:242.7,passTD:1.86,int:0.71},
-'Josh Allen':{eq:5.47,passYd:275.1,passTD:1.65,int:0.73},
-'C.J. Stroud':{eq:6.83,passYd:273.2,passTD:1.61,int:0.15},
-'Jacoby Brissett':{eq:6.93,passYd:230.8,passTD:1.44,int:0.87},
-'Justin Herbert':{eq:5.60,passYd:203.8,passTD:0.89,int:1.43},
-'Bo Nix':{eq:6.70,passYd:189.7,passTD:1.04,int:0.45},
-'Patrick Mahomes':{eq:5.70,passYd:258.6,passTD:1.58,int:0.70},
-'Caleb Williams':{eq:3.83,passYd:266.1,passTD:1.30,int:0.26},
-'Bryce Young':{eq:5.90,passYd:290.2,passTD:2.03,int:0.68},
-'Drake Maye':{eq:6.57,passYd:271.7,passTD:1.98,int:1.22},
-'Sam Darnold':{eq:4.70,passYd:274.5,passTD:1.70,int:1.70},
-'Baker Mayfield':{eq:3.30,passYd:205.8,passTD:0.91,int:0.61},
-'Joe Burrow':{eq:6.00,passYd:275.5,passTD:2.50,int:0.50},
-'Trevor Lawrence':{eq:5.47,passYd:270.7,passTD:2.56,int:0.73},
-'Geno Smith':{eq:6.30,passYd:257.6,passTD:1.59,int:0.32},
-'Cam Ward':{eq:6.40,passYd:184.2,passTD:0.62,int:0.78},
-'Dak Prescott':{eq:6.90,passYd:268.3,passTD:1.88,int:0.72},
-'Jaxson Dart':{eq:1.13,passYd:220.6,passTD:2.65,int:0.00},
-'Malik Willis':{eq:4.83,passYd:218.7,passTD:0.83,int:0.83},
-'Kirk Cousins':{eq:6.90,passYd:272.0,passTD:2.32,int:0.72},
-'Brock Purdy':{eq:6.57,passYd:266.2,passTD:2.28,int:0.61},
-'Matthew Stafford':{eq:6.80,passYd:292.5,passTD:2.06,int:1.03},
-'Jordan Love':{eq:6.97,passYd:281.1,passTD:1.87,int:0.72},
-'Kyler Murray':{eq:3.93,passYd:206.4,passTD:0.76,int:0.51},
-'Tyler Shough':{eq:6.83,passYd:251.9,passTD:1.90,int:0.88},
-'Jared Goff':{eq:6.00,passYd:298.0,passTD:2.33,int:0.00},
-'Jayden Daniels':{eq:3.40,passYd:223.2,passTD:1.47,int:0.00},
-'Jalen Hurts':{eq:4.57,passYd:204.3,passTD:1.75,int:0.66},
-'Marcus Mariota':{eq:1.67,passYd:204.0,passTD:2.40,int:0.00},
-'Jameis Winston':{eq:4.47,passYd:214.3,passTD:1.57,int:1.12},
-'Jack Strand':{eq:0.50,passYd:118.0,passTD:0.00,int:2.00},
-'Michael Penix Jr.':{eq:4.50,passYd:257.1,passTD:2.00,int:0.22},
-'Case Keenum':{eq:1.63,passYd:217.3,passTD:1.22,int:0.61},
-'Tyler Huntley':{eq:3.30,passYd:220.3,passTD:1.21,int:0.30},
-'J.J. McCarthy':{eq:1.63,passYd:303.1,passTD:0.61,int:0.61},
-'Tanner McKee':{eq:2.00,passYd:213.0,passTD:1.00,int:0.50},
+'Kirk Cousins':{eq:10.50,passYd:222.9,passTD:1.90,int:0.76},
+'Jacoby Brissett':{eq:10.17,passYd:169.1,passTD:0.98,int:0.69},
+'Tua Tagovailoa':{eq:0.10,passYd:340.0,passTD:0.00,int:10.00},
+'Michael Penix Jr.':{eq:6.63,passYd:217.7,passTD:1.51,int:0.90},
+'Lamar Jackson':{eq:3.23,passYd:299.1,passTD:1.86,int:0.31},
+'Josh Allen':{eq:7.87,passYd:257.7,passTD:1.53,int:0.76},
+'Bryce Young':{eq:10.27,passYd:214.0,passTD:1.56,int:0.58},
+'Caleb Williams':{eq:6.50,passYd:237.8,passTD:1.23,int:0.77},
+'Case Keenum':{eq:1.77,passYd:200.9,passTD:1.13,int:0.57},
+'Joe Burrow':{eq:9.87,passYd:241.8,passTD:2.33,int:0.61},
+'Deshaun Watson':{eq:8.30,passYd:217.6,passTD:0.84,int:0.36},
+'Dak Prescott':{eq:11.20,passYd:212.6,passTD:1.43,int:0.45},
+'Bo Nix':{eq:9.57,passYd:180.8,passTD:1.15,int:0.42},
+'Jared Goff':{eq:9.10,passYd:234.5,passTD:1.65,int:0.22},
+'Jordan Love':{eq:11.37,passYd:230.3,passTD:1.67,int:0.53},
+'C.J. Stroud':{eq:9.40,passYd:239.5,passTD:1.70,int:0.21},
+'Daniel Jones':{eq:10.07,passYd:171.1,passTD:0.60,int:0.99},
+'Trevor Lawrence':{eq:7.47,passYd:258.8,passTD:2.41,int:0.54},
+'Patrick Mahomes':{eq:8.77,passYd:232.4,passTD:1.60,int:0.46},
+'Justin Herbert':{eq:7.83,passYd:203.1,passTD:0.77,int:1.40},
+'Matthew Stafford':{eq:11.53,passYd:205.8,passTD:1.39,int:0.78},
+'Malik Willis':{eq:6.93,passYd:201.3,passTD:0.87,int:0.87},
+'Kyler Murray':{eq:5.13,passYd:199.1,passTD:0.97,int:0.58},
+'Drake Maye':{eq:9.07,passYd:251.7,passTD:1.99,int:1.21},
+'Tyler Shough':{eq:10.27,passYd:193.4,passTD:1.36,int:0.58},
+'Jameis Winston':{eq:5.53,passYd:185.8,passTD:1.45,int:0.90},
+'Jalen Hurts':{eq:5.13,passYd:181.8,passTD:1.56,int:0.58},
+'Aaron Rodgers':{eq:9.60,passYd:194.9,passTD:1.35,int:0.63},
+'Brock Purdy':{eq:7.87,passYd:251.7,passTD:2.16,int:0.64},
+'Sam Darnold':{eq:7.03,passYd:210.1,passTD:1.42,int:1.28},
+'Baker Mayfield':{eq:4.73,passYd:194.8,passTD:0.63,int:0.85},
+'Cam Ward':{eq:8.27,passYd:179.4,passTD:0.73,int:0.60},
+'Jayden Daniels':{eq:6.00,passYd:208.3,passTD:1.17,int:0.00},
+'Marcus Mariota':{eq:1.70,passYd:200.0,passTD:2.35,int:0.00},
+'Geno Smith':{eq:9.03,passYd:230.0,passTD:1.33,int:0.33},
+'Jalon Daniels':{eq:3.27,passYd:153.4,passTD:0.92,int:1.53},
+'Tyler Huntley':{eq:3.67,passYd:198.3,passTD:1.09,int:0.27},
+'J.J. McCarthy':{eq:2.27,passYd:274.4,passTD:0.44,int:0.44},
+'Tanner McKee':{eq:3.80,passYd:167.9,passTD:0.53,int:0.53},
 };
 /* Role-change correction (RB/WR/TE): players whose real 2026 role is far from their preseason line.
    ESPN box scores Wk1-4, per game; blended 6 prior-equivalent games : 4 games played (ROLE_2026_PRIOR_G).
@@ -5536,19 +5537,19 @@ function renderBetting(){
    yards in each of 2026 Weeks 1-4 are credited to the opposing defense by the player's ESPN roster
    position, then divided by games played. wr = WR receiving yards/game allowed. te = TE receiving
    yards/game allowed. rb = RB rushing yards/game allowed. Rank 1 = most yards allowed.
-   REFRESHED Oct 28, 2026 to Weeks 1-7 (ESPN box scores, ESPN positions with fullbacks counted as RBs; per game played, so teams that have had a bye are over one fewer game). From this refresh the Weeks 1-5 figures also include a few WRs the Oct 14 build had left unmatched (largest change: SF and IND WR yards). Added qb = passing yards per game allowed to opposing QBs and rb = RB rushing yards per game allowed and rbrec = RB receiving yards per game allowed -- kept separate, never combined (rb was rushing + receiving before Oct 14).
+   REFRESHED Nov 12, 2026 to Weeks 1-9 (previous: Oct 28, Weeks 1-7) (ESPN box scores, ESPN positions with fullbacks counted as RBs; per game played, so teams that have had a bye are over one fewer game). From this refresh the Weeks 1-5 figures also include a few WRs the Oct 14 build had left unmatched (largest change: SF and IND WR yards). Added qb = passing yards per game allowed to opposing QBs and rb = RB rushing yards per game allowed and rbrec = RB receiving yards per game allowed -- kept separate, never combined (rb was rushing + receiving before Oct 14).
    Five games is a small sample (a single shootout moves a team a lot), so read it as "what has happened",
    not "what will happen" -- the projection engine uses the 2025-weighted DEFENSE-VS-POSITION multipliers
    above, not this raw table. Refresh weekly. */
 const DVP_2026 = {
-  ARI:{qb:243.7,wr:152.6,te:59.7,rb:103.6,rbrec:31.4}, ATL:{qb:271.4,wr:169.9,te:62.7,rb:81.7,rbrec:38.9}, BAL:{qb:235.1,wr:181.6,te:39,rb:77.4,rbrec:14.6}, BUF:{qb:298.7,wr:173.8,te:77.5,rb:82.8,rbrec:47.3},
-  CAR:{qb:208.2,wr:133,te:46.3,rb:126.8,rbrec:28.8}, CHI:{qb:241.3,wr:149.4,te:56.6,rb:73.6,rbrec:35.3}, CIN:{qb:253.8,wr:137.5,te:84.8,rb:80.5,rbrec:31.5}, CLE:{qb:220.7,wr:151.4,te:49.3,rb:104,rbrec:20},
-  DAL:{qb:235.1,wr:163.1,te:46.6,rb:105,rbrec:22.1}, DEN:{qb:236,wr:135.9,te:65.3,rb:102,rbrec:34.9}, DET:{qb:313.5,wr:186.8,te:100.3,rb:79.7,rbrec:25.2}, GB:{qb:222.6,wr:156.7,te:32.9,rb:95.1,rbrec:33},
-  HOU:{qb:262.7,wr:195.9,te:46,rb:90.7,rbrec:20.9}, IND:{qb:227.4,wr:141.6,te:45.3,rb:95.6,rbrec:38.7}, JAX:{qb:283,wr:210,te:34.7,rb:51.5,rbrec:38.3}, KC:{qb:229.5,wr:122,te:70.8,rb:73,rbrec:36.7},
-  LAC:{qb:216.2,wr:132.8,te:57.5,rb:104.8,rbrec:25.7}, LAR:{qb:193,wr:106,te:41.7,rb:85.7,rbrec:45}, LV:{qb:245.1,wr:149.9,te:57.9,rb:124.9,rbrec:37.4}, MIA:{qb:236.2,wr:115.5,te:74.7,rb:102.5,rbrec:46},
-  MIN:{qb:180.8,wr:123.8,te:38.8,rb:83.8,rbrec:18.2}, NE:{qb:239,wr:149.9,te:53.7,rb:83.4,rbrec:35.4}, NO:{qb:249.7,wr:143.6,te:68.4,rb:120.4,rbrec:37.7}, NYG:{qb:192.1,wr:126.9,te:44.7,rb:101.6,rbrec:20.6},
-  NYJ:{qb:202.9,wr:134.4,te:46.9,rb:106.6,rbrec:21.6}, PHI:{qb:247.9,wr:185.3,te:43,rb:116.7,rbrec:19.6}, PIT:{qb:230,wr:147.3,te:41.9,rb:75.4,rbrec:41.3}, SEA:{qb:158,wr:91.7,te:34.4,rb:71,rbrec:31.9},
-  SF:{qb:223.9,wr:129.7,te:43.6,rb:78.6,rbrec:50.6}, TB:{qb:233.7,wr:134.7,te:62,rb:64.9,rbrec:37}, TEN:{qb:245.7,wr:175.6,te:38,rb:104.9,rbrec:32.1}, WAS:{qb:268,wr:158.3,te:73.5,rb:77.7,rbrec:36.2}
+  ARI:{qb:230.7,wr:146.3,te:50.7,rb:99.6,rbrec:33.7}, ATL:{qb:241.2,wr:158.6,te:50.4,rb:109.1,rbrec:32.2}, BAL:{qb:241.9,wr:172.4,te:52.2,rb:81.6,rbrec:17.2}, BUF:{qb:252.8,wr:146.3,te:65.9,rb:77.6,rbrec:40.6},
+  CAR:{qb:221.8,wr:145.6,te:47.4,rb:110.5,rbrec:28.8}, CHI:{qb:235.6,wr:147.4,te:49.3,rb:76.6,rbrec:38.8}, CIN:{qb:248.6,wr:135.8,te:80.6,rb:88.4,rbrec:32.3}, CLE:{qb:220.2,wr:144.4,te:57.8,rb:115.1,rbrec:18},
+  DAL:{qb:237,wr:159.3,te:50.2,rb:112.8,rbrec:27.4}, DEN:{qb:249.9,wr:129.6,te:75.4,rb:98.2,rbrec:44.9}, DET:{qb:276.5,wr:165.3,te:88,rb:72.3,rbrec:29}, GB:{qb:231.9,wr:155.9,te:41,rb:93.2,rbrec:35},
+  HOU:{qb:257,wr:187.5,te:46.3,rb:94.8,rbrec:23.3}, IND:{qb:238.3,wr:146,te:50.2,rb:111.7,rbrec:40.7}, JAX:{qb:236.8,wr:174.5,te:31.3,rb:68.3,rbrec:32.6}, KC:{qb:220.5,wr:113.1,te:64.9,rb:73.3,rbrec:42.5},
+  LAC:{qb:230.6,wr:157.9,te:51.1,rb:105.5,rbrec:21.5}, LAR:{qb:207.7,wr:116.4,te:47.4,rb:77,rbrec:45}, LV:{qb:248.7,wr:160.8,te:56,rb:132.1,rbrec:31.9}, MIA:{qb:223.3,wr:123.9,te:64.4,rb:103.6,rbrec:36.4},
+  MIN:{qb:186.9,wr:119.9,te:46.4,rb:103.9,rbrec:20.6}, NE:{qb:250.7,wr:175.2,te:46.7,rb:83.7,rbrec:28.8}, NO:{qb:255.6,wr:153.9,te:65.1,rb:113.4,rbrec:36.6}, NYG:{qb:189.3,wr:123.4,te:45.4,rb:92.4,rbrec:20.5},
+  NYJ:{qb:212.1,wr:121.6,te:62.1,rb:110.3,rbrec:28.4}, PHI:{qb:238.9,wr:178.6,te:42.9,rb:108.9,rbrec:17.4}, PIT:{qb:242,wr:138.5,te:57,rb:70,rbrec:46.9}, SEA:{qb:168.8,wr:99.6,te:42.1,rb:69.9,rbrec:27.1},
+  SF:{qb:222.9,wr:122.6,te:56.6,rb:71.5,rbrec:43.6}, TB:{qb:226.7,wr:139.1,te:58.4,rb:66.4,rbrec:29.1}, TEN:{qb:272.8,wr:194.9,te:42.9,rb:99.9,rbrec:35}, WAS:{qb:254.3,wr:153.6,te:68.8,rb:79.1,rbrec:32.5}
 };
 
 function renderDefProfile(){
