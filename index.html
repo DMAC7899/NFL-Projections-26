@@ -1722,25 +1722,26 @@ const LEAGUE_AVG_MAN = 0.2192, LEAGUE_AVG_PRESSURE = 0.0673, LEAGUE_AVG_TTT = 2.
    the same pressure but convert it into actual sacks at very different rates. Applied as
    an additional real adjustment to QB pass yards/TD, layered on top of (not replacing) the
    existing opponent pressure-rate effect. */
+/* Nov 13, 2026: 2026 Weeks 8-9 PFF sacks and pressures (ED, DI, LB, custom weeks 8-9) ADDED to the Oct 28 totals; sackConvPct recomputed; LEAGUE_AVG_SACK_CONV 14.8 -> 14.9 (team mean 14.87). */
 const TEAM_SACK_DATA = {
-ARI:{sacks:89,pressures:597,sackConvPct:14.9},  ATL:{sacks:114,pressures:733,sackConvPct:15.6},
-BAL:{sacks:117,pressures:764,sackConvPct:15.3},  BUF:{sacks:101,pressures:789,sackConvPct:12.8},
-CAR:{sacks:77,pressures:536,sackConvPct:14.4},  CHI:{sacks:102,pressures:655,sackConvPct:15.6},
-CIN:{sacks:91,pressures:627,sackConvPct:14.5},  CLE:{sacks:97,pressures:671,sackConvPct:14.5},
-DAL:{sacks:107,pressures:774,sackConvPct:13.8},  DEN:{sacks:191,pressures:1024,sackConvPct:18.7},
-DET:{sacks:120,pressures:859,sackConvPct:14.0},  GB:{sacks:106,pressures:747,sackConvPct:14.2},
-HOU:{sacks:148,pressures:875,sackConvPct:16.9},  IND:{sacks:100,pressures:642,sackConvPct:15.6},
-JAX:{sacks:83,pressures:720,sackConvPct:11.5},  KC:{sacks:104,pressures:795,sackConvPct:13.1},
-LAC:{sacks:117,pressures:712,sackConvPct:16.4},  LAR:{sacks:149,pressures:1011,sackConvPct:14.7},
-LV:{sacks:96,pressures:618,sackConvPct:15.5},  MIA:{sacks:82,pressures:575,sackConvPct:14.3},
-MIN:{sacks:127,pressures:793,sackConvPct:16.0},  NE:{sacks:101,pressures:764,sackConvPct:13.2},
-NO:{sacks:116,pressures:659,sackConvPct:17.6},  NYG:{sacks:96,pressures:630,sackConvPct:15.2},
-NYJ:{sacks:92,pressures:618,sackConvPct:14.9},  PHI:{sacks:121,pressures:948,sackConvPct:12.8},
-PIT:{sacks:123,pressures:794,sackConvPct:15.5},  SEA:{sacks:124,pressures:938,sackConvPct:13.2},
-SF:{sacks:82,pressures:638,sackConvPct:12.9},  TB:{sacks:109,pressures:805,sackConvPct:13.5},
-TEN:{sacks:92,pressures:574,sackConvPct:16.0},  WAS:{sacks:113,pressures:716,sackConvPct:15.8}
+ARI:{sacks:93,pressures:620,sackConvPct:15.0},  ATL:{sacks:117,pressures:752,sackConvPct:15.6},
+BAL:{sacks:119,pressures:788,sackConvPct:15.1},  BUF:{sacks:106,pressures:836,sackConvPct:12.7},
+CAR:{sacks:78,pressures:563,sackConvPct:13.9},  CHI:{sacks:110,pressures:689,sackConvPct:16.0},
+CIN:{sacks:93,pressures:661,sackConvPct:14.1},  CLE:{sacks:101,pressures:698,sackConvPct:14.5},
+DAL:{sacks:113,pressures:817,sackConvPct:13.8},  DEN:{sacks:196,pressures:1061,sackConvPct:18.5},
+DET:{sacks:126,pressures:888,sackConvPct:14.2},  GB:{sacks:118,pressures:795,sackConvPct:14.8},
+HOU:{sacks:155,pressures:899,sackConvPct:17.2},  IND:{sacks:106,pressures:669,sackConvPct:15.8},
+JAX:{sacks:88,pressures:748,sackConvPct:11.8},  KC:{sacks:110,pressures:819,sackConvPct:13.4},
+LAC:{sacks:119,pressures:739,sackConvPct:16.1},  LAR:{sacks:156,pressures:1045,sackConvPct:14.9},
+LV:{sacks:99,pressures:640,sackConvPct:15.5},  MIA:{sacks:88,pressures:604,sackConvPct:14.6},
+MIN:{sacks:136,pressures:824,sackConvPct:16.5},  NE:{sacks:109,pressures:807,sackConvPct:13.5},
+NO:{sacks:121,pressures:692,sackConvPct:17.5},  NYG:{sacks:104,pressures:651,sackConvPct:16.0},
+NYJ:{sacks:95,pressures:643,sackConvPct:14.8},  PHI:{sacks:129,pressures:980,sackConvPct:13.2},
+PIT:{sacks:133,pressures:829,sackConvPct:16.0},  SEA:{sacks:128,pressures:962,sackConvPct:13.3},
+SF:{sacks:82,pressures:650,sackConvPct:12.6},  TB:{sacks:111,pressures:835,sackConvPct:13.3},
+TEN:{sacks:95,pressures:592,sackConvPct:16.0},  WAS:{sacks:119,pressures:752,sackConvPct:15.8}
 };
-const LEAGUE_AVG_SACK_CONV = 14.8;
+const LEAGUE_AVG_SACK_CONV = 14.9;
 
 /* [SUPERSEDED Oct 2026 by the 2025+2026 blend described below] Real team-level run-defense grades, blended across two full real seasons
    (2023 and 2024), aggregated from individual defenders (PFF Run Defense Summary,
