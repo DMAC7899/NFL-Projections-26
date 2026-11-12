@@ -510,7 +510,7 @@
     Year-1 role — one lead player per role plus real committee backfields/WR depth, not literal full rosters.
     <b>Rosters:</b> reflect confirmed 2026 trades, free-agency moves and coaching hires as of early August
     2026. <b>Schedule:</b> official 2026 NFL regular-season grid. <b>Defense tiers:</b> passD derived from each
-    team's ESPN passing yards allowed per game, 2025 full season plus 2026 Weeks 1-7 (refreshed Oct 28, 2026). rushD is a real, weighted 2024+2025+2026 blend (1.5x weight
+    team's ESPN passing yards allowed per game, 2025 full season plus 2026 Weeks 1-9 (refreshed Nov 13, 2026). rushD is a real, weighted 2024+2025+2026 blend (1.5x weight
     on 2025 and on 2026, matching the same weighting already used for player baselines; CLE/LAR pass tiers keep the manual Garrett-trade adjustment) after finding the 2025-only tier
     moved 20 of 32 teams once 2024 was properly incorporated — a real, meaningful shift, not noise (e.g. New
     Orleans and Carolina's real, historically poor 2024 run defense was invisible in a 2025-only view).
@@ -673,13 +673,13 @@ const TEAMS = {
    stat, already PFF-sourced and untouched here). */
 ARI:{name:'Cardinals',hc:'Mike LaFleur',note:"New HC (ex-Rams OC) after Jonathan Gannon's firing. Offense being rebuilt from scratch after trading Kyler Murray to Minnesota — QB competition ongoing.",newHC:true,passD:3,rushD:3,cb:'Garrett Williams',cbGrade:64.2,vegasWinTotal:4.5,vegasMult:0.8824,olPassMult:0.951,olRunMult:0.962,olPbe:80.1,olRunGrade:59.7,sacksAllowed:59,
  sch:['@LAC','vs SEA','@SF','@NYG','vs DET','@LAR','vs DEN','@DAL','@SEA','vs LAR','@KC','vs WAS','vs PHI','BYE','vs NYJ','@NO','vs LV','vs SF']},
-ATL:{name:'Falcons',hc:'Kevin Stefanski',note:"New HC (ex-Browns) after Raheem Morris's firing. Zone-heavy run scheme historically fed a lead back hard — good scheme fit for a run-first offense, but new play-caller relationship.",newHC:true,passD:2,rushD:2,cb:'Mike Hughes',cbGrade:59.8,vegasWinTotal:7.5,vegasMult:0.9706,olPassMult:0.9833,olRunMult:1.0223,olPbe:83.13,olRunGrade:69.6,sacksAllowed:26,
+ATL:{name:'Falcons',hc:'Kevin Stefanski',note:"New HC (ex-Browns) after Raheem Morris's firing. Zone-heavy run scheme historically fed a lead back hard — good scheme fit for a run-first offense, but new play-caller relationship.",newHC:true,passD:2,rushD:3,cb:'Mike Hughes',cbGrade:59.8,vegasWinTotal:7.5,vegasMult:0.9706,olPassMult:0.9833,olRunMult:1.0223,olPbe:83.13,olRunGrade:69.6,sacksAllowed:26,
  sch:['@PIT','vs CAR','@GB','@NO','vs BAL','vs CHI','vs SF','@TB','vs CIN','vs KC','BYE','@MIN','vs DET','@CLE','@WAS','vs TB','vs NO','@CAR']},
 BAL:{name:'Ravens',hc:'Jesse Minter',note:"John Harbaugh fired after 18 seasons; Jesse Minter (ex-Chargers DC) hired as new HC, with Declan Doyle (who called plays for Caleb Williams's breakout in Chicago) brought in as OC. Entirely new offensive system for 2026 — the largest scheme-continuity risk in this dataset.",newHC:true,passD:4,rushD:0,cb:'Chidobe Awuzie',cbGrade:77.2,vegasWinTotal:11.5,vegasMult:1.0882,olPassMult:0.9389,olRunMult:0.9906,olPbe:78.97,olRunGrade:64.4,sacksAllowed:45,
  sch:['@IND','vs NO','@DAL','vs TEN','@ATL','@CLE','vs CIN','@BUF','vs JAX','vs LAC','@CAR','@HOU','BYE','vs TB','@PIT','vs CLE','@CIN','vs PIT']},
-BUF:{name:'Bills',hc:'Joe Brady',note:"Joe Brady promoted to HC after Sean McDermott's firing — Brady was already Buffalo's OC/play-caller, so scheme continuity is high: shotgun spread, RPO-heavy, tempo.",newHC:true,passD:0,rushD:3,cb:'Tre\'Davious White',cbGrade:68.2,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:0.9892,olRunMult:1.0121,olPbe:83.69,olRunGrade:67.9,sacksAllowed:40,
+BUF:{name:'Bills',hc:'Joe Brady',note:"Joe Brady promoted to HC after Sean McDermott's firing — Brady was already Buffalo's OC/play-caller, so scheme continuity is high: shotgun spread, RPO-heavy, tempo.",newHC:true,passD:0,rushD:2,cb:'Tre\'Davious White',cbGrade:68.2,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:0.9892,olRunMult:1.0121,olPbe:83.69,olRunGrade:67.9,sacksAllowed:40,
  sch:['@HOU','vs DET','vs LAC','vs NE','@LAR','@LV','BYE','vs BAL','@MIN','@NYJ','vs MIA','vs KC','@NE','@GB','vs CHI','@DEN','@MIA','vs NYJ']},
-CAR:{name:'Panthers',hc:'Dave Canales',note:"Canales retained. Timing-based West Coast passing scheme; run game leans on zone stretch.",newHC:false,passD:1,rushD:4,cb:'Mike Jackson',cbGrade:85.8,vegasWinTotal:6.5,vegasMult:0.9412,olPassMult:0.9749,olRunMult:1.0104,olPbe:82.35,olRunGrade:67.6,sacksAllowed:35,
+CAR:{name:'Panthers',hc:'Dave Canales',note:"Canales retained. Timing-based West Coast passing scheme; run game leans on zone stretch.",newHC:false,passD:2,rushD:4,cb:'Mike Jackson',cbGrade:85.8,vegasWinTotal:6.5,vegasMult:0.9412,olPassMult:0.9749,olRunMult:1.0104,olPbe:82.35,olRunGrade:67.6,sacksAllowed:35,
  sch:['vs CHI','@ATL','@CLE','vs DET','BYE','@PHI','vs TB','@GB','vs DEN','@NO','vs BAL','@TB','@MIN','vs NO','vs CIN','@PIT','vs SEA','vs ATL']},
 CHI:{name:'Bears',hc:'Ben Johnson',note:"Ben Johnson enters year two after a strong 2025 debut. Motion-heavy, explosive-play-focused scheme adapted from his Lions background.",newHC:false,passD:3,rushD:3,cb:'Nahshon Wright',cbGrade:64.8,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:1.0032,olRunMult:1.0373,olPbe:85,olRunGrade:72,sacksAllowed:24,
  sch:['@CAR','vs MIN','vs PHI','vs NYJ','@GB','@ATL','vs NE','@SEA','vs TB','BYE','vs NO','@DET','vs JAX','@MIA','@BUF','vs GB','vs DET','@MIN']},
@@ -691,9 +691,9 @@ DAL:{name:'Cowboys',hc:'Brian Schottenheimer',note:"Schottenheimer enters year t
  sch:['@NYG','vs WAS','vs BAL','@HOU','vs TB','@GB','@PHI','vs ARI','@IND','vs SF','vs TEN','vs PHI','@SEA','BYE','@LAR','vs JAX','vs NYG','@WAS']},
 DEN:{name:'Broncos',hc:'Sean Payton',note:"Payton retained; new OC Davis Webb calls plays (promoted from QB coach). Payton's system leans on pre-snap movement, quick game, and a heavy dose of RPOs for Bo Nix.",newHC:false,passD:1,rushD:0,cb:'Ja\'Quan McMillian',cbGrade:78.9,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:0.9931,olRunMult:1.0497,olPbe:84.05,olRunGrade:74.1,sacksAllowed:23,
  sch:['@KC','vs JAX','vs LAR','@SF','@LAC','vs SEA','@ARI','vs KC','@CAR','BYE','vs LV','@PIT','vs MIA','@NYJ','@LV','vs BUF','@NE','vs LAC']},
-DET:{name:'Lions',hc:'Dan Campbell',note:"Campbell retained. Aggressive, gap/power-and-zone hybrid attack — one of the league's most efficient offenses. David Montgomery traded to Houston, opening up more early-down work.",newHC:false,passD:4,rushD:1,cb:'Rock Ya-Sin',cbGrade:64.9,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:0.9652,olRunMult:1.0205,olPbe:81.44,olRunGrade:69.3,sacksAllowed:39,
+DET:{name:'Lions',hc:'Dan Campbell',note:"Campbell retained. Aggressive, gap/power-and-zone hybrid attack — one of the league's most efficient offenses. David Montgomery traded to Houston, opening up more early-down work.",newHC:false,passD:3,rushD:1,cb:'Rock Ya-Sin',cbGrade:64.9,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:0.9652,olRunMult:1.0205,olPbe:81.44,olRunGrade:69.3,sacksAllowed:39,
  sch:['vs NO','@BUF','vs NYJ','@CAR','@ARI','BYE','vs GB','vs MIN','@MIA','vs NE','vs TB','vs CHI','@ATL','vs TEN','@MIN','vs NYG','@CHI','@GB']},
-GB:{name:'Packers',hc:'Matt LaFleur',note:"LaFleur retained. Outside-zone-based scheme with heavy misdirection and play-action; Romeo Doubs traded to New England thins the receiver room.",newHC:false,passD:1,rushD:2,cb:'Keisean Nixon',cbGrade:68.7,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:0.9342,olRunMult:0.955,olPbe:78.53,olRunGrade:58.5,sacksAllowed:29,
+GB:{name:'Packers',hc:'Matt LaFleur',note:"LaFleur retained. Outside-zone-based scheme with heavy misdirection and play-action; Romeo Doubs traded to New England thins the receiver room.",newHC:false,passD:1,rushD:1,cb:'Keisean Nixon',cbGrade:68.7,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:0.9342,olRunMult:0.955,olPbe:78.53,olRunGrade:58.5,sacksAllowed:29,
  sch:['@MIN','@NYJ','vs ATL','@TB','vs CHI','vs DAL','@DET','vs CAR','@NE','vs MIN','BYE','@LAR','@NO','vs BUF','vs MIA','@CHI','vs HOU','vs DET']},
 HOU:{name:'Texans',hc:'DeMeco Ryans',note:"Ryans retained. Defense-first identity; offense uses wide-zone run concepts. Added RB David Montgomery via trade for backfield depth.",newHC:false,passD:1,rushD:0,cb:'Kamari Lassiter',cbGrade:77.0,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:0.9501,olRunMult:0.9646,olPbe:80.03,olRunGrade:60.1,sacksAllowed:31,
  sch:['vs BUF','vs CIN','@IND','vs DAL','@TEN','@JAX','vs NYG','BYE','@LAC','@CLE','vs IND','vs BAL','@PIT','@WAS','vs JAX','@PHI','@GB','vs TEN']},
@@ -711,17 +711,17 @@ LAR:{name:'Rams',hc:'Sean McVay',note:"McVay retained; OC Nate Scheelhaase promo
  sch:['vs SF','vs NYG','@DEN','@PHI','vs BUF','vs ARI','@LV','vs LAC','@WAS','@ARI','BYE','vs GB','vs KC','@SF','vs DAL','@SEA','@TB','vs SEA']},
 MIA:{name:'Dolphins',hc:'Jeff Hafley',note:"New HC (ex-Packers DC) after Mike McDaniel's firing. Traded away WR Jaylen Waddle; receiver room is thin heading into 2026 — treat as a rebuild year.",newHC:true,passD:2,rushD:2,cb:'Rasul Douglas',cbGrade:72.6,vegasWinTotal:3.5,vegasMult:0.8529,olPassMult:0.9084,olRunMult:0.959,olPbe:76.11,olRunGrade:59.2,sacksAllowed:38,
  sch:['@LV','@SF','vs KC','@MIN','vs CIN','BYE','@NYJ','vs NE','vs DET','@IND','@BUF','vs NYJ','@DEN','vs CHI','@GB','vs LAC','vs BUF','@NE']},
-MIN:{name:'Vikings',hc:'Kevin O\u2019Connell',note:"O'Connell retained. Traded for QB Kyler Murray from Arizona — a major offensive-identity swing alongside Justin Jefferson. Zone-run/play-action scheme.",newHC:false,passD:0,rushD:1,cb:'Isaiah Rodgers',cbGrade:74.1,vegasWinTotal:8.5,vegasMult:1.0,olPassMult:0.985,olRunMult:0.9887,olPbe:83.3,olRunGrade:64,sacksAllowed:60,
+MIN:{name:'Vikings',hc:'Kevin O\u2019Connell',note:"O'Connell retained. Traded for QB Kyler Murray from Arizona — a major offensive-identity swing alongside Justin Jefferson. Zone-run/play-action scheme.",newHC:false,passD:0,rushD:2,cb:'Isaiah Rodgers',cbGrade:74.1,vegasWinTotal:8.5,vegasMult:1.0,olPassMult:0.985,olRunMult:0.9887,olPbe:83.3,olRunGrade:64,sacksAllowed:60,
  sch:['vs GB','@CHI','@TB','vs MIA','@NO','BYE','vs IND','@DET','vs BUF','@GB','@SF','vs ATL','vs CAR','@NE','vs DET','vs WAS','@NYJ','vs CHI']},
-NE:{name:'Patriots',hc:'Mike Vrabel',note:"Vrabel enters year two. Efficient, aggressive downfield passing game; added WR Romeo Doubs via trade to pair with Stefon Diggs.",newHC:false,passD:1,rushD:1,cb:'Christian Gonzalez',cbGrade:76.9,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:0.9917,olRunMult:0.9842,olPbe:83.92,olRunGrade:63.3,sacksAllowed:48,
+NE:{name:'Patriots',hc:'Mike Vrabel',note:"Vrabel enters year two. Efficient, aggressive downfield passing game; added WR Romeo Doubs via trade to pair with Stefon Diggs.",newHC:false,passD:2,rushD:1,cb:'Christian Gonzalez',cbGrade:76.9,vegasWinTotal:9.5,vegasMult:1.0294,olPassMult:0.9917,olRunMult:0.9842,olPbe:83.92,olRunGrade:63.3,sacksAllowed:48,
  sch:['@SEA','vs PIT','@JAX','@BUF','vs LV','vs NYJ','@CHI','@MIA','vs GB','@DET','BYE','@LAC','vs BUF','vs MIN','@KC','@NYJ','vs DEN','vs MIA']},
 NO:{name:'Saints',hc:'Kellen Moore',note:"Moore's system leans on quick-rhythm passing. Added lead back Travis Etienne via trade from Jacksonville — expected to take over the backfield.",newHC:false,passD:0,rushD:4,cb:'Kool-Aid McKinstry',cbGrade:71.4,vegasWinTotal:7.5,vegasMult:0.9706,olPassMult:0.9782,olRunMult:0.955,olPbe:82.66,olRunGrade:58.5,sacksAllowed:49,
  sch:['@DET','@BAL','vs LV','vs ATL','vs MIN','@NYG','vs PIT','BYE','vs CLE','vs CAR','@CHI','@CIN','vs GB','@CAR','@TB','vs ARI','@ATL','vs TB']},
-NYG:{name:'Giants',hc:'John Harbaugh',note:"John Harbaugh hired as new HC after being fired by Baltimore — a striking reunion story. New offensive system entirely for 2026.",newHC:true,passD:2,rushD:4,cb:'Dru Phillips',cbGrade:65.4,vegasWinTotal:7.5,vegasMult:0.9706,olPassMult:0.9916,olRunMult:0.9651,olPbe:83.91,olRunGrade:60.2,sacksAllowed:48,
+NYG:{name:'Giants',hc:'John Harbaugh',note:"John Harbaugh hired as new HC after being fired by Baltimore — a striking reunion story. New offensive system entirely for 2026.",newHC:true,passD:1,rushD:4,cb:'Dru Phillips',cbGrade:65.4,vegasWinTotal:7.5,vegasMult:0.9706,olPassMult:0.9916,olRunMult:0.9651,olPbe:83.91,olRunGrade:60.2,sacksAllowed:48,
  sch:['vs DAL','@LAR','vs TEN','vs ARI','@WAS','vs NO','@HOU','BYE','@PHI','vs WAS','vs JAX','@IND','vs SF','@SEA','vs CLE','@DET','@DAL','vs PHI']},
 NYJ:{name:'Jets',hc:'Aaron Glenn',note:"Glenn retained for year two. Justin Fields traded away to Kansas City (Mar 2026) — Geno Smith is now the real, unchallenged starter.",newHC:false,passD:2,rushD:4,cb:'Brandon Stephens',cbGrade:63.0,vegasWinTotal:5.5,vegasMult:0.9118,olPassMult:0.9851,olRunMult:0.9859,olPbe:83.3,olRunGrade:63.6,sacksAllowed:60,
  sch:['@TEN','vs GB','@DET','@CHI','vs CLE','@NE','vs MIA','vs LV','@KC','vs BUF','@LAC','@MIA','BYE','vs DEN','@ARI','vs NE','vs MIN','@BUF']},
-PHI:{name:'Eagles',hc:'Nick Sirianni',note:"Sirianni retained. Run-first, tush-push-centric identity that suppresses receiver target volume league-wide; added WR Marquise Brown via trade for depth.",newHC:false,passD:2,rushD:2,cb:'Quinyon Mitchell',cbGrade:80.2,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:0.9951,olRunMult:1.0185,olPbe:84.25,olRunGrade:68.9,sacksAllowed:35,
+PHI:{name:'Eagles',hc:'Nick Sirianni',note:"Sirianni retained. Run-first, tush-push-centric identity that suppresses receiver target volume league-wide; added WR Marquise Brown via trade for depth.",newHC:false,passD:1,rushD:2,cb:'Quinyon Mitchell',cbGrade:80.2,vegasWinTotal:10.5,vegasMult:1.0588,olPassMult:0.9951,olRunMult:1.0185,olPbe:84.25,olRunGrade:68.9,sacksAllowed:35,
  sch:['vs WAS','@TEN','@CHI','vs LAR','@JAX','vs CAR','vs DAL','@WAS','vs NYG','BYE','vs PIT','@DAL','@ARI','vs IND','vs SEA','vs HOU','@SF','@NYG']},
 PIT:{name:'Steelers',hc:'Mike McCarthy',note:"New HC after Mike Tomlin's resignation following 19 seasons. McCarthy reunites with Aaron Rodgers from their Green Bay days. Added RB Rico Dowdle via trade, creating a backfield timeshare.",newHC:true,passD:4,rushD:1,cb:'Joey Porter Jr.',cbGrade:76.6,vegasWinTotal:8.5,vegasMult:1.0,olPassMult:1.0006,olRunMult:0.9974,olPbe:84.76,olRunGrade:65.5,sacksAllowed:31,
  sch:['vs ATL','@NE','vs CIN','@CLE','vs IND','@TB','@NO','vs CLE','BYE','@CIN','@PHI','vs DEN','vs HOU','@JAX','vs BAL','vs CAR','@TEN','@BAL']},
@@ -731,7 +731,7 @@ SEA:{name:'Seahawks',hc:'Mike Macdonald',note:"Macdonald retained after a Super 
  sch:['vs NE','@ARI','@WAS','vs LAC','vs SF','@DEN','vs KC','vs CHI','vs ARI','@LV','BYE','@SF','vs DAL','vs NYG','@PHI','vs LAR','@CAR','@LAR']},
 TB:{name:'Buccaneers',hc:'Todd Bowles',note:"Bowles retained. Traded away Mike Evans to San Francisco, clearing the WR1 role for Emeka Egbuka. Added RB Kenneth Gainwell via trade for pass-catching work.",newHC:false,passD:3,rushD:0,cb:'Jamel Dean',cbGrade:75.9,vegasWinTotal:8.5,vegasMult:1.0,olPassMult:0.9964,olRunMult:0.9531,olPbe:84.37,olRunGrade:58.2,sacksAllowed:38,
  sch:['@CIN','vs CLE','vs MIN','vs GB','@DAL','vs PIT','@CAR','vs ATL','@CHI','BYE','@DET','vs CAR','vs LAC','@BAL','vs NO','@ATL','vs LAR','@NO']},
-TEN:{name:'Titans',hc:'Robert Saleh',note:"New HC after Brian Callahan's in-season firing. Added WR Wan'Dale Robinson via trade from the Giants.",newHC:true,passD:3,rushD:3,cb:'Alontae Taylor',cbGrade:66.8,vegasWinTotal:6.5,vegasMult:0.9412,olPassMult:0.9979,olRunMult:0.9689,olPbe:84.51,olRunGrade:60.8,sacksAllowed:56,
+TEN:{name:'Titans',hc:'Robert Saleh',note:"New HC after Brian Callahan's in-season firing. Added WR Wan'Dale Robinson via trade from the Giants.",newHC:true,passD:4,rushD:3,cb:'Alontae Taylor',cbGrade:66.8,vegasWinTotal:6.5,vegasMult:0.9412,olPassMult:0.9979,olRunMult:0.9689,olPbe:84.51,olRunGrade:60.8,sacksAllowed:56,
  sch:['vs NYJ','vs PHI','@NYG','@BAL','vs HOU','@IND','vs CLE','@CIN','BYE','vs JAX','@DAL','@JAX','vs WAS','@DET','vs IND','@LV','vs PIT','@HOU']},
 WAS:{name:'Commanders',hc:'Dan Quinn',note:"Quinn retained. Added RB Rachaad White via trade from Tampa Bay as a receiving-down complement.",newHC:false,passD:4,rushD:4,cb:'Trey Amos',cbGrade:58.8,vegasWinTotal:7.5,vegasMult:0.9706,olPassMult:0.983,olRunMult:0.9651,olPbe:83.1,olRunGrade:60.2,sacksAllowed:37,
  sch:['@PHI','@DAL','vs SEA','vs IND','vs NYG','@SF','BYE','vs PHI','vs LAR','@NYG','vs CIN','@ARI','@TEN','vs HOU','vs ATL','@MIN','@JAX','vs DAL']}
@@ -993,6 +993,7 @@ const P = [
 {n:'Keaton Mitchell',p:'RB',t:'LAC',b:{rushAtt:6.8,rushYd:31,rushTD:0.1,rec:2.3,recYd:8.5,recTD:0.2},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (6.8 att/31 rush yd, 2.3 rec/8.5 rec yd per game over 4 games); TD rate shrunk 50% toward a typical RB rate. Small sample, low confidence.',c:'balanced',s:'balanced-back'},
 {n:'Mike Washington Jr.',p:'RB',t:'LV',b:{rushAtt:6,rushYd:30,rushTD:0.24,rec:0.3,recYd:0,recTD:0.01},f:'Real, current (Oct 7 sweep): was missing from the roster despite a real role. Baseline = real ESPN 2026 Wk1-4 box-score per-game average (6 att/30 rush yd, 0.3 rec/0 rec yd per game over 4 games); TD rate shrunk 50% toward a typical RB rate. Small sample, low confidence.',c:'balanced',s:'balanced-back'},
 {n:'Jonah Coleman',p:'RB',t:'DEN',b:{rushAtt:5.9,rushYd:25.5,rushTD:0.24,rec:1.4,recYd:9.3,recTD:0.02},f:'Real 2026 line (Oct 29 add, user request): back from injured reserve Oct 24, played 3 of 7 DEN games: 19 att / 93 yd / 1 TD and 5 rec / 34 yd (PFF 66.0 off, 65.0 run, only 32 rushing snaps). Shrunk 50% (3 games vs a 3-game prior) toward the median RB-depth baseline already in the tool; low confidence.',c:'balanced',s:'balanced-back'},
+{n:'Elijah Mitchell',p:'RB',t:'PHI',b:{rushAtt:5.58,rushYd:18.5,rushTD:0.07,rec:2.24,recYd:11.27,recTD:0.02},f:'Real 2026 line (Nov 13 missing-player scan): active on PHI\'s roster, played Wks 7-9 (3 games): 17 att / 51 yd / 0 TD and 10 rec / 46 yd on 14 tgt. Shrunk 50% (3 games vs a 3-game prior) toward the median RB-depth baseline already in the tool; low confidence.',c:'balanced',s:'balanced-back'},
 {n:'Dameon Pierce',p:'RB',t:'PHI',b:{rushAtt:11.5,rushYd:24.5,rushTD:0.51,rec:3,recYd:6.5,recTD:0.06},f:'Real, current (Oct 21 sweep): was missing from the roster despite real recent volume. Baseline = real ESPN 2026 Wk1-6 box-score per-game average (11.5 att/24.5 rush yd, 3 rec/6.5 rec yd per game over 2 team games since first appearance); TD rate shrunk 50% toward a typical RB rate. Small sample, low confidence.',c:'balanced',s:'balanced-back'},
 {n:'Pierre Strong Jr.',p:'RB',t:'GB',b:{rushAtt:8,rushYd:17.5,rushTD:0.18,rec:4,recYd:25,recTD:0.08},f:'Real, current (Oct 21 sweep): was missing from the roster despite real recent volume. Baseline = real ESPN 2026 Wk1-6 box-score per-game average (8 att/17.5 rush yd, 4 rec/25 rec yd per game over 2 team games since first appearance); TD rate shrunk 50% toward a typical RB rate. Small sample, low confidence.',c:'balanced',s:'balanced-back'},
 {n:'Bam Knight',p:'RB',t:'ARI',b:{rushAtt:3.6,rushYd:22.4,rushTD:0.08,rec:0.4,recYd:3.6,recTD:0.01},f:'Real, current (Oct 21 sweep): was missing from the roster despite real recent volume. Baseline = real ESPN 2026 Wk1-6 box-score per-game average (3.6 att/22.4 rush yd, 0.4 rec/3.6 rec yd per game over 5 team games since first appearance); TD rate shrunk 50% toward a typical RB rate. Small sample, low confidence.',c:'balanced',s:'balanced-back'},
@@ -1115,11 +1116,17 @@ const scriptLabels = ['Trailing Big','Trailing','Neutral','Leading','Leading Big
 /* WEEKLY CALIBRATION refreshed Oct 28, 2026: Week 7 added (live engine as published Oct 21, played players only). Residual PPR bias (proj - actual):
    QB -0.23 (n=27, mean proj 15.2), RB -1.39 (n=51, 10.8), WR +1.26 (n=83, 9.7), TE +0.35 (n=39, not calibrated). Same 20% damping, scaled by
    Week 7's 1/6 share of the pooled sample (6 weeks): QB 0.9839->0.9844, RB 0.9835->0.9878, WR 0.9650->0.9607. */
+/* WEEKLY CALIBRATION refreshed Nov 13, 2026: Weeks 8 and 9 added. Neither week was in the engine (QB lines, role lines, tiers and DvP were all Weeks 1-7 until
+   the Nov 12-13 refreshes), so both are clean out-of-sample checks; run on the Nov 12 engine (commit 4770b05), played players only. Residual PPR bias (proj - actual):
+   Week 8: QB +1.96 (n=25, mean proj 17.2), RB -0.75 (n=55, 10.4), WR -0.21 (n=80, 9.3), TE -0.30 (n=37, not calibrated).
+   Week 9: QB +2.21 (n=24, 18.0), RB +0.88 (n=55, 10.6), WR -0.14 (n=83, 9.4), TE +0.88 (n=41, not calibrated).
+   Same 20% damping, scaled by each week's share of the pooled sample (Week 8 = 1/7, Week 9 = 1/8): QB 0.9844->0.9782, RB 0.9878->0.9898->0.9878, WR 0.9607->0.9617.
+   QB over-projection has now shown in two straight weeks (+2.0, +2.2); the multiplier is deliberately moved only by the damped amount. */
 const WEEKLY_CALIBRATION = {
-  weeksOfData: 6,
-  qbMult: 0.9844, // was 0.9839
-  wrMult: 0.9607, // was 0.9650
-  rbMult: 0.9878, // was 0.9835
+  weeksOfData: 8,
+  qbMult: 0.9782, // was 0.9844
+  wrMult: 0.9617, // was 0.9607
+  rbMult: 0.9878, // unchanged (Week 8 +0.0020, Week 9 -0.0020)
 };
 
 /* BETTING TAB SUPPORT DATA (real, disclosed):
@@ -3725,34 +3732,38 @@ const ROLE_2026_PRIOR_G = 6;
    blend is weighted 4 game-equivalents instead of 6 (2026 share 3/9 -> 3/7). Judgement call, not back-tested (3-game sample); revisit after Week 7. */
 const ROLE_2026_PRIOR_G_OVERRIDE = {'Brock Bowers':4};
 const ROLE_2026 = {
- // Oct 28 refresh (Wk1-7): every entry re-averaged over the games the player appeared in; Corum, Chase and Schultz added Oct 28 under the same rule as before (full-season availability, volume gap >35% in the same direction as yardage, 4+ games; not back-tested).
- 'Chris Godwin': {g:7, tgt:4.86, rec:3.86, recYd:34.71, recTD:0},
- 'Emeka Egbuka': {g:6, tgt:8.17, rec:4.67, recYd:40, recTD:0.33},
- 'Kenneth Gainwell': {g:7, rushAtt:4.71, rushYd:21.29, rushTD:0, rec:1.71, recYd:8.71, recTD:0.14},
- 'Isaiah Likely': {g:7, tgt:9, rec:5.86, recYd:56.43, recTD:0.71},
- 'Brock Bowers': {g:5, tgt:10.4, rec:6.8, recYd:91, recTD:0.6},
- 'Puka Nacua': {g:5, tgt:12.4, rec:9, recYd:97, recTD:0.4},
- 'Pat Freiermuth': {g:7, tgt:4.71, rec:3.29, recYd:28.57, recTD:0.57},
+ // Nov 13 refresh (Wk1-9): every entry re-averaged over the games the player appeared in. Entries whose volume gap versus the pre-2026 baseline fell under 20% were dropped (Egbuka, Gainwell, A. Jones, Bernard); Najee Harris and Kendre Miller are frozen (released / off the roster). Added under the same rule (appeared in at least team games - 2, volume gap >35% in the same direction as yardage, 10+ yd/game change, not currently OUT; not back-tested): K. Johnson, Barkley, Allgeier, R. Davis, Bateman, Waddle, Tremayne, Lemon.
+ 'Chris Godwin': {g:9, tgt:4.22, rec:3.22, recYd:28.78, recTD:0},
+ 'Isaiah Likely': {g:8, tgt:8.63, rec:5.75, recYd:56, recTD:0.75},
+ 'Brock Bowers': {g:7, tgt:10, rec:6.86, recYd:94, recTD:0.86},
+ 'Puka Nacua': {g:7, tgt:13.29, rec:10, recYd:102.14, recTD:0.57},
+ 'Pat Freiermuth': {g:8, tgt:4.38, rec:3.13, recYd:29.38, recTD:0.5},
  'Dontayvion Wicks': {g:6, tgt:5.33, rec:3.17, recYd:47.33, recTD:0.17},
- 'Rashee Rice': {g:3, tgt:5.67, rec:4.33, recYd:63.33, recTD:0.33},
- 'Tyrone Tracy Jr.': {g:6, rushAtt:3.17, rushYd:9.17, rushTD:0.33, rec:0.83, recYd:9, recTD:0.17},
- 'Braelon Allen': {g:7, rushAtt:13, rushYd:59.71, rushTD:0.29, rec:2.14, recYd:10.71, recTD:0},
+ 'Rashee Rice': {g:5, tgt:6.4, rec:5, recYd:58.4, recTD:0.4},
+ 'Tyrone Tracy Jr.': {g:7, rushAtt:2.71, rushYd:7.86, rushTD:0.29, rec:0.71, recYd:7.71, recTD:0.14},
+ 'Braelon Allen': {g:9, rushAtt:13.33, rushYd:66.44, rushTD:0.33, rec:2.11, recYd:11.33, recTD:0},
  'Kendre Miller': {g:6, rushAtt:9.5, rushYd:26.5, rushTD:0.33, rec:1.5, recYd:6.17, recTD:0},
  'RJ Harvey': {g:6, rushAtt:4, rushYd:14.5, rushTD:0.17, rec:4.17, recYd:36.17, recTD:0.17},
- 'J.K. Dobbins': {g:7, rushAtt:12.43, rushYd:41.86, rushTD:0.43, rec:1.14, recYd:3.86, recTD:0},
- 'Chuba Hubbard': {g:6, rushAtt:16, rushYd:76.5, rushTD:0.67, rec:2.5, recYd:18.67, recTD:0.33},
- 'Aaron Jones': {g:6, rushAtt:17.5, rushYd:72.67, rushTD:0.33, rec:2.17, recYd:12, recTD:0},
- 'Jalen Coker': {g:5, tgt:7.8, rec:5, recYd:65.6, recTD:0.4},
- 'Courtland Sutton': {g:7, tgt:4.71, rec:2.29, recYd:24, recTD:0.14},
- 'Brian Thomas Jr.': {g:6, tgt:3.33, rec:1.5, recYd:17.5, recTD:0.17},
- 'Troy Franklin': {g:6, tgt:1.5, rec:0.83, recYd:11, recTD:0},
- 'Ladd McConkey': {g:5, tgt:3.6, rec:2.6, recYd:40, recTD:0.2},
- 'Germie Bernard': {g:6, tgt:6.17, rec:4.5, recYd:42.33, recTD:0.17},
- 'Jauan Jennings': {g:5, tgt:1.6, rec:0.8, recYd:8.6, recTD:0},
+ 'J.K. Dobbins': {g:9, rushAtt:10.89, rushYd:36, rushTD:0.33, rec:1, recYd:3.44, recTD:0},
+ 'Chuba Hubbard': {g:8, rushAtt:16.75, rushYd:77.38, rushTD:0.63, rec:3.25, recYd:20.88, recTD:0.25},
+ 'Jalen Coker': {g:7, tgt:7, rec:4.43, recYd:56.14, recTD:0.43},
+ 'Courtland Sutton': {g:9, tgt:5.11, rec:2.78, recYd:29.56, recTD:0.22},
+ 'Brian Thomas Jr.': {g:7, tgt:3.14, rec:1.43, recYd:16.71, recTD:0.29},
+ 'Troy Franklin': {g:8, tgt:1.88, rec:1.13, recYd:12.5, recTD:0},
+ 'Ladd McConkey': {g:6, tgt:4, rec:2.83, recYd:47.67, recTD:0.17},
+ 'Jauan Jennings': {g:6, tgt:1.67, rec:1, recYd:9, recTD:0},
  'Najee Harris': {g:5, rushAtt:6.2, rushYd:19.8, rushTD:0, rec:0.2, recYd:1, recTD:0},
- 'Blake Corum': {g:7, rushAtt:9.14, rushYd:45.14, rushTD:0.29, rec:1.43, recYd:14.14, recTD:0.14},
- 'Ja\'Marr Chase': {g:6, tgt:7.5, rec:5.33, recYd:58.5, recTD:0.83},
- 'Dalton Schultz': {g:7, tgt:6.14, rec:4.71, recYd:46, recTD:0}
+ 'Blake Corum': {g:9, rushAtt:9.56, rushYd:49.67, rushTD:0.44, rec:1.11, recYd:11, recTD:0.11},
+ 'Ja\'Marr Chase': {g:8, tgt:9.13, rec:6.63, recYd:80.88, recTD:0.88},
+ 'Dalton Schultz': {g:8, tgt:5.88, rec:4.38, recYd:45.5, recTD:0},
+ 'Kaleb Johnson': {g:7, rushAtt:6, rushYd:24.57, rushTD:0.14, rec:0.14, recYd:1.43, recTD:0},
+ 'Saquon Barkley': {g:7, rushAtt:9.86, rushYd:42.29, rushTD:0.43, rec:1, recYd:5.86, recTD:0},
+ 'Tyler Allgeier': {g:9, rushAtt:9.89, rushYd:41, rushTD:0.22, rec:2.56, recYd:14.22, recTD:0.11},
+ 'Ray Davis': {g:7, rushAtt:1.86, rushYd:6.29, rushTD:0, rec:0.43, recYd:5.71, recTD:0},
+ 'Rashod Bateman': {g:9, tgt:3.44, rec:2.22, recYd:32.67, recTD:0.11},
+ 'Jaylen Waddle': {g:9, tgt:5.78, rec:3.33, recYd:37.44, recTD:0.22},
+ 'Brycen Tremayne': {g:8, tgt:1.5, rec:0.88, recYd:15.75, recTD:0},
+ 'Makai Lemon': {g:9, tgt:6, rec:4.11, recYd:34.67, recTD:0.11}
 };
 /* Players whose 2024 season is not representative (age / role / offence change): skip the 2024 blend. */
 const RECV_2024_EXCLUDE = {'Chris Godwin':'healthy 2024 (82 yd/g, 0.71 TD) no longer matches his role: 35.5 yd/g and 1.04 YPRR in 2026'};
@@ -3831,13 +3842,13 @@ const NEUTRAL_OPP_FIELDS = {oppTier:2, site:0, cov:1, cbShadow:false, pressure:n
                             runDefOverall:null, runDefInterior:null, cbGrade:null, oppAb:null};
 /* TEAM RB CARRIES (added Oct 30, 2026). The engine projects each running back from his own baseline, so a backfield with more backs than
    carries to go round was over-counted (GB Week 8: Jacobs 15.6 + Lloyd 9.5 + Johnson 4.0 + Strong 8.0 = 37 carries vs 17.7 a game from those
-   backs in real games). TEAM_RB_CARRIES = real ESPN carries per team game by the running backs in this tool (Weeks 1-7, refreshed Oct 30).
+   backs in real games). TEAM_RB_CARRIES = real ESPN carries per team game by the running backs in this tool (Weeks 1-9, refreshed Nov 13).
    rbCarryFactor() scales every available back's carries, rushing yards and rushing TD by (team average / sum of the available backs'
    baseline carries) ^ RB_CARRY_REBAL, clamped to 0.6-1.3. Backtest, 289 back-games Weeks 3-7 (earlier weeks only), mean carry error
    by strength 0 / 0.5 / 1: 3.56 / 3.39 / 3.58, so half strength. Targets were tested the same way and gained nothing (1.92 either way),
    so receiving is NOT rebalanced. REFRESH weekly with the box scores. */
 const RB_CARRY_REBAL = 0.5;
-const TEAM_RB_CARRIES = {ARI:21.9, ATL:26.3, BAL:24, BUF:20.7, CAR:20.3, CHI:28.6, CIN:18.8, CLE:15.7, DAL:15.7, DEN:18.6, DET:25, GB:17.7, HOU:18.4, IND:24.6, JAX:23.8, KC:23.2, LAC:22.7, LAR:22.9, LV:20.9, MIA:21, MIN:22.5, NE:23.4, NO:20.7, NYG:23.7, NYJ:20.3, PHI:18.3, PIT:19, SEA:25, SF:20.1, TB:21.9, TEN:18.6, WAS:17.2};
+const TEAM_RB_CARRIES = {ARI:21.4, ATL:24.7, BAL:23.1, BUF:23.6, CAR:20, CHI:27.1, CIN:18.6, CLE:15.1, DAL:17.1, DEN:18.8, DET:25.9, GB:19.4, HOU:18.4, IND:22.7, JAX:25, KC:23.1, LAC:23, LAR:23.7, LV:20.6, MIA:20.5, MIN:19.9, NE:22.7, NO:18.9, NYG:23.4, NYJ:20.7, PHI:17.1, PIT:20.6, SEA:24.1, SF:21.3, TB:25.6, TEN:18.9, WAS:16.6};
 const _rbCarryCache = {};
 function rbCarryFactor(p, wk){
   if(p.p!=='RB' || !wk) return 1;
