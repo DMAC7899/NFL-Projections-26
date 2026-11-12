@@ -369,3 +369,16 @@ ALIGN_DVP_2026 was still the Oct 28 build (Weeks 1-7). Rebuilt with the same met
 ## Red-zone usage refresh, Nov 13, 2026 (QB_REDZONE, RECV_REDZONE)
 Both tables were 2025. PFF has no red-zone split on its receiving or passing pages, so they are rebuilt from the ESPN play-by-play already pulled for all 136 games (Weeks 1-9). Red zone = play starts inside the opponent 20, end zone = inside the 10 (an approximation of PFF's end-zone target), goal line = inside the 5. Pass targets are read from the play text ("pass ... to F.Last"), rushers from the first name in the play text; abbreviations are matched to box-score athletes by first initial and surname within the team. Shares use the team's full totals, including targets to players with no box-score line (about 12% of plays could not be tied to a named player and count only toward the team total). Games = box-score appearances. Display only, not used in projections.
 Also: the on-page coverage-shell text now says the man/zone rates blend 2025 with 2026 to date (it already did since Oct 7).
+
+## Full ESPN reconciliation, Nov 13, 2026
+Every set ESPN can verify was checked against the 136 box scores, the Weeks 1-18 scoreboards, the rosters and the injury and transactions feeds.
+- DVP_2026 (qb, wr, te, rb, rbrec, 32 teams, 160 values): agrees with the box scores. The only gaps are definitional (the tool counts QB-position passers only, and a player cut mid-season keeps his position at build time).
+- QB_2026_LINES (39 QBs): exact match to ESPN per 30 attempts (yards, TD, interceptions, attempts/30).
+- TEAM_RB_CARRIES: matches ESPN carries by the tool's RBs per game for 31 teams; PHI corrected 17.1 to 19.0 (Elijah Mitchell's carries were not counted).
+- PFF_QB games vs ESPN appearances: all within 1 (Justin Fields has not played).
+- ALIGN_DVP_2026: team total vs DVP WR+TE within 0.5 yards on average (HOU 7 under, from receivers that could not be matched by name).
+- Schedule: all 576 team-week cells (18 weeks x 32) match the ESPN scoreboards, byes included.
+- Rosters: every tool player and defender checked against fresh ESPN rosters. Name collisions (Justin Jefferson, DeVonta Smith, Byron Young, Byron Murphy, Marcus Harris) resolved by team and position. Fixes: Andre Cisco moved NYJ to DET (traded Nov 9). Rayshawn Jenkins (now BAL practice squad), Bralen Trice, Xavier Woods, Reddy Steward and Jordan Elliott (all waived or released) marked OUT in DEF_AVAILABILITY. Will Anderson Jr. added as QUESTIONABLE.
+- Red zone: inside-5 rush TDs never exceed a player's box-score rush TDs. Fixed a bug found by this check (replay-reversed touchdowns were counted as scored).
+- Left unresolved: 10 defenders with 2026 PFF grades are not on any ESPN roster and have no transaction (Pat Jones II, Cam'Ron Jackson, JT Tuimoloau, Camryn Bynum, Kamren Curl, Foley Fatukasi, Joshua Uche, Josh Metellus, Tariq Woolen, plus Darius Slayton already OUT); most likely injured reserve, which the ESPN roster feed omits.
+- ESPN injury feed anomaly (22:24Z Nov 12): about 25 players flipped from Questionable to Out while their own comments say full or limited practice (Watson, Pickens, Delane, A.J. Brown, Evans and others). Not applied; the tool keeps the 22:02Z statuses. Re-check against the official Friday designations.
