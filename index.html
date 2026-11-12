@@ -1194,42 +1194,42 @@ const WIN_TOTAL_SCORING_MODEL = {
    same conservative 25% (PFF_BLEND_WEIGHT) rather than increased, despite having
    more real data now -- "more weeks = more confident" doesn't hold uniformly
    here, and this should keep being rechecked rather than assumed. */
-/* Oct 28, 2026: PFF team grades refreshed through WEEK 7 (Oct 21 text follows). Oct 21, 2026: PFF team grades refreshed through WEEK 6 (the constant keeps its WK4 name so call sites do not change). PF/PA on that page match the ESPN scoreboard totals exactly for all 32 teams. */
+/* Nov 13, 2026: PFF team grades refreshed through WEEK 9 (DEF and OFF columns of the PFF Teams page; regressions refit on Weeks 1-9 points per game: defence a -0.329 b 44.18 R2 0.37, offence a 0.449 b -9.36 R2 0.65). Oct 28, 2026: PFF team grades refreshed through WEEK 7 (Oct 21 text follows). Oct 21, 2026: PFF team grades refreshed through WEEK 6 (the constant keeps its WK4 name so call sites do not change). PF/PA on that page match the ESPN scoreboard totals exactly for all 32 teams. */
 const PFF_TEAM_DEFENSE_WK4 = {
-  ARI:{grade_defense:54},
-  ATL:{grade_defense:74.3},
-  BAL:{grade_defense:67.4},
-  BUF:{grade_defense:52.3},
-  CAR:{grade_defense:63.7},
-  CHI:{grade_defense:55},
-  CIN:{grade_defense:60.2},
-  CLE:{grade_defense:68.3},
-  DAL:{grade_defense:51.8},
-  DEN:{grade_defense:71.9},
-  DET:{grade_defense:73.9},
-  GB:{grade_defense:69.6},
-  HOU:{grade_defense:65.2},
-  IND:{grade_defense:56.2},
-  JAX:{grade_defense:66.5},
-  KC:{grade_defense:70.4},
-  LAC:{grade_defense:67.2},
-  LAR:{grade_defense:74.4},
-  LV:{grade_defense:52.6},
-  MIA:{grade_defense:55},
-  MIN:{grade_defense:72.5},
-  NE:{grade_defense:62.8},
-  NO:{grade_defense:60},
-  NYG:{grade_defense:68.6},
-  NYJ:{grade_defense:64},
-  PHI:{grade_defense:61.9},
-  PIT:{grade_defense:76.1},
-  SEA:{grade_defense:71.5},
-  SF:{grade_defense:63.6},
-  TB:{grade_defense:70.1},
-  TEN:{grade_defense:58.3},
-  WAS:{grade_defense:56},
+  ARI:{grade_defense:56.4},
+  ATL:{grade_defense:67.3},
+  BAL:{grade_defense:66.5},
+  BUF:{grade_defense:58.5},
+  CAR:{grade_defense:62.2},
+  CHI:{grade_defense:54.1},
+  CIN:{grade_defense:61.5},
+  CLE:{grade_defense:67.1},
+  DAL:{grade_defense:55.9},
+  DEN:{grade_defense:71.2},
+  DET:{grade_defense:72.9},
+  GB:{grade_defense:72.7},
+  HOU:{grade_defense:69.1},
+  IND:{grade_defense:54.7},
+  JAX:{grade_defense:70.3},
+  KC:{grade_defense:66.1},
+  LAC:{grade_defense:63.7},
+  LAR:{grade_defense:78.6},
+  LV:{grade_defense:50.5},
+  MIA:{grade_defense:54.5},
+  MIN:{grade_defense:67.6},
+  NE:{grade_defense:65.9},
+  NO:{grade_defense:61.8},
+  NYG:{grade_defense:68.9},
+  NYJ:{grade_defense:60.4},
+  PHI:{grade_defense:64.3},
+  PIT:{grade_defense:77},
+  SEA:{grade_defense:69.1},
+  SF:{grade_defense:66.6},
+  TB:{grade_defense:73.8},
+  TEN:{grade_defense:54.6},
+  WAS:{grade_defense:64.8},
 };
-const PFF_DEF_REGRESSION = { a: -0.297, b: 42.10 }; // refit Oct 28 on Weeks 1-7 team grades vs points allowed per game (R2 0.30; was -0.323/43.84, R2 0.27)
+const PFF_DEF_REGRESSION = { a: -0.329, b: 44.18 }; // refit Oct 28 on Weeks 1-7 team grades vs points allowed per game (R2 0.30; was -0.323/43.84, R2 0.27)
 const PFF_BLEND_WEIGHT = 0.25;
 
 /* REAL PFF WEEK 1 COVERAGE DATA (source: PFF defense_coverage_summary CSV,
@@ -1262,48 +1262,48 @@ const PFF_BLEND_WEIGHT = 0.25;
    weight on its own evidence rather than adjusting both together. */
 const PFF_TEAM_OFFENSE_WK4 = {
   ARI:{grade_offense:72.2},
-  ATL:{grade_offense:74.1},
-  BAL:{grade_offense:72.8},
-  BUF:{grade_offense:75.6},
-  CAR:{grade_offense:78.3},
-  CHI:{grade_offense:74.1},
-  CIN:{grade_offense:84.3},
-  CLE:{grade_offense:66.6},
-  DAL:{grade_offense:81.2},
-  DEN:{grade_offense:63},
-  DET:{grade_offense:82.8},
-  GB:{grade_offense:60.8},
-  HOU:{grade_offense:75.8},
-  IND:{grade_offense:70.1},
-  JAX:{grade_offense:76.6},
-  KC:{grade_offense:78.4},
-  LAC:{grade_offense:54},
-  LAR:{grade_offense:77.4},
-  LV:{grade_offense:70.3},
-  MIA:{grade_offense:61},
-  MIN:{grade_offense:66.5},
-  NE:{grade_offense:75.3},
-  NO:{grade_offense:70.1},
-  NYG:{grade_offense:66.8},
-  NYJ:{grade_offense:74.7},
-  PHI:{grade_offense:69},
-  PIT:{grade_offense:70.4},
-  SEA:{grade_offense:72.9},
-  SF:{grade_offense:82.9},
-  TB:{grade_offense:62.2},
-  TEN:{grade_offense:64.5},
-  WAS:{grade_offense:66.2},
+  ATL:{grade_offense:70},
+  BAL:{grade_offense:68.6},
+  BUF:{grade_offense:76},
+  CAR:{grade_offense:77.4},
+  CHI:{grade_offense:75.8},
+  CIN:{grade_offense:89.8},
+  CLE:{grade_offense:65.4},
+  DAL:{grade_offense:81.4},
+  DEN:{grade_offense:65.3},
+  DET:{grade_offense:83.5},
+  GB:{grade_offense:65.6},
+  HOU:{grade_offense:78.2},
+  IND:{grade_offense:67},
+  JAX:{grade_offense:78},
+  KC:{grade_offense:77.6},
+  LAC:{grade_offense:53.3},
+  LAR:{grade_offense:76.8},
+  LV:{grade_offense:72.6},
+  MIA:{grade_offense:60.9},
+  MIN:{grade_offense:65.3},
+  NE:{grade_offense:76.6},
+  NO:{grade_offense:71.1},
+  NYG:{grade_offense:67.1},
+  NYJ:{grade_offense:78.2},
+  PHI:{grade_offense:65.7},
+  PIT:{grade_offense:71.6},
+  SEA:{grade_offense:74.3},
+  SF:{grade_offense:84.5},
+  TB:{grade_offense:65.4},
+  TEN:{grade_offense:67},
+  WAS:{grade_offense:65.4},
 };
-const PFF_OFF_REGRESSION = { a: 0.428, b: -7.59 }; // refit Oct 28 on Weeks 1-7 (R2 0.58; was 0.493/-11.95, R2 0.65)
+const PFF_OFF_REGRESSION = { a: 0.449, b: -9.36 }; // refit Oct 28 on Weeks 1-7 (R2 0.58; was 0.493/-11.95, R2 0.65)
 
 /* PASS_DEF_WK1_ADJ REFRESH Oct 7, 2026 (name kept so call sites don't change): rebuilt from PFF's 2026 Weeks 1-4 cumulative team
    coverage grades (was Week 1 only). Same formula (team grade as % deviation from the league average, inverted, damped) but the
    deviations are rescaled to the SAME spread as the old Week 1 table (sd 0.0217): the 4-week grades are about 2x as spread out and
    their link to points allowed is still weak (R^2 0.12 vs pass points allowed/game), so I did not let the larger raw spread raise the
    size of the effect. Biggest changes: LAR 0.976->0.948, CIN 0.984->1.037, MIA 0.978->1.017, NYG 1.019->0.984, NE 1.014->0.979. */
-/* Oct 28, 2026: rebuilt from PFF 2026 Weeks 1-7 cumulative team coverage grades (same formula and spread; Oct 21 text follows). Oct 21, 2026: rebuilt from PFF 2026 Weeks 1-6 cumulative team coverage grades (same formula and spread; Oct 14 text follows). Oct 14, 2026: rebuilt again from PFF 2026 Weeks 1-5 cumulative team coverage grades, same formula and same spread (sd 0.0217) as the Oct 7 rebuild (reproduced that table to corr 0.9999 first). */
+/* Nov 13, 2026: rebuilt from PFF 2026 Weeks 1-9 cumulative team coverage grades (COV column; same formula and spread, mean 1.0 sd 0.0217; correlation with the Oct 28 table -0.86 against the new grades before replacing). Oct 28, 2026: rebuilt from PFF 2026 Weeks 1-7 cumulative team coverage grades (same formula and spread; Oct 21 text follows). Oct 21, 2026: rebuilt from PFF 2026 Weeks 1-6 cumulative team coverage grades (same formula and spread; Oct 14 text follows). Oct 14, 2026: rebuilt again from PFF 2026 Weeks 1-5 cumulative team coverage grades, same formula and same spread (sd 0.0217) as the Oct 7 rebuild (reproduced that table to corr 0.9999 first). */
 const PASS_DEF_WK1_ADJ = {
-  ARI:1.02,ATL:0.974,BAL:0.984,BUF:1.047,CAR:0.981,CHI:1.011,CIN:1.036,CLE:0.972,DAL:1.029,DEN:0.985,DET:0.992,GB:0.96,HOU:1.015,IND:1.026,JAX:1.002,KC:0.988,LAC:0.996,LAR:0.965,LV:1.048,MIA:1.016,MIN:0.992,NE:1.004,NO:1.006,NYG:0.99,NYJ:0.99,PHI:0.997,PIT:0.988,SEA:0.976,SF:0.996,TB:0.991,TEN:1.009,WAS:1.013
+  ARI:1.028,ATL:0.984,BAL:0.994,BUF:1.022,CAR:0.996,CHI:1.016,CIN:1.026,CLE:0.971,DAL:1.018,DEN:0.989,DET:0.999,GB:0.949,HOU:1.009,IND:1.032,JAX:0.979,KC:0.997,LAC:1.015,LAR:0.956,LV:1.05,MIA:1.012,MIN:1.002,NE:1.003,NO:1.009,NYG:0.988,NYJ:1.01,PHI:1.004,PIT:0.983,SEA:0.98,SF:0.988,TB:0.975,TEN:1.023,WAS:0.99
 };
 
 /* FRESH DEFENSIVE INJURY ADJUSTMENT (real, current, disclosed -- added Sept 2026):
