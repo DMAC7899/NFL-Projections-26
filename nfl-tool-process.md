@@ -382,3 +382,6 @@ Every set ESPN can verify was checked against the 136 box scores, the Weeks 1-18
 - Red zone: inside-5 rush TDs never exceed a player's box-score rush TDs. Fixed a bug found by this check (replay-reversed touchdowns were counted as scored).
 - Left unresolved: 10 defenders with 2026 PFF grades are not on any ESPN roster and have no transaction (Pat Jones II, Cam'Ron Jackson, JT Tuimoloau, Camryn Bynum, Kamren Curl, Foley Fatukasi, Joshua Uche, Josh Metellus, Tariq Woolen, plus Darius Slayton already OUT); most likely injured reserve, which the ESPN roster feed omits.
 - ESPN injury feed anomaly (22:24Z Nov 12): about 25 players flipped from Questionable to Out while their own comments say full or limited practice (Watson, Pickens, Delane, A.J. Brown, Evans and others). Not applied; the tool keeps the 22:02Z statuses. Re-check against the official Friday designations.
+
+## Cam Skattebo availability, Nov 13, 2026 (Week 10, Thursday game)
+Removed the OUT entry. The ESPN feed (Nov 12, 22:31Z) says he has no injury designation for Thursday night and was a full participant Tuesday (its status field still reads Out, one of the stale or wrong status fields noted above); Sportsbet lists him with rushing and receiving markets. He now projects as available (rush 66.6 yd, rec 28.1 yd, TD chance 0.84 + 0.26 per game).
