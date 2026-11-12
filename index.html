@@ -1383,7 +1383,6 @@ const DEF_ROSTER = {
    MUST be refreshed every Friday. */
 const DEF_AVAILABILITY = {
   "Will Johnson":{"team":"ARI","status":"OUT","note":"ESPN injury report Oct 8: injured reserve"},
-  "Roy Lopez":{"team":"ARI","status":"QUESTIONABLE","note":"ESPN injury report Nov 9: questionable, Toe"},
   "Samson Ebukam":{"team":"ATL","status":"OUT","note":"ESPN injury report Nov 4: injured reserve, Hamstring"},
   "Tavius Robinson":{"team":"BAL","status":"OUT","note":"ESPN injury report Oct 24: injured reserve, Pectoral"},
   "Nate Wiggins":{"team":"BAL","status":"QUESTIONABLE","note":"ESPN injuries page Nov 11: questionable (was out in Nov 6-9 reports)"},
@@ -1429,7 +1428,6 @@ const DEF_AVAILABILITY = {
   "Justin Walley":{"team":"IND","status":"QUESTIONABLE","note":"ESPN injuries page Nov 11: questionable (was out in Nov 6-9 reports)"},
   "Cam Taylor-Britt":{"team":"IND","status":"OUT","note":"ESPN injury report Oct 27: injured reserve, Groin"},
   "A.J. Haulcy":{"team":"IND","status":"QUESTIONABLE","note":"ESPN injuries page Nov 11: questionable (was out in Nov 6-9 reports)"},
-  "Jaylon Carlies":{"team":"IND","status":"QUESTIONABLE","note":"ESPN injury report Nov 9: questionable, Neck"},
   "DaVon Hamilton":{"team":"JAX","status":"OUT","note":"ESPN injury report Nov 4: injured reserve, Knee"},
   "Eric Murray":{"team":"JAX","status":"OUT","note":"ESPN injury report Nov 4: injured reserve, Elbow"},
   "Peter Woods":{"team":"KC","status":"QUESTIONABLE","note":"ESPN injuries page Nov 11: questionable (was out in Nov 6-9 reports)"},
@@ -4154,7 +4152,7 @@ const PLAYER_AVAILABILITY = {
   // --- Added Nov 6, 2026 refresh (ESPN) ---
   "MarShawn Lloyd": {"status": "QUESTIONABLE", "note": "questionable (knee) - ESPN injuries page Nov 11 lists questionable (was out in the Nov 6-9 reports); still counted, shown with a ? badge"},
   "Jauan Jennings": {"status": "QUESTIONABLE", "note": "questionable (calf) - ESPN injuries page Nov 11 lists questionable (was out in the Nov 6-9 reports); still counted, shown with a ? badge"},
-  "Kendre Miller": {"status": "OUT", "note": "waived by NO Nov 7 (ESPN transactions); not on a roster, a waiver claim is possible"},
+  "Kendre Miller": {"status": "OUT", "note": "waived by NO Nov 7; signed to DAL practice squad Nov 11 (ESPN transactions/roster Nov 13) - not on an active roster"},
   "Dyami Brown": {"status": "OUT", "note": "injured reserve - calf, placed on IR Nov 7 (ESPN transactions), ESPN return date 2026-12-06 (ESPN report Nov 7)"},
 
   // --- Added Nov 7, 2026 refresh (ESPN) ---
@@ -4192,8 +4190,9 @@ const PLAYER_AVAILABILITY = {
   "Noah Fant": {"status": "QUESTIONABLE", "note": "ESPN injuries feed Nov 12: questionable - Back, return date 2026-11-15"},
   "Alvin Kamara": {"status": "QUESTIONABLE", "note": "ESPN injuries feed Nov 12: questionable - Back, return date 2026-11-15"},
   "Omar Cooper Jr.": {"status": "QUESTIONABLE", "note": "ESPN injuries feed Nov 12: questionable - Ankle, return date 2026-11-15"},
+  "Chris Rodriguez": {"status": "QUESTIONABLE", "note": "ESPN injuries feed Nov 12: questionable - Hand, return date 2026-11-15"},
 };
-const AVAILABILITY_LAST_VERIFIED = 'Nov 12, 2026';  // real, current date this table (and its Week 3+ overrides) was last checked against actual injury reports -- shown on the Betting tab itself, not just in this comment, since this is manually maintained and WILL go stale
+const AVAILABILITY_LAST_VERIFIED = 'Nov 13, 2026';  // real, current date this table (and its Week 3+ overrides) was last checked against actual injury reports -- shown on the Betting tab itself, not just in this comment, since this is manually maintained and WILL go stale
 const AVAILABILITY_FROM_WEEK = 5;   // table reflects status going into Week 5; earlier weeks are history, and the season-average view has no week
 function availabilityOf(p){ return PLAYER_AVAILABILITY[p.n] || null; }
 // Games NOT yet played when the table was last updated: these statuses apply even though the week is before
