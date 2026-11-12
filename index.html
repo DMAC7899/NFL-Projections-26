@@ -1775,22 +1775,22 @@ const LEAGUE_AVG_SACK_CONV = 14.9;
    aligned targets. This is the defense-side mirror of the offense-side Slot Usage
    badge on player cards -- fills the alignment-specific gap flagged repeatedly in
    Defensive Profile. Higher ypcs = weaker vs slot = favorable for the offense. */
-/* ALIGNMENT DvP (estimate), Oct 28, 2026, Weeks 1-7. Receiving yards each defence allowed per game, split by where the receiver lined up.
+/* ALIGNMENT DvP (estimate), REFRESHED Nov 13, 2026, Weeks 1-9 (first built Oct 28 on Weeks 1-7). Receiving yards each defence allowed per game, split by where the receiver lined up.
    Built by hand: every ESPN box-score receiving line by a WR or TE (matched by name to the PFF 2026 receiving pages) is split into slot / wide / inline
    in proportion to that receiver's own PFF pass-snap alignment (SLOT, WIDE, INL snaps over the season so far), summed per opposing defence and divided by games played.
    RBs are excluded (about 15% of receiving yards). It is an allocation, not a measured number: a receiver's split is assumed the same in every game. */
 const ALIGN_DVP_2026 = {
-  ARI:{slot:70.6,wide:112.8,inl:28.9}, ATL:{slot:83.0,wide:119.3,inl:30.3}, BAL:{slot:69.2,wide:130.7,inl:20.7},
-  BUF:{slot:84.6,wide:126.6,inl:40.1}, CAR:{slot:62.1,wide:91.8,inl:25.4}, CHI:{slot:68.1,wide:108.3,inl:29.7},
-  CIN:{slot:87.2,wide:91.8,inl:43.3}, CLE:{slot:70.2,wide:105.9,inl:23.5}, DAL:{slot:86.1,wide:104.9,inl:18.6},
-  DEN:{slot:66.3,wide:102.0,inl:32.9}, DET:{slot:102.3,wide:133.9,inl:50.9}, GB:{slot:63.1,wide:107.5,inl:19.0},
-  HOU:{slot:82.0,wide:131.2,inl:20.2}, IND:{slot:76.2,wide:90.6,inl:20.1}, JAX:{slot:86.8,wide:140.8,inl:17.1},
-  KC:{slot:61.5,wide:92.1,inl:39.3}, LAC:{slot:68.4,wide:94.4,inl:27.5}, LAR:{slot:57.9,wide:72.5,inl:17.3},
-  LV:{slot:68.4,wide:106.2,inl:33.2}, MIA:{slot:69.6,wide:80.2,inl:40.4}, MIN:{slot:57.7,wide:83.2,inl:21.8},
-  NE:{slot:78.0,wide:101.8,inl:23.7}, NO:{slot:76.9,wide:113.7,inl:20.0}, NYG:{slot:55.3,wide:94.4,inl:21.8},
-  NYJ:{slot:66.2,wide:89.2,inl:25.9}, PHI:{slot:81.6,wide:121.3,inl:24.1}, PIT:{slot:65.9,wide:106.2,inl:17.1},
-  SEA:{slot:44.5,wide:65.3,inl:16.4}, SF:{slot:63.7,wide:88.0,inl:21.6}, TB:{slot:66.1,wide:101.7,inl:28.9},
-  TEN:{slot:80.8,wide:114.4,inl:18.4}, WAS:{slot:77.3,wide:121.6,inl:33.0}
+  ARI:{slot:65.3,wide:106.7,inl:25.0}, ATL:{slot:73.8,wide:111.5,inl:23.7}, BAL:{slot:73.6,wide:123.5,inl:27.7},
+  BUF:{slot:70.3,wide:109.3,inl:32.6}, CAR:{slot:64.6,wide:101.0,inl:27.3}, CHI:{slot:64.9,wide:105.9,inl:25.9},
+  CIN:{slot:85.3,wide:90.8,inl:40.4}, CLE:{slot:72.3,wide:99.4,inl:29.6}, DAL:{slot:84.3,wide:106.0,inl:19.3},
+  DEN:{slot:71.5,wide:97.9,inl:35.6}, DET:{slot:88.8,wide:119.6,inl:41.9}, GB:{slot:71.9,wide:102.6,inl:22.3},
+  HOU:{slot:78.9,wide:126.9,inl:20.6}, IND:{slot:78.9,wide:93.6,inl:23.7}, JAX:{slot:74.1,wide:117.1,inl:14.6},
+  KC:{slot:59.5,wide:82.2,inl:36.3}, LAC:{slot:71.2,wide:113.4,inl:24.4}, LAR:{slot:64.6,wide:79.9,inl:19.4},
+  LV:{slot:67.2,wide:118.0,inl:31.7}, MIA:{slot:71.8,wide:80.8,inl:34.3}, MIN:{slot:58.0,wide:81.8,inl:26.4},
+  NE:{slot:77.6,wide:121.7,inl:22.6}, NO:{slot:78.8,wide:118.9,inl:20.1}, NYG:{slot:58.0,wide:88.8,inl:22.0},
+  NYJ:{slot:65.6,wide:87.1,inl:31.0}, PHI:{slot:82.5,wide:117.8,inl:20.1}, PIT:{slot:69.6,wide:101.0,inl:24.9},
+  SEA:{slot:49.3,wide:73.4,inl:19.0}, SF:{slot:66.0,wide:89.6,inl:23.6}, TB:{slot:66.4,wide:103.1,inl:28.1},
+  TEN:{slot:89.4,wide:132.3,inl:15.1}, WAS:{slot:77.1,wide:115.1,inl:30.2}
 };
 /* REFRESHED Nov 13, 2026 (Weeks 1-9): same method as Oct 28 below, re-pulled (LEAGUE_AVG_SLOT_YPCS = new team mean). */
 /* REFRESHED Oct 28, 2026 (Weeks 1-7): rebuilt from PFF Slot Coverage pages for CB and S, pooling 2025 regular season (defenders with 30+ slot coverage snaps) with 2026 Reg+Post (all defenders); ypcs = yards / slot coverage snaps, ydsPerTgt = yards / targets, tds summed. LEAGUE_AVG_SLOT_YPCS = team mean. Display only (Defensive Profile); not used by the engine. */
