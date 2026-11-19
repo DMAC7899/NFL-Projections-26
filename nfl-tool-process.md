@@ -385,3 +385,12 @@ Every set ESPN can verify was checked against the 136 box scores, the Weeks 1-18
 
 ## Cam Skattebo availability, Nov 13, 2026 (Week 10, Thursday game)
 Removed the OUT entry. The ESPN feed (Nov 12, 22:31Z) says he has no injury designation for Thursday night and was a full participant Tuesday (its status field still reads Out, one of the stale or wrong status fields noted above); Sportsbet lists him with rushing and receiving markets. He now projects as available (rush 66.6 yd, rec 28.1 yd, TD chance 0.84 + 0.26 per game).
+
+## Week 10 refresh for Week 11, Nov 20, 2026
+Everything ESPN- or PFF-derived that feeds projections was still on Week 9 data. All of it was rebuilt through Week 10 with the same methods as the Nov 13 refresh.
+- Rebuilt from ESPN box scores (150 games): QB_2026_LINES, DVP_2026, TEAM_RB_CARRIES, QB/RB/WR/TE_MATCHUP_ADJ, QB_REDZONE, RECV_REDZONE, ROLE_2026 (31 entries; the drop-if-under-20%-gap screen was not re-run).
+- Rebuilt from PFF 2026 (scraped through Chrome): PFF_QB, PFF_LEAGUE_AVG, QB_PRESSURE, team offence/defence tables and regressions, PASS_DEF_WK1_ADJ, TEAMS olPassMult/olRunMult, DEF_ROSTER, top corners (cb, cbGrade; league avg 64.3, elite threshold 71), TEAM_RUN_DEFENSE_2024, COVERAGE_2025 pressure and man/zone values.
+- WEEKLY_CALIBRATION updated with the rule delta = -0.2*(bias/meanProj)/N.
+- Bug found and fixed: QB_2026_LINES units were wrong (per-30-attempts instead of per-game-equivalent). eq must be the sum of min(1, att/30). Fixed; QB Week 11 projections rise about 1.5 PPR on average (RB, WR, TE unchanged). Examples: Burrow 21.2 -> 25.3, Prescott 16.9 -> 20.6.
+- Checks: matchup adjustments reproduce Nov 13 within 0.02; PFF-derived tables correlate 0.96-0.998 with Nov 13 versions; validate ALL OK; audit page errors 0.
+- Not refreshed: TEAM_SACK_DATA, ALIGN_DVP_2026, skill grade badges and elusive ratings (Week 9); passD tier labels (no documented rule to reproduce); DEF_ROSTER membership not re-picked; TE calibration not applied; Rams 2025 interior run defence imputed.
